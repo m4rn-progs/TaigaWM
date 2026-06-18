@@ -16,18 +16,54 @@ local required_globals = {
 }
 
 local Mods = wau.river_seat_v1.Modifiers
+local mod = Mods.MOD1
 
-local xkb_bindings = {
-    {"space", Mods.MOD4, "spawn-foot"},
-    {"q", Mods.MOD4, "close"},
-    {"n", Mods.MOD4, "focus-next"},
-    {"Escape", Mods.MOD4, "exit"},
-}
+-- config file related functions
+local function expand_tilde(path)
+  if not path then return path end
+  local home = os.getenv("HOME")
+  return path:gsub("^~", home)
+end
 
-local pointer_bindings = {
-    {"left", Mods.MOD4, "move"},
-    {"right", Mods.MOD4, "resize"},
-}
+local function dirname(path)
+  path = path:gsub("/+$", "")
+  local dir = path:match("^(.*)/[^/]*$")
+  return dir
+end
+
+function file_exists(path)
+    path = expand_tilde(path)
+    local stat = posix.stat(path)
+    if stat then
+        return true
+    end
+    return false
+end
+
+function get_config_file()
+    local paths = {
+        "~/.config/taiga/taigarc.lua",
+        "~/.taigarc.lua",
+        "/etc/taiga/taigarc.lua"
+    }
+
+    for _, p in ipairs(paths) do
+        if file_exists(p) then
+            print("Path: " .. p .. " exists.")
+            return expand_tilde(p)
+        end
+    end
+end
+-- config file related functions
+
+-- Load the config file with abs path
+local chunk, err = loadfile(get_config_file(), "t")
+if not chunk then error("load error: "..tostring(err)) end
+local taigarc = chunk()
+-- Load the config file with abs path
+
+local xkb_bindings = get_keybinds(mod).keyboard_binds
+local pointer_bindings = get_keybinds(mod).mouse_binds
 
 local wm = {
     outputs = {},
