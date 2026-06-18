@@ -283,9 +283,11 @@ function Seat:pointer_resize(window, edges)
 end
 
 function Seat:action(action)
-    if action == "spawn-foot" then
+    if action == "spawn" then
         if posix.unistd.fork() == 0 then
-            posix.unistd.execp("foot", {})
+            if self.arg ~= nil then
+                posix.unistd.execp("/bin/sh", {"-c", self.arg})
+            end
         end
     elseif action == "close" then
         if self.focused ~= nil then
@@ -323,15 +325,15 @@ function Seat:add_pointer_binding(button, mods, action)
     table.insert(self.pointer_bindings, binding)
 end
 
-function Seat:add_xkb_binding(key, mods, action)
+function Seat:add_xkb_binding(key, mods, action, arg)
     local keysym = xkbcommon.keysym(key)
     local obj = globals["river_xkb_bindings_v1"]:get_xkb_binding(
                     self.obj, keysym, mods)
     local binding = { obj = obj }
-
     obj:add_listener {
         ["pressed"] = function (_)
             self.pending_action = action
+            self.arg = arg
         end,
     }
     obj:enable()
@@ -343,6 +345,7 @@ function Seat:manage()
         self.new = nil
 
         for _, tbl in ipairs(xkb_bindings) do
+            print(table.unpack(tbl))
             self:add_xkb_binding(table.unpack(tbl))
         end
 

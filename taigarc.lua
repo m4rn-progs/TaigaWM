@@ -2,7 +2,7 @@ function get_keybinds(mod)
 
     return {
         keyboard_binds = {
-            {"space", mod, "spawn-foot"},
+            {"space", mod, "spawn", "kitty /usr/bin/bash"},
             {"q", mod, "close"},
             {"n", mod, "focus-next"},
             {"Escape", mod, "exit"},
