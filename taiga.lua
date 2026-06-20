@@ -41,9 +41,9 @@ local function open_config()
 end
 
 local function expand_tilde(path)
-  if not path then return path end
-  local home = os.getenv("HOME")
-  return path:gsub("^~", home)
+    if not path then return path end
+    local home = os.getenv("HOME")
+    return path:gsub("^~", home)
 end
 
 function file_exists(path)
@@ -72,6 +72,14 @@ function get_config_file()
 end
 -- config file related functions
 
+-- autostart related functions
+local function autostart(tbl)
+        for _, item in ipairs(tbl) do
+            if posix.unistd.fork() == 0 then
+                posix.unistd.execp("/bin/sh", {"-c", item})
+        end
+    end
+end
 -- Load the config file with abs path
 taigarc = open_config()
 
@@ -79,16 +87,21 @@ taigarc = open_config()
 if posix.unistd.fork() == 0 then
     local parent_pid = posix.unistd.getppid()
     local handle = inotify.init()
-    local wd = handle:addwatch(config_file_path, inotify.IN_MODIFY)
-    for ev in handle:events() do
+    local _ = handle:addwatch(config_file_path, inotify.IN_MODIFY)
+    for _ in handle:events() do
         print("config file changed, reloading")
         posix.signal.kill(parent_pid, signal.SIGUSR1)
     end
 end
 -- Load the config file with abs path
 
-local xkb_bindings = get_keybinds(mod).keyboard_binds or {{}}
-local pointer_bindings = get_keybinds(mod).mouse_binds or {{}}
+-- get keybinds and mouse binds
+local xkb_bindings = config_keybinds(mod).keyboard_binds or {{}}
+local pointer_bindings = config_keybinds(mod).mouse_binds or {{}}
+
+-- autostart
+local autostart_tbl = config_autostart() or {}
+autostart(autostart_tbl)
 
 local wm = {
     outputs = {},

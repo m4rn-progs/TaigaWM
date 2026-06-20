@@ -1,4 +1,4 @@
-function get_keybinds(mod)
+function config_keybinds(mod)
 
     return {
         keyboard_binds = {
@@ -14,4 +14,9 @@ function get_keybinds(mod)
         }
     }
 
+end
+function config_autostart()
+        return {
+                "foot",
+        }
 end
