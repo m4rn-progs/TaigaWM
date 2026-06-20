@@ -10,12 +10,14 @@ local inotify = require("inotify")
 
 wau:require("taiga.protocol.river-window-management-v1")
 wau:require("taiga.protocol.river-xkb-bindings-v1")
+wau:require("taiga.protocol.river-layer-shell-v1")
 
 -- toplevel variable def
 local globals = {}
 local required_globals = {
 	["river_window_manager_v1"] = 4,
 	["river_xkb_bindings_v1"] = 1,
+    ["river_layer_shell_v1"] = 1,
 }
 local Mods = wau.river_seat_v1.Modifiers
 local default_mod = Mods.MOD1
@@ -148,6 +150,7 @@ local wm = {
 	seats = {},
 	-- Windows are kept in rendering order; last window is topmost
 	windows = {},
+    layers = { outputs = {}, seats = {} }
 }
 
 local function table_index_of(tbl, sought)
