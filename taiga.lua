@@ -18,11 +18,12 @@ local required_globals = {
     ["river_xkb_bindings_v1"] = 1,
 }
 local Mods = wau.river_seat_v1.Modifiers
-local mod = Mods.MOD1
+local default_mod = Mods.MOD1
+
 no_config = false
 default_keybinds = {
-    {"escape", mod, "exit"},
-    {"space", mod, "spawn", "foot"},
+    {"Escape", default_mod, "exit"},
+    {"space", default_mod, "spawn", "foot"},
 }
 -- config file related functions
 -- open the config file
@@ -42,9 +43,9 @@ function open_config()
     -- else, we will just load it
     chunk, err = loadfile(config_file_path, "t")
     if not chunk then error("load error: "..tostring(err)) end
-    taigarc = chunk()
+    chunk()
     print("Successfully loaded config file.")
-    return taigarc
+    return true
 end
 
 -- just expand a tilde using gsub setting it to $HOME
@@ -126,8 +127,8 @@ local pointer_bindings = {{}}
 
 if not no_config then
     -- config exists just read it like normal and do stuff
-    xkb_bindings = config_keybinds(mod).keyboard_binds
-    pointer_bindings = config_keybinds(mod).mouse_binds
+    xkb_bindings = config_keybinds().keyboard_binds
+    pointer_bindings = config_keybinds().mouse_binds
     local autostart_tbl = config_autostart() or {}
     autostart(autostart_tbl)
 else

@@ -1,4 +1,8 @@
-function config_keybinds(mod)
+local wau = require("wau")
+local Mods = wau.river_seat_v1.Modifiers
+local mod = Mods.MOD4
+
+function config_keybinds()
 
     return {
         keyboard_binds = {
