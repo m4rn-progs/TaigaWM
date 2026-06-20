@@ -93,7 +93,7 @@ local function autostart(tbl)
 	for _, item in ipairs(tbl) do
 		if posix.unistd.fork() == 0 then
 			posix.unistd.execp("/bin/sh", { "-c", item })
-			os.exit(1)
+            os.exit(0)
 		end
 	end
 end
@@ -119,8 +119,8 @@ if not no_config then
 			print("config file changed, reloading")
 			-- we send a posix signal instead of just chaning stuff here because forks cant edit main flow
 			posix.signal.kill(parent_pid, signal.SIGUSR1)
+            os.exit(0)
 		end
-		os.exit(0)
 	end
 end
 -- Load the config file with abs path
@@ -355,6 +355,7 @@ function Seat:action(action)
 		if posix.unistd.fork() == 0 then
 			if self.arg ~= nil then
 				posix.unistd.execp("/bin/sh", { "-c", self.arg })
+                os.exit(0)
 			end
 		end
 	elseif action == "close" then
@@ -628,6 +629,19 @@ signal.signal(signal.SIGUSR1, function()
 		-- after destroying the objs, reset them to an empty table
 		seat.xkb_bindings = {}
 		seat.pointer_bindings = {}
+
+    end
+
+	if posix.unistd.fork() == 0 then
+		local parent_pid = posix.unistd.getppid()
+		local handle = inotify.init()
+		local _ = handle:addwatch(config_file_path, inotify.IN_MODIFY)
+		for _ in handle:events() do
+			print("config file changed, reloading")
+			-- we send a posix signal instead of just chaning stuff here because forks cant edit main flow
+			posix.signal.kill(parent_pid, signal.SIGUSR1)
+            os.exit(0)
+		end
 	end
 end)
 
