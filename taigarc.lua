@@ -6,7 +6,7 @@ function config_keybinds()
 
     return {
         keyboard_binds = {
-            {"space", mod, "spawn", "foot bash"},
+            {"Return", mod, "spawn", "foot bash"},
             {"q", mod, "close"},
             {"n", mod, "focus-next"},
             {"Escape", mod, "exit"},

@@ -89,6 +89,7 @@ local function autostart(tbl)
         for _, item in ipairs(tbl) do
             if posix.unistd.fork() == 0 then
                 posix.unistd.execp("/bin/sh", {"-c", item})
+                os.exit(1)
         end
     end
 end
@@ -116,6 +117,7 @@ if not no_config then
             -- we send a posix signal instead of just chaning stuff here because forks cant edit main flow
             posix.signal.kill(parent_pid, signal.SIGUSR1)
         end
+        os.exit(0)
     end
 end
 -- Load the config file with abs path
@@ -615,8 +617,8 @@ globals["river_window_manager_v1"]:add_listener(wm_handlers)
 signal.signal(signal.SIGUSR1, function()
     -- here, we dont worry if config exists or not because this will never be called anyways
     taigarc = open_config()
-    xkb_bindings = get_keybinds(mod).keyboard_binds or {{}}
-    pointer_bindings = get_keybinds(mod).mouse_binds or {{}}
+    xkb_bindings = config_keybinds().keyboard_binds or {{}}
+    pointer_bindings = config_keybinds().mouse_binds or {{}}
     -- reset everything
     for _, seat in ipairs(wm.seats) do
         -- next time seat:manage is called, with seat.new = true it will re-set it up
