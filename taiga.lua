@@ -46,12 +46,6 @@ local function expand_tilde(path)
   return path:gsub("^~", home)
 end
 
-local function dirname(path)
-  path = path:gsub("/+$", "")
-  local dir = path:match("^(.*)/[^/]*$")
-  return dir
-end
-
 function file_exists(path)
     path = expand_tilde(path)
     local stat = posix.stat(path)
@@ -79,10 +73,9 @@ end
 -- config file related functions
 
 -- Load the config file with abs path
--- setup inotify to run this all the time
-
 taigarc = open_config()
 
+-- setup inotify to run this all the time
 if posix.unistd.fork() == 0 then
     local parent_pid = posix.unistd.getppid()
     local handle = inotify.init()
@@ -366,7 +359,6 @@ function Seat:manage()
         self.new = nil
 
         for _, tbl in ipairs(xkb_bindings) do
-            print(table.unpack(tbl))
             self:add_xkb_binding(table.unpack(tbl))
         end
 
@@ -571,8 +563,6 @@ signal.signal(signal.SIGUSR1, function()
     xkb_bindings = get_keybinds(mod).keyboard_binds or {{}}
     pointer_bindings = get_keybinds(mod).mouse_binds or {{}}
 
-    print("XKB")
-    print(xkb_bindings)
     for _, seat in ipairs(wm.seats) do
         seat.new = true
         for _, binding in ipairs(seat.xkb_bindings) do
