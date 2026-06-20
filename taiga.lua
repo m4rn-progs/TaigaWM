@@ -346,12 +346,6 @@ function Seat:add_pointer_binding(button, mods, action)
 end
 
 function Seat:add_xkb_binding(key, mods, action, arg)
-    if config_reload then
-        print("clearing binds")
-        self.xkb_bindings = {}
-        config_reload = false
-    end
-
     local keysym = xkbcommon.keysym(key)
     local obj = globals["river_xkb_bindings_v1"]:get_xkb_binding(
                     self.obj, keysym, mods)
@@ -581,7 +575,15 @@ signal.signal(signal.SIGUSR1, function()
     print(xkb_bindings)
     for _, seat in ipairs(wm.seats) do
         seat.new = true
-        config_reload = true
+        for _, binding in ipairs(seat.xkb_bindings) do
+            binding.obj:destroy()
+        end
+        for _, binding in ipairs(seat.pointer_bindings) do
+            binding.obj:destroy()
+        end
+        seat.xkb_bindings = {}
+        seat.pointer_bindings = {}
+
     end
 end)
 
