@@ -11,21 +11,39 @@ local inotify = require("inotify")
 wau:require("taiga.protocol.river-window-management-v1")
 wau:require("taiga.protocol.river-xkb-bindings-v1")
 wau:require("taiga.protocol.river-layer-shell-v1")
+wau:require("taiga.protocol.river-libinput-config-v1")
 
 -- toplevel variable def
 local globals = {}
 local required_globals = {
 	["river_window_manager_v1"] = 4,
 	["river_xkb_bindings_v1"] = 1,
-    ["river_layer_shell_v1"] = 1,
+	["river_layer_shell_v1"] = 1,
+	["river_libinput_config_v1"] = 1,
 }
 local Mods = wau.river_seat_v1.Modifiers
 local default_mod = Mods.MOD1
+local libinput = wau.river_libinput_device_v1
 
 no_config = false
 default_keybinds = {
 	{ "Escape", default_mod, "exit" },
 	{ "space", default_mod, "spawn", "foot" },
+}
+
+-- a small gentle reminder of the horseshit that goes on in xml world: case changes
+-- wayland xml binders, when changing stuff from xml to programming languages like lua or c,
+-- will default to turning snake_case variables into PascalCase variables to try to match language conventions
+-- (even though languages like rust have snake_case by default its really dumb)
+--
+-- therefore, you will see accel_profile in the xml files, but I typed it AccelProfile (and everything else)
+-- because I was trying to dodge the translations. If I didn't do so, lua would have assumed that i was trying to access a nil field
+-- and the server would hang.
+local default_input_config = {
+	accel_profile = libinput.AccelProfile.ADAPTIVE,
+	accel_speed = { 0.0 },
+	natural_scroll = libinput.NaturalScrollState.DISABLED,
+	left_handed = libinput.LeftHandedState.DISABLED,
 }
 -- config file related functions
 -- open the config file
@@ -95,7 +113,7 @@ local function autostart(tbl)
 	for _, item in ipairs(tbl) do
 		if posix.unistd.fork() == 0 then
 			posix.unistd.execp("/bin/sh", { "-c", item })
-            os.exit(0)
+			os.exit(0)
 		end
 	end
 end
@@ -112,36 +130,53 @@ end
 
 -- setup inotify to run this all the time
 if not no_config then
-	-- basic lua inotify loop in a seperate process
 	if posix.unistd.fork() == 0 then
 		local parent_pid = posix.unistd.getppid()
 		local handle = inotify.init()
-		local _ = handle:addwatch(config_file_path, inotify.IN_MODIFY)
-		for _ in handle:events() do
-			print("config file changed, reloading")
-			-- we send a posix signal instead of just chaning stuff here because forks cant edit main flow
-			posix.signal.kill(parent_pid, signal.SIGUSR1)
-            os.exit(0)
+		
+		local config_dir = config_file_path:match("(.*)/")
+		local config_name = config_file_path:match(".*/(.*)")
+		
+		local _ = handle:addwatch(config_dir, inotify.IN_CLOSE_WRITE | inotify.IN_MOVED_TO)
+		
+		for ev in handle:events() do
+			if ev.name == config_name then
+				print("config file changed, reloading")
+				posix.signal.kill(parent_pid, signal.SIGUSR1)
+			end
 		end
+		os.exit(0)
 	end
 end
 -- Load the config file with abs path
 
--- get keybinds and mouse binds
+-- get the stuff from the config
 -- first declaration
-local xkb_bindings = { {} }
-local pointer_bindings = { {} }
+local xkb_bindings = {}
+local pointer_bindings = {}
+local user_inputs = {}
 
 if not no_config then
 	-- config exists just read it like normal and do stuff
-	xkb_bindings = config_keybinds().keyboard_binds
-	pointer_bindings = config_keybinds().mouse_binds
+	xkb_bindings = config_keybinds().keyboard_binds or default_keybinds
+	pointer_bindings = config_keybinds().mouse_binds or {}
+	local custom_inputs = {}
+	if type(config_user_inputs) == "function" then
+		custom_inputs = config_user_inputs(libinput) or {}
+	end
+	user_inputs = {
+		accel_profile = custom_inputs.accel_profile or default_input_config.accel_profile,
+		accel_speed = custom_inputs.accel_speed or default_input_config.accel_speed,
+		natural_scroll = custom_inputs.natural_scroll or default_input_config.natural_scroll,
+		left_handed = custom_inputs.left_handed or default_input_config.left_handed,
+	}
 	local autostart_tbl = config_autostart() or {}
 	autostart(autostart_tbl)
 else
 	-- if no config, set to defaults
 	xkb_bindings = default_keybinds
 	pointer_bindings = { {} }
+	user_inputs = default_input_config
 end
 -- autostart
 
@@ -150,7 +185,7 @@ local wm = {
 	seats = {},
 	-- Windows are kept in rendering order; last window is topmost
 	windows = {},
-    layers = { outputs = {}, seats = {} }
+	layers = { outputs = {}, seats = {} },
 }
 
 local function table_index_of(tbl, sought)
@@ -358,7 +393,7 @@ function Seat:action(action)
 		if posix.unistd.fork() == 0 then
 			if self.arg ~= nil then
 				posix.unistd.execp("/bin/sh", { "-c", self.arg })
-                os.exit(0)
+				os.exit(0)
 			end
 		end
 	elseif action == "close" then
@@ -412,6 +447,56 @@ function Seat:add_xkb_binding(key, mods, action, arg)
 	obj:enable()
 	table.insert(self.xkb_bindings, binding)
 end
+
+-- the entire thing that happened inside this local device_handler block was
+-- that I was trying to play a guessing game of "keyboard, trackpad or mouse".
+--
+-- the idea was that I'll first check for accel profiles.
+-- if that exists, it is either a mouse or a trackpad.
+-- if it returns tap support, its a trackpad since there is no physical way that a mouse can have tap support.
+-- a keyboard would have failed both checks since accel profiles and tap support aren't a thing on keyboards,
+-- so it doesn't recieve a bunch of signals that would have failed and caused the wayland display to seize up
+local device_handlers = {
+	["accel_profiles_support"] = function(self, profiles)
+		if profiles > 0 then
+			print("[Libinput] Pointer device detected.")
+
+			local res = self:set_accel_profile(user_inputs.accel_profile)
+
+			res:add_listener({
+				["success"] = function() end,
+				["unsupported"] = function() end,
+				["invalid"] = function() end,
+			})
+		end
+	end,
+
+	["tap_support"] = function(self, finger_count)
+		if finger_count > 0 then
+			print("[Libinput] Trackpad detected. Overriding pointer config.")
+
+			local res_accel = self:set_accel_profile(user_inputs.accel_profile)
+			res_accel:add_listener({
+				["success"] = function() end,
+				["unsupported"] = function() end,
+				["invalid"] = function() end,
+			})
+
+			local res_tap = self:set_tap(libinput.TapState.ENABLED)
+			res_tap:add_listener({
+				["success"] = function() end,
+				["unsupported"] = function() end,
+				["invalid"] = function() end,
+			})
+		end
+	end,
+}
+local libinput_handlers = {
+	["libinput_device"] = function(self, device)
+		print("A new input device was detected!")
+		device:add_listener(device_handlers)
+	end,
+}
 
 function Seat:manage()
 	if self.new then
@@ -610,14 +695,17 @@ for k in pairs(required_globals) do
 end
 
 globals["river_window_manager_v1"]:add_listener(wm_handlers)
-
+-- had to add the if statement because if libinput fails (no mouse or smth) or the mouse thingy fails we can still boot the wm
+if globals["river_libinput_config_v1"] then
+	globals["river_libinput_config_v1"]:add_listener(libinput_handlers)
+end
 -- this is where stuff gets tricky
 -- watch for sigusr1 (the config file being changed sent from forked pid)
 signal.signal(signal.SIGUSR1, function()
 	-- here, we dont worry if config exists or not because this will never be called anyways
 	taigarc = open_config()
-	xkb_bindings = config_keybinds().keyboard_binds or { {} }
-	pointer_bindings = config_keybinds().mouse_binds or { {} }
+	xkb_bindings = config_keybinds().keyboard_binds or {}
+	pointer_bindings = config_keybinds().mouse_binds or {}
 	-- reset everything
 	for _, seat in ipairs(wm.seats) do
 		-- next time seat:manage is called, with seat.new = true it will re-set it up
@@ -632,19 +720,6 @@ signal.signal(signal.SIGUSR1, function()
 		-- after destroying the objs, reset them to an empty table
 		seat.xkb_bindings = {}
 		seat.pointer_bindings = {}
-
-    end
-
-	if posix.unistd.fork() == 0 then
-		local parent_pid = posix.unistd.getppid()
-		local handle = inotify.init()
-		local _ = handle:addwatch(config_file_path, inotify.IN_MODIFY)
-		for _ in handle:events() do
-			print("config file changed, reloading")
-			-- we send a posix signal instead of just chaning stuff here because forks cant edit main flow
-			posix.signal.kill(parent_pid, signal.SIGUSR1)
-            os.exit(0)
-		end
 	end
 end)
 
