@@ -3,24 +3,22 @@ local Mods = wau.river_seat_v1.Modifiers
 local mod = Mods.MOD4
 
 function config_keybinds()
+	return {
+		keyboard_binds = {
+			{ "Return", mod, "spawn", "foot bash" },
+			{ "q", mod, "close" },
+			{ "n", mod, "focus-next" },
+			{ "Escape", mod, "exit" },
+		},
 
-    return {
-        keyboard_binds = {
-            {"Return", mod, "spawn", "foot bash"},
-            {"q", mod, "close"},
-            {"n", mod, "focus-next"},
-            {"Escape", mod, "exit"},
-        },
-
-        mouse_binds = {
-            {"left", mod, "move"},
-            {"right", mod, "resize"},
-        }
-    }
-
+		mouse_binds = {
+			{ "left", mod, "move" },
+			{ "right", mod, "resize" },
+		},
+	}
 end
 function config_autostart()
-        return {
-                "foot",
-        }
+	return {
+		"foot",
+	}
 end
