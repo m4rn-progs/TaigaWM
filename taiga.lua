@@ -19,17 +19,22 @@ local required_globals = {
 
 local Mods = wau.river_seat_v1.Modifiers
 local mod = Mods.MOD1
+no_config = false
 
+default_keybinds = {
+    {"escape", mod, "exit"},
+    {"space", mod, "spawn", "foot"},
+}
 -- config file related functions
-local function open_config()
+function open_config()
     config_file_path = get_config_file()
-
     if config_file_path == nil then
         print("Using backup local config file.")
         config_file_path = posix.getcwd() .. "/taigarc.lua"
 
         if not file_exists(config_file_path) then
-            print("WARNING! Config file doesnt exist, expect breakage.")
+            print("WARNING! No config file found.")
+            return nil
         end
     end
 
@@ -82,26 +87,41 @@ local function autostart(tbl)
 end
 -- Load the config file with abs path
 taigarc = open_config()
+if taigarc == nil then
+    no_config = true
+    config_keybinds = {}
+    config_autostart = {}
+end
+
 
 -- setup inotify to run this all the time
-if posix.unistd.fork() == 0 then
-    local parent_pid = posix.unistd.getppid()
-    local handle = inotify.init()
-    local _ = handle:addwatch(config_file_path, inotify.IN_MODIFY)
-    for _ in handle:events() do
-        print("config file changed, reloading")
-        posix.signal.kill(parent_pid, signal.SIGUSR1)
+if not no_config then
+    if posix.unistd.fork() == 0 then
+        local parent_pid = posix.unistd.getppid()
+        local handle = inotify.init()
+        local _ = handle:addwatch(config_file_path, inotify.IN_MODIFY)
+        for _ in handle:events() do
+            print("config file changed, reloading")
+            posix.signal.kill(parent_pid, signal.SIGUSR1)
+        end
     end
 end
 -- Load the config file with abs path
 
 -- get keybinds and mouse binds
-local xkb_bindings = config_keybinds(mod).keyboard_binds or {{}}
-local pointer_bindings = config_keybinds(mod).mouse_binds or {{}}
+local xkb_bindings = {{}}
+local pointer_bindings = {{}}
 
+if not no_config then
+    xkb_bindings = config_keybinds(mod).keyboard_binds
+    pointer_bindings = config_keybinds(mod).mouse_binds
+    local autostart_tbl = config_autostart() or {}
+    autostart(autostart_tbl)
+else
+    xkb_bindings = default_keybinds
+    pointer_bindings = {{}}
+end
 -- autostart
-local autostart_tbl = config_autostart() or {}
-autostart(autostart_tbl)
 
 local wm = {
     outputs = {},
