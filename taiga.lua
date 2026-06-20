@@ -11,28 +11,35 @@ local inotify = require("inotify")
 wau:require("taiga.protocol.river-window-management-v1")
 wau:require("taiga.protocol.river-xkb-bindings-v1")
 
+-- toplevel variable def
 local globals = {}
 local required_globals = {
     ["river_window_manager_v1"] = 4,
     ["river_xkb_bindings_v1"] = 1,
 }
-
 local Mods = wau.river_seat_v1.Modifiers
 local mod = Mods.MOD1
-
+no_config = false
+default_keybinds = {
+    {"escape", mod, "exit"},
+    {"space", mod, "spawn", "foot"},
+}
 -- config file related functions
-local function open_config()
+-- open the config file
+function open_config()
+    -- try to get a file, if we dont get one we fallback to cwd/taigarc.lua
     config_file_path = get_config_file()
-
     if config_file_path == nil then
         print("Using backup local config file.")
         config_file_path = posix.getcwd() .. "/taigarc.lua"
-
+        -- if we still cant find a fall back, return nil
         if not file_exists(config_file_path) then
-            print("WARNING! Config file doesnt exist, expect breakage.")
+            print("WARNING! No config file found.")
+            return nil
         end
     end
-
+    
+    -- else, we will just load it
     chunk, err = loadfile(config_file_path, "t")
     if not chunk then error("load error: "..tostring(err)) end
     taigarc = chunk()
@@ -40,12 +47,14 @@ local function open_config()
     return taigarc
 end
 
+-- just expand a tilde using gsub setting it to $HOME
 local function expand_tilde(path)
     if not path then return path end
     local home = os.getenv("HOME")
     return path:gsub("^~", home)
 end
 
+-- basic file_exists bool
 function file_exists(path)
     path = expand_tilde(path)
     local stat = posix.stat(path)
@@ -55,13 +64,14 @@ function file_exists(path)
     return false
 end
 
+-- check 3 paths for the config file, else return nil
 function get_config_file()
     local paths = {
         "~/.config/taiga/taigarc.lua",
         "~/.taigarc.lua",
         "/etc/taiga/taigarc.lua"
     }
-
+    -- just loop over the table and check if any exist, while expanding ~
     for _, p in ipairs(paths) do
         if file_exists(p) then
             print("Path: " .. p .. " exists.")
@@ -73,6 +83,7 @@ end
 -- config file related functions
 
 -- autostart related functions
+-- basically just loop through a table and exec each item in a fork
 local function autostart(tbl)
         for _, item in ipairs(tbl) do
             if posix.unistd.fork() == 0 then
@@ -80,28 +91,51 @@ local function autostart(tbl)
         end
     end
 end
+-- autostart related functions
 -- Load the config file with abs path
 taigarc = open_config()
+-- if the config file doesnt exist set the flag so we dont watch it
+if taigarc == nil then
+    no_config = true
+    -- set the functions we are using below to empty ones so we dont error
+    config_keybinds = {}
+    config_autostart = {}
+end
+
 
 -- setup inotify to run this all the time
-if posix.unistd.fork() == 0 then
-    local parent_pid = posix.unistd.getppid()
-    local handle = inotify.init()
-    local _ = handle:addwatch(config_file_path, inotify.IN_MODIFY)
-    for _ in handle:events() do
-        print("config file changed, reloading")
-        posix.signal.kill(parent_pid, signal.SIGUSR1)
+if not no_config then
+    -- basic lua inotify loop in a seperate process
+    if posix.unistd.fork() == 0 then
+        local parent_pid = posix.unistd.getppid()
+        local handle = inotify.init()
+        local _ = handle:addwatch(config_file_path, inotify.IN_MODIFY)
+        for _ in handle:events() do
+            print("config file changed, reloading")
+            -- we send a posix signal instead of just chaning stuff here because forks cant edit main flow
+            posix.signal.kill(parent_pid, signal.SIGUSR1)
+        end
     end
 end
 -- Load the config file with abs path
 
 -- get keybinds and mouse binds
-local xkb_bindings = config_keybinds(mod).keyboard_binds or {{}}
-local pointer_bindings = config_keybinds(mod).mouse_binds or {{}}
+-- first declaration
+local xkb_bindings = {{}}
+local pointer_bindings = {{}}
 
+if not no_config then
+    -- config exists just read it like normal and do stuff
+    xkb_bindings = config_keybinds(mod).keyboard_binds
+    pointer_bindings = config_keybinds(mod).mouse_binds
+    local autostart_tbl = config_autostart() or {}
+    autostart(autostart_tbl)
+else
+    -- if no config, set to defaults
+    xkb_bindings = default_keybinds
+    pointer_bindings = {{}}
+end
 -- autostart
-local autostart_tbl = config_autostart() or {}
-autostart(autostart_tbl)
 
 local wm = {
     outputs = {},
@@ -309,6 +343,7 @@ function Seat:pointer_resize(window, edges)
 end
 
 function Seat:action(action)
+    -- if the action passed == spawn then just use just fork and exec self.arg
     if action == "spawn" then
         if posix.unistd.fork() == 0 then
             if self.arg ~= nil then
@@ -360,6 +395,7 @@ function Seat:add_xkb_binding(key, mods, action, arg)
     obj:add_listener {
         ["pressed"] = function (_)
             self.pending_action = action
+            -- on add keybinding, add another value called arg to the listener
             self.arg = arg
         end,
     }
@@ -372,6 +408,8 @@ function Seat:manage()
         self.new = nil
 
         for _, tbl in ipairs(xkb_bindings) do
+            -- the table passed contains arg and action
+            -- since we pass a table, as many values as the table has can be acpeted in the keybind section
             self:add_xkb_binding(table.unpack(tbl))
         end
 
@@ -571,19 +609,25 @@ end
 globals["river_window_manager_v1"]:add_listener(wm_handlers)
 
 
+-- this is where stuff gets tricky
+-- watch for sigusr1 (the config file being changed sent from forked pid)
 signal.signal(signal.SIGUSR1, function()
+    -- here, we dont worry if config exists or not because this will never be called anyways
     taigarc = open_config()
     xkb_bindings = get_keybinds(mod).keyboard_binds or {{}}
     pointer_bindings = get_keybinds(mod).mouse_binds or {{}}
-
+    -- reset everything
     for _, seat in ipairs(wm.seats) do
+        -- next time seat:manage is called, with seat.new = true it will re-set it up
         seat.new = true
+        -- reset bindings in each seat aswell
         for _, binding in ipairs(seat.xkb_bindings) do
             binding.obj:destroy()
         end
         for _, binding in ipairs(seat.pointer_bindings) do
             binding.obj:destroy()
         end
+        -- after destroying the objs, reset them to an empty table
         seat.xkb_bindings = {}
         seat.pointer_bindings = {}
 
