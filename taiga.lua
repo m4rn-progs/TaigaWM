@@ -1,4 +1,4 @@
-#! /usr/bin/env lua5.4
+#! /usr/bin/env lua
 -- SPDX-FileCopyrightText: © 2026 FireFly
 -- SPDX-License-Identifier: 0BSD
 
@@ -266,6 +266,7 @@ function Window:manage()
 		self.new = nil
 		self:set_position(0, 0)
 		self.obj:propose_dimensions(0, 0)
+        self.obj:set_capabilities(14)
 	end
 
 	local move = self.pointer_move_requested
@@ -278,7 +279,7 @@ function Window:manage()
 	if resize ~= nil then
 		self.pointer_resize_requested = nil
 		resize.seat:pointer_resize(self, resize.edges)
-	end
+    end
 end
 
 function Window:set_position(x, y)
@@ -290,6 +291,13 @@ end
 function Window.listener:closed()
 	self:get_user_data().closed = true
 end
+
+
+function Window.listener:maximize_requested()
+    local window = self:get_user_data()
+    window.obj:inform_maximized()
+end
+
 function Window.listener:dimensions(width, height)
 	local window = self:get_user_data()
 	window.width = width
