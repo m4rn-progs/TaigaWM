@@ -5,6 +5,8 @@
 local wau = require("wau")
 local xkbcommon = require("taiga.xkbcommon")
 local posix = require("posix")
+local signal = require("posix.signal")
+local inotify = require("inotify")
 
 wau:require("taiga.protocol.river-window-management-v1")
 wau:require("taiga.protocol.river-xkb-bindings-v1")
@@ -19,16 +21,29 @@ local Mods = wau.river_seat_v1.Modifiers
 local mod = Mods.MOD1
 
 -- config file related functions
-local function expand_tilde(path)
-  if not path then return path end
-  local home = os.getenv("HOME")
-  return path:gsub("^~", home)
+local function open_config()
+    config_file_path = get_config_file()
+
+    if config_file_path == nil then
+        print("Using backup local config file.")
+        config_file_path = posix.getcwd() .. "/taigarc.lua"
+
+        if not file_exists(config_file_path) then
+            print("WARNING! Config file doesnt exist, expect breakage.")
+        end
+    end
+
+    chunk, err = loadfile(config_file_path, "t")
+    if not chunk then error("load error: "..tostring(err)) end
+    taigarc = chunk()
+    print("Successfully loaded config file.")
+    return taigarc
 end
 
-local function dirname(path)
-  path = path:gsub("/+$", "")
-  local dir = path:match("^(.*)/[^/]*$")
-  return dir
+local function expand_tilde(path)
+    if not path then return path end
+    local home = os.getenv("HOME")
+    return path:gsub("^~", home)
 end
 
 function file_exists(path)
@@ -57,25 +72,36 @@ function get_config_file()
 end
 -- config file related functions
 
--- Load the config file with abs path
-config_file_path = get_config_file()
-
-if config_file_path == nil then
-    print("Using backup local config file.")
-    config_file_path = posix.getcwd() .. "/taigarc.lua"
-
-    if not file_exists(config_file_path) then
-        print("WARNING! Config file doesnt exist, expect breakage.")
+-- autostart related functions
+local function autostart(tbl)
+        for _, item in ipairs(tbl) do
+            if posix.unistd.fork() == 0 then
+                posix.unistd.execp("/bin/sh", {"-c", item})
+        end
     end
 end
+-- Load the config file with abs path
+taigarc = open_config()
 
-local chunk, err = loadfile(config_file_path, "t")
-if not chunk then error("load error: "..tostring(err)) end
-local taigarc = chunk()
+-- setup inotify to run this all the time
+if posix.unistd.fork() == 0 then
+    local parent_pid = posix.unistd.getppid()
+    local handle = inotify.init()
+    local _ = handle:addwatch(config_file_path, inotify.IN_MODIFY)
+    for _ in handle:events() do
+        print("config file changed, reloading")
+        posix.signal.kill(parent_pid, signal.SIGUSR1)
+    end
+end
 -- Load the config file with abs path
 
-local xkb_bindings = get_keybinds(mod).keyboard_binds or {{}}
-local pointer_bindings = get_keybinds(mod).mouse_binds or {{}}
+-- get keybinds and mouse binds
+local xkb_bindings = config_keybinds(mod).keyboard_binds or {{}}
+local pointer_bindings = config_keybinds(mod).mouse_binds or {{}}
+
+-- autostart
+local autostart_tbl = config_autostart() or {}
+autostart(autostart_tbl)
 
 local wm = {
     outputs = {},
@@ -330,6 +356,7 @@ function Seat:add_xkb_binding(key, mods, action, arg)
     local obj = globals["river_xkb_bindings_v1"]:get_xkb_binding(
                     self.obj, keysym, mods)
     local binding = { obj = obj }
+
     obj:add_listener {
         ["pressed"] = function (_)
             self.pending_action = action
@@ -345,7 +372,6 @@ function Seat:manage()
         self.new = nil
 
         for _, tbl in ipairs(xkb_bindings) do
-            print(table.unpack(tbl))
             self:add_xkb_binding(table.unpack(tbl))
         end
 
@@ -543,5 +569,25 @@ for k in pairs(required_globals) do
 end
 
 globals["river_window_manager_v1"]:add_listener(wm_handlers)
+
+
+signal.signal(signal.SIGUSR1, function()
+    taigarc = open_config()
+    xkb_bindings = get_keybinds(mod).keyboard_binds or {{}}
+    pointer_bindings = get_keybinds(mod).mouse_binds or {{}}
+
+    for _, seat in ipairs(wm.seats) do
+        seat.new = true
+        for _, binding in ipairs(seat.xkb_bindings) do
+            binding.obj:destroy()
+        end
+        for _, binding in ipairs(seat.pointer_bindings) do
+            binding.obj:destroy()
+        end
+        seat.xkb_bindings = {}
+        seat.pointer_bindings = {}
+
+    end
+end)
 
 while display:dispatch() do end

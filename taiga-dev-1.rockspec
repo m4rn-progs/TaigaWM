@@ -21,6 +21,7 @@ dependencies = {
     "xml2lua",  
     "firefly/wau",
     "luaposix",
+    "inotify"
 }
 
 external_dependencies = {

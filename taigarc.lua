@@ -1,8 +1,8 @@
-function get_keybinds(mod)
+function config_keybinds(mod)
 
     return {
         keyboard_binds = {
-            {"space", mod, "spawn", "kitty /usr/bin/bash"},
+            {"space", mod, "spawn", "foot bash"},
             {"q", mod, "close"},
             {"n", mod, "focus-next"},
             {"Escape", mod, "exit"},
@@ -14,4 +14,9 @@ function get_keybinds(mod)
         }
     }
 
+end
+function config_autostart()
+        return {
+                "foot",
+        }
 end
