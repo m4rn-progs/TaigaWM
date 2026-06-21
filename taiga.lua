@@ -217,7 +217,7 @@ local Output = { mt = {}, listener = {} }
 Output.mt.__index = Output
 
 function Output.create(obj)
-	local output = { obj = obj }
+	output = { obj = obj }
 	setmetatable(output, Output.mt)
 	obj:set_user_data(output)
 	obj:add_listener(Output.listener)
@@ -238,7 +238,7 @@ end
 
 -- get output height and stuff
 function Output.listener:dimensions(width, height)
-    local output = self:get_user_data()
+    output = self:get_user_data()
     output.width = width
     output.height = height
 end
@@ -277,6 +277,11 @@ function Window:manage()
 
 	local move = self.pointer_move_requested
 	if move ~= nil then
+        if is_maximized then
+            is_maximized = false
+            self.obj:inform_unmaximized()
+            self.obj:propose_dimensions(0, 0)
+        end
 		self.pointer_move_requested = nil
 		move.seat:pointer_move(self)
 	end
@@ -308,11 +313,14 @@ end
 -- Maximize request handling
 function Window.listener:maximize_requested()
     local window = self:get_user_data()
+    is_maximized = true
     window.obj:inform_maximized()
     window.obj:propose_dimensions(wm.outputs[1].width, wm.outputs[1].height)
+    window:set_position(0,0)
 end
 function Window.listener:unmaximize_requested()
     local window = self:get_user_data()
+    is_maximized = false
     window.obj:inform_unmaximized()
     window.obj:propose_dimensions(0, 0)
 end
