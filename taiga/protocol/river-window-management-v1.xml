@@ -925,7 +925,7 @@
     <request name="fullscreen">
       <description summary="make the window fullscreen">
         Make the window fullscreen on the given output. If multiple windows are
-        fullscreen on the same output at the same time only the "top" window in
+                fullscreen on the same output at the same time only the "top" window in
         rendering order shall be displayed.
 
         All river_shell_surface_v1 objects above the top fullscreen window in
@@ -933,7 +933,7 @@
 
         The compositor will handle the position and dimensions of the window
         while it is fullscreen. The set_position and propose_dimensions requests
-        shall not affect the current position and dimensions of a fullscreen
+
         window.
 
         When a fullscreen request is made, the server must send a dimensions

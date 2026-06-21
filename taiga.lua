@@ -242,7 +242,8 @@ function Output.listener:dimensions(width, height)
 	output.width = width
 	output.height = height
 end
----- Window ---------------------------
+
+-- WINDOW SECTION
 local Window = { mt = {}, listener = {} }
 Window.mt.__index = Window
 
@@ -290,7 +291,7 @@ function Window:manage()
 	if resize ~= nil then
 		self.pointer_resize_requested = nil
 		resize.seat:pointer_resize(self, resize.edges)
-	end
+    end
 end
 
 function Window:set_position(x, y)

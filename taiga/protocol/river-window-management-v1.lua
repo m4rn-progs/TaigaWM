@@ -711,7 +711,6 @@ wau.river_window_v1:init {
         -- the rendering order will continue to be rendered.
         -- The compositor will handle the position and dimensions of the window
         -- while it is fullscreen. The set_position and propose_dimensions requests
-        -- shall not affect the current position and dimensions of a fullscreen
         -- window.
         -- When a fullscreen request is made, the server must send a dimensions
         -- event in response as soon as possible. It may not be possible to send a
