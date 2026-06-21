@@ -236,6 +236,12 @@ function Output.listener:removed()
 	self:get_user_data().removed = true
 end
 
+-- get output height and stuff
+function Output.listener:dimensions(width, height)
+    local output = self:get_user_data()
+    output.width = width
+    output.height = height
+end
 ---- Window ---------------------------
 local Window = { mt = {}, listener = {} }
 Window.mt.__index = Window
@@ -292,10 +298,23 @@ function Window.listener:closed()
 	self:get_user_data().closed = true
 end
 
+-- dimensions_hint handling
+function Window.listener:dimensions_hint(width, height)
+    local window = self:get_user_data()
+    window.width = width
+    window.height = height
+end
 
+-- Maximize request handling
 function Window.listener:maximize_requested()
     local window = self:get_user_data()
     window.obj:inform_maximized()
+    window.obj:propose_dimensions(wm.outputs[1].width, wm.outputs[1].height)
+end
+function Window.listener:unmaximize_requested()
+    local window = self:get_user_data()
+    window.obj:inform_unmaximized()
+    window.obj:propose_dimensions(0, 0)
 end
 
 function Window.listener:dimensions(width, height)
