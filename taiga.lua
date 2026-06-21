@@ -2,18 +2,20 @@
 -- SPDX-FileCopyrightText: © 2026 FireFly
 -- SPDX-License-Identifier: 0BSD
 
+-- imports
 local wau = require("wau")
 local xkbcommon = require("taiga.xkbcommon")
 local posix = require("posix")
 local signal = require("posix.signal")
 local inotify = require("inotify")
 
+-- required protocols
 wau:require("taiga.protocol.river-window-management-v1")
 wau:require("taiga.protocol.river-xkb-bindings-v1")
 wau:require("taiga.protocol.river-layer-shell-v1")
 wau:require("taiga.protocol.river-libinput-config-v1")
 
--- toplevel variable def
+-- TOPLEVEL VARIABLE DEF
 local globals = {}
 local required_globals = {
 	["river_window_manager_v1"] = 4,
@@ -25,8 +27,8 @@ local Mods = wau.river_seat_v1.Modifiers
 local default_mod = Mods.MOD1
 local libinput = wau.river_libinput_device_v1
 
-no_config = false
-default_keybinds = {
+NO_CONFIG = false
+DEFAULT_KEYBINDS = {
 	{ "Escape", default_mod, "exit" },
 	{ "space", default_mod, "spawn", "foot" },
 }
@@ -45,31 +47,25 @@ local default_input_config = {
 	natural_scroll = libinput.NaturalScrollState.DISABLED,
 	left_handed = libinput.LeftHandedState.DISABLED,
 }
--- config file related functions
--- open the config file
-function open_config()
-	-- try to get a file, if we dont get one we fallback to cwd/taigarc.lua
-	config_file_path = get_config_file()
-	if config_file_path == nil then
-		print("Using backup local config file.")
-		config_file_path = posix.getcwd() .. "/taigarc.lua"
-		-- if we still cant find a fall back, return nil
-		if not file_exists(config_file_path) then
-			print("WARNING! No config file found.")
-			return nil
+
+CONFIG_KEYBINDS = {}
+CONFIG_AUTOSTART = {}
+local xkb_bindings = {}
+local pointer_bindings = {}
+local user_inputs = {}
+
+-- autostart related functions
+-- basically just loop through a table and exec each item in a fork
+local function autostart(tbl)
+	for _, item in ipairs(tbl) do
+		if posix.unistd.fork() == 0 then
+			posix.unistd.execp("/bin/sh", { "-c", item })
+			os.exit(0)
 		end
 	end
-
-	-- else, we will just load it
-	chunk, err = loadfile(config_file_path, "t")
-	if not chunk then
-		error("load error: " .. tostring(err))
-	end
-	chunk()
-	print("Successfully loaded config file.")
-	return true
 end
 
+-- config file related functions
 -- just expand a tilde using gsub setting it to $HOME
 local function expand_tilde(path)
 	if not path then
@@ -79,8 +75,8 @@ local function expand_tilde(path)
 	return path:gsub("^~", home)
 end
 
--- basic file_exists bool
-function file_exists(path)
+-- check if a file exists
+local function file_exists(path)
 	path = expand_tilde(path)
 	local stat = posix.stat(path)
 	if stat then
@@ -90,7 +86,7 @@ function file_exists(path)
 end
 
 -- check 3 paths for the config file, else return nil
-function get_config_file()
+local function get_config_file()
 	local paths = {
 		"~/.config/taiga/taigarc.lua",
 		"~/.taigarc.lua",
@@ -105,40 +101,39 @@ function get_config_file()
 	end
 	return nil
 end
--- config file related functions
 
--- autostart related functions
--- basically just loop through a table and exec each item in a fork
-local function autostart(tbl)
-	for _, item in ipairs(tbl) do
-		if posix.unistd.fork() == 0 then
-			posix.unistd.execp("/bin/sh", { "-c", item })
-			os.exit(0)
+-- open the config file
+local function open_config()
+	-- try to get a file, if we dont get one we fallback to cwd/taigarc.lua
+	CONFIG_FILE_PATH = get_config_file()
+	if CONFIG_FILE_PATH == nil then
+		print("Using backup local config file.")
+		CONFIG_FILE_PATH = posix.getcwd() .. "/taigarc.lua"
+		-- if we still cant find a fall back, return nil
+		if not file_exists(CONFIG_FILE_PATH) then
+			print("WARNING! No config file found.")
+			return nil
 		end
 	end
-end
--- autostart related functions
--- Load the config file with abs path
-taigarc = open_config()
--- if the config file doesnt exist set the flag so we dont watch it
-if taigarc == nil then
-	no_config = true
-	-- set the functions we are using below to empty ones so we dont error
-	config_keybinds = {}
-	config_autostart = {}
+
+	-- else, we will just load it
+	local chunk, err = loadfile(CONFIG_FILE_PATH, "t")
+	if not chunk then
+		error("load error: " .. tostring(err))
+	end
+	chunk()
+	print("Successfully loaded config file.")
+	return true
 end
 
--- setup inotify to run this all the time
-if not no_config then
+-- setup lua inofity to watch for a file change
+local function watch_config_changes()
 	if posix.unistd.fork() == 0 then
 		local parent_pid = posix.unistd.getppid()
 		local handle = inotify.init()
-		
-		local config_dir = config_file_path:match("(.*)/")
-		local config_name = config_file_path:match(".*/(.*)")
-		
+		local config_dir = CONFIG_FILE_PATH:match("(.*)/")
+		local config_name = CONFIG_FILE_PATH:match(".*/(.*)")
 		local _ = handle:addwatch(config_dir, inotify.IN_CLOSE_WRITE | inotify.IN_MOVED_TO)
-		
 		for ev in handle:events() do
 			if ev.name == config_name then
 				print("config file changed, reloading")
@@ -148,21 +143,25 @@ if not no_config then
 		os.exit(0)
 	end
 end
--- Load the config file with abs path
 
--- get the stuff from the config
--- first declaration
-local xkb_bindings = {}
-local pointer_bindings = {}
-local user_inputs = {}
+-- ENTRY POINT 2.0
+TAIGARC = open_config()
 
-if not no_config then
+-- if the config file doesnt exist set the flag so we dont watch it
+if TAIGARC == nil then
+	NO_CONFIG = true
+end
+
+-- setup inotify to run this all the time
+
+if not NO_CONFIG then
+	watch_config_changes()
 	-- config exists just read it like normal and do stuff
-	xkb_bindings = config_keybinds().keyboard_binds or default_keybinds
-	pointer_bindings = config_keybinds().mouse_binds or {}
+	xkb_bindings = CONFIG_KEYBINDS().keyboard_binds or DEFAULT_KEYBINDS
+	pointer_bindings = CONFIG_KEYBINDS().mouse_binds or {}
 	local custom_inputs = {}
-	if type(config_user_inputs) == "function" then
-		custom_inputs = config_user_inputs(libinput) or {}
+	if type(CONFIG_LIBINPUT) == "function" then
+		custom_inputs = CONFIG_LIBINPUT(libinput) or {}
 	end
 	user_inputs = {
 		accel_profile = custom_inputs.accel_profile or default_input_config.accel_profile,
@@ -170,11 +169,12 @@ if not no_config then
 		natural_scroll = custom_inputs.natural_scroll or default_input_config.natural_scroll,
 		left_handed = custom_inputs.left_handed or default_input_config.left_handed,
 	}
-	local autostart_tbl = config_autostart() or {}
+
+	local autostart_tbl = CONFIG_AUTOSTART()
 	autostart(autostart_tbl)
 else
 	-- if no config, set to defaults
-	xkb_bindings = default_keybinds
+	xkb_bindings = DEFAULT_KEYBINDS
 	pointer_bindings = { {} }
 	user_inputs = default_input_config
 end
@@ -217,7 +217,7 @@ local Output = { mt = {}, listener = {} }
 Output.mt.__index = Output
 
 function Output.create(obj)
-	output = { obj = obj }
+	local output = { obj = obj }
 	setmetatable(output, Output.mt)
 	obj:set_user_data(output)
 	obj:add_listener(Output.listener)
@@ -238,9 +238,9 @@ end
 
 -- get output height and stuff
 function Output.listener:dimensions(width, height)
-    output = self:get_user_data()
-    output.width = width
-    output.height = height
+	local output = self:get_user_data()
+	output.width = width
+	output.height = height
 end
 ---- Window ---------------------------
 local Window = { mt = {}, listener = {} }
@@ -272,16 +272,16 @@ function Window:manage()
 		self.new = nil
 		self:set_position(0, 0)
 		self.obj:propose_dimensions(0, 0)
-        self.obj:set_capabilities(14)
+		self.obj:set_capabilities(14)
 	end
 
 	local move = self.pointer_move_requested
 	if move ~= nil then
-        if is_maximized then
-            is_maximized = false
-            self.obj:inform_unmaximized()
-            self.obj:propose_dimensions(0, 0)
-        end
+		if IS_MAXIMIZED then
+			IS_MAXIMIZED = false
+			self.obj:inform_unmaximized()
+			self.obj:propose_dimensions(0, 0)
+		end
 		self.pointer_move_requested = nil
 		move.seat:pointer_move(self)
 	end
@@ -290,7 +290,7 @@ function Window:manage()
 	if resize ~= nil then
 		self.pointer_resize_requested = nil
 		resize.seat:pointer_resize(self, resize.edges)
-    end
+	end
 end
 
 function Window:set_position(x, y)
@@ -305,36 +305,43 @@ end
 
 -- dimensions_hint handling
 function Window.listener:dimensions_hint(width, height)
-    local window = self:get_user_data()
-    window.width = width
-    window.height = height
+	local window = self:get_user_data()
+	window.width = width
+	window.height = height
 end
 
 -- Maximize request handling
 function Window.listener:maximize_requested()
-    local window = self:get_user_data()
-    is_maximized = true
-    window.obj:inform_maximized()
-    window.obj:propose_dimensions(wm.outputs[1].width, wm.outputs[1].height)
-    window:set_position(0,0)
-end
-function Window.listener:unmaximize_requested()
-    local window = self:get_user_data()
-    is_maximized = false
-    window.obj:inform_unmaximized()
-    window.obj:propose_dimensions(0, 0)
+	local window = self:get_user_data()
+	IS_MAXIMIZED = true
+	window.obj:inform_maximized()
+	window.obj:propose_dimensions(wm.outputs[1].width, wm.outputs[1].height)
+	window:set_position(0, 0)
 end
 
+-- unmaximize request
+function Window.listener:unmaximize_requested()
+	local window = self:get_user_data()
+	IS_MAXIMIZED = false
+	window.obj:inform_unmaximized()
+	window.obj:propose_dimensions(0, 0)
+end
+
+-- window dimensions request
 function Window.listener:dimensions(width, height)
 	local window = self:get_user_data()
 	window.width = width
 	window.height = height
 end
+
+-- pointer move requiest
 function Window.listener:pointer_move_requested(seat)
 	self:get_user_data().pointer_move_requested = {
 		seat = seat:get_user_data(),
 	}
 end
+
+-- pointer resize request
 function Window.listener:pointer_resize_requested(seat, edges)
 	local Edges = wau.river_window_v1.Edges
 	self:get_user_data().pointer_resize_requested = {
@@ -348,10 +355,12 @@ function Window.listener:pointer_resize_requested(seat, edges)
 	}
 end
 
----- Seat -----------------------------
+-- SEAT SECTION --
+-- define the seat
 local Seat = { mt = {}, listener = {} }
 Seat.mt.__index = Seat
 
+-- create the seat
 function Seat.create(obj)
 	local seat = {
 		obj = obj,
@@ -365,6 +374,7 @@ function Seat.create(obj)
 	return seat
 end
 
+-- seat focus request
 function Seat:focus(window)
 	if window == nil and #wm.windows > 0 then
 		-- Fall back to topmost window
@@ -387,6 +397,7 @@ function Seat:focus(window)
 	end
 end
 
+-- seat pointer move request
 function Seat:pointer_move(window)
 	if self.op == nil then
 		self:focus(window)
@@ -401,6 +412,7 @@ function Seat:pointer_move(window)
 	end
 end
 
+-- seat pointer resize request
 function Seat:pointer_resize(window, edges)
 	if self.op == nil then
 		self:focus(window)
@@ -422,6 +434,7 @@ function Seat:pointer_resize(window, edges)
 	end
 end
 
+-- seat action
 function Seat:action(action)
 	-- if the action passed == spawn then just use just fork and exec self.arg
 	if action == "spawn" then
@@ -452,6 +465,7 @@ function Seat:action(action)
 	end
 end
 
+-- seat add pointer binding
 function Seat:add_pointer_binding(button, mods, action)
 	-- From /usr/include/linux/input-event-codes.h
 	local button_code = ({ left = 0x110, right = 0x111 })[button]
@@ -467,6 +481,7 @@ function Seat:add_pointer_binding(button, mods, action)
 	table.insert(self.pointer_bindings, binding)
 end
 
+-- seat add xkb_binding
 function Seat:add_xkb_binding(key, mods, action, arg)
 	local keysym = xkbcommon.keysym(key)
 	local obj = globals["river_xkb_bindings_v1"]:get_xkb_binding(self.obj, keysym, mods)
@@ -483,56 +498,7 @@ function Seat:add_xkb_binding(key, mods, action, arg)
 	table.insert(self.xkb_bindings, binding)
 end
 
--- the entire thing that happened inside this local device_handler block was
--- that I was trying to play a guessing game of "keyboard, trackpad or mouse".
---
--- the idea was that I'll first check for accel profiles.
--- if that exists, it is either a mouse or a trackpad.
--- if it returns tap support, its a trackpad since there is no physical way that a mouse can have tap support.
--- a keyboard would have failed both checks since accel profiles and tap support aren't a thing on keyboards,
--- so it doesn't recieve a bunch of signals that would have failed and caused the wayland display to seize up
-local device_handlers = {
-	["accel_profiles_support"] = function(self, profiles)
-		if profiles > 0 then
-			print("[Libinput] Pointer device detected.")
-
-			local res = self:set_accel_profile(user_inputs.accel_profile)
-
-			res:add_listener({
-				["success"] = function() end,
-				["unsupported"] = function() end,
-				["invalid"] = function() end,
-			})
-		end
-	end,
-
-	["tap_support"] = function(self, finger_count)
-		if finger_count > 0 then
-			print("[Libinput] Trackpad detected. Overriding pointer config.")
-
-			local res_accel = self:set_accel_profile(user_inputs.accel_profile)
-			res_accel:add_listener({
-				["success"] = function() end,
-				["unsupported"] = function() end,
-				["invalid"] = function() end,
-			})
-
-			local res_tap = self:set_tap(libinput.TapState.ENABLED)
-			res_tap:add_listener({
-				["success"] = function() end,
-				["unsupported"] = function() end,
-				["invalid"] = function() end,
-			})
-		end
-	end,
-}
-local libinput_handlers = {
-	["libinput_device"] = function(self, device)
-		print("A new input device was detected!")
-		device:add_listener(device_handlers)
-	end,
-}
-
+-- seat manage
 function Seat:manage()
 	if self.new then
 		self.new = nil
@@ -562,7 +528,6 @@ function Seat:manage()
 
 	if self.op and self.op.window then
 		local op, window = self.op, self.op.window
-		local window = self.op.window
 
 		if window.closed then
 			self.obj:op_end()
@@ -641,7 +606,60 @@ function Seat.listener.op_release(self)
 	self:get_user_data().op_release = true
 end
 
----- wm -------------------------------
+-- LIBINPUT SECTION --
+-- the entire thing that happened inside this local device_handler block was
+-- that I was trying to play a guessing game of "keyboard, trackpad or mouse".
+--
+-- the idea was that I'll first check for accel profiles.
+-- if that exists, it is either a mouse or a trackpad.
+-- if it returns tap support, its a trackpad since there is no physical way that a mouse can have tap support.
+-- a keyboard would have failed both checks since accel profiles and tap support aren't a thing on keyboards,
+-- so it doesn't recieve a bunch of signals that would have failed and caused the wayland display to seize up
+local device_handlers = {
+	["accel_profiles_support"] = function(self, profiles)
+		if profiles > 0 then
+			print("[Libinput] Pointer device detected.")
+
+			local res = self:set_accel_profile(user_inputs.accel_profile)
+
+			res:add_listener({
+				["success"] = function() end,
+				["unsupported"] = function() end,
+				["invalid"] = function() end,
+			})
+		end
+	end,
+
+	["tap_support"] = function(self, finger_count)
+		if finger_count > 0 then
+			print("[Libinput] Trackpad detected. Overriding pointer config.")
+
+			local res_accel = self:set_accel_profile(user_inputs.accel_profile)
+			res_accel:add_listener({
+				["success"] = function() end,
+				["unsupported"] = function() end,
+				["invalid"] = function() end,
+			})
+
+			local res_tap = self:set_tap(libinput.TapState.ENABLED)
+			res_tap:add_listener({
+				["success"] = function() end,
+				["unsupported"] = function() end,
+				["invalid"] = function() end,
+			})
+		end
+	end,
+}
+
+local libinput_handlers = {
+	["libinput_device"] = function(self, device)
+		print("A new input device was detected!")
+		device:add_listener(device_handlers)
+	end,
+}
+
+-- WM SECTION --
+-- wm manage
 local function wm_manage()
 	table_filter_inplace(wm.outputs, Output.maybe_destroy)
 	table_filter_inplace(wm.windows, Window.maybe_destroy)
@@ -658,6 +676,7 @@ local function wm_manage()
 	globals["river_window_manager_v1"]:manage_finish()
 end
 
+-- wm render
 local function wm_render()
 	for _, seat in ipairs(wm.seats) do
 		seat:render()
@@ -666,6 +685,7 @@ local function wm_render()
 	globals["river_window_manager_v1"]:render_finish()
 end
 
+-- wm handlers
 local wm_handlers = {
 	["unavailable"] = function(self)
 		io.stderr:write("another window manager is already running\n")
@@ -687,9 +707,9 @@ local wm_handlers = {
 	end,
 }
 
----- Entry point ----------------------
-display = wau.wl_display.connect()
-assert(display, "Failed to connect to wayland compositor")
+-- ENTRY POINT --
+DISPLAY = wau.wl_display.connect()
+assert(DISPLAY, "Failed to connect to wayland compositor")
 
 -- Ensure we exit nonzero if an event handler errors
 local function handle_callback_error(proxy, name, func, err)
@@ -705,7 +725,8 @@ posix.stdlib.setenv("WAYLAND_DEBUG", nil)
 -- Ensure children are automatically reaped
 posix.signal.signal(posix.signal.SIGCHLD, posix.signal.SIG_IGN)
 
-local registry = display:get_registry()
+-- Registry
+local registry = DISPLAY:get_registry()
 registry:add_listener({
 	["global"] = function(self, name, iface, version)
 		local required_version = required_globals[iface]
@@ -723,24 +744,24 @@ registry:add_listener({
 	end,
 })
 
-display:roundtrip()
+DISPLAY:roundtrip()
 
+-- assert that globals exist
 for k in pairs(required_globals) do
 	assert(globals[k] ~= nil, ("wayland compositor does not support %s"):format(k))
 end
 
+-- add listeners
 globals["river_window_manager_v1"]:add_listener(wm_handlers)
 -- had to add the if statement because if libinput fails (no mouse or smth) or the mouse thingy fails we can still boot the wm
 if globals["river_libinput_config_v1"] then
 	globals["river_libinput_config_v1"]:add_listener(libinput_handlers)
 end
--- this is where stuff gets tricky
--- watch for sigusr1 (the config file being changed sent from forked pid)
+
 signal.signal(signal.SIGUSR1, function()
-	-- here, we dont worry if config exists or not because this will never be called anyways
-	taigarc = open_config()
-	xkb_bindings = config_keybinds().keyboard_binds or {}
-	pointer_bindings = config_keybinds().mouse_binds or {}
+	TAIGARC = open_config()
+	xkb_bindings = CONFIG_KEYBINDS().keyboard_binds or {}
+	pointer_bindings = CONFIG_KEYBINDS().mouse_binds or {}
 	-- reset everything
 	for _, seat in ipairs(wm.seats) do
 		-- next time seat:manage is called, with seat.new = true it will re-set it up
@@ -756,7 +777,10 @@ signal.signal(signal.SIGUSR1, function()
 		seat.xkb_bindings = {}
 		seat.pointer_bindings = {}
 	end
+
+	-- start watching for changes again
+	watch_config_changes()
 end)
 
-while display:dispatch() do
+while DISPLAY:dispatch() do
 end

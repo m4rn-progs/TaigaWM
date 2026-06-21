@@ -2,7 +2,7 @@ local wau = require("wau")
 local Mods = wau.river_seat_v1.Modifiers
 local mod = Mods.MOD1
 
-function config_keybinds()
+function CONFIG_KEYBINDS()
 	return {
 		keyboard_binds = {
 			{ "Return", mod, "spawn", "foot" },
@@ -17,7 +17,8 @@ function config_keybinds()
 		},
 	}
 end
-function config_user_inputs(libinput) 
+
+function CONFIG_LIBINPUT(libinput)
     return {
         accel_profile = libinput.AccelProfile.FLAT,
         --accel_speed = {0.0}, 
@@ -25,7 +26,8 @@ function config_user_inputs(libinput)
         --left_handed = libinput.left_handed_state.DISABLED
     }
 end
-function config_autostart()
+
+function CONFIG_AUTOSTART()
 	return {
         "foot",
 	}
