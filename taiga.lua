@@ -28,6 +28,7 @@ local default_mod = Mods.MOD1
 local libinput = wau.river_libinput_device_v1
 
 NO_CONFIG = false
+CONFIG_FILE_RELOAD = false
 DEFAULT_KEYBINDS = {
 	{ "Escape", default_mod, "exit" },
 	{ "space", default_mod, "spawn", "foot" },
@@ -222,7 +223,8 @@ function Output:manage()
 		self.layer_shell_obj = globals["river_layer_shell_v1"]:get_output(self.obj)
 		if self == wm.outputs[1] then
 			self.layer_shell_obj:set_default()
-		end
+        end
+        self.obj:set_presentation_mode(1)
 	end
 end
 function Output.create(obj)
@@ -517,13 +519,6 @@ end
 function Seat:manage()
 	if self.new then
 		self.new = nil
-		self.layer_shell_seat = globals["river_layer_shell_v1"]:get_seat(self.obj)
-		self.layer_shell_seat:add_listener({
-			["focus_none"] = function(_)
-				--rofi closed and dropped "focus-none", so we need to catch it and take away focus from it
-				self.focused = nil
-			end,
-		})
 
 		for _, tbl in ipairs(xkb_bindings) do
 			-- the table passed contains arg and action
@@ -534,7 +529,19 @@ function Seat:manage()
 		for _, tbl in ipairs(pointer_bindings) do
 			self:add_pointer_binding(table.unpack(tbl))
 		end
-	end
+    end
+    -- we do this because when config file is reloaded it tries to call this code again but it cant because
+    -- a seat already exists so we check that we arent reloading first
+    if not CONFIG_FILE_RELOAD and self.new then
+        self.new = nil
+		self.layer_shell_seat = globals["river_layer_shell_v1"]:get_seat(self.obj)
+		self.layer_shell_seat:add_listener({
+			["focus_none"] = function(_)
+				--rofi closed and dropped "focus-none", so we need to catch it and take away focus from it
+				self.focused = nil
+			end,
+		})
+    end
 
 	if self.focused and self.focused.closed then
 		self.focused = nil
@@ -798,9 +805,11 @@ signal.signal(signal.SIGUSR1, function()
 	TAIGARC = open_config()
 	xkb_bindings = CONFIG_KEYBINDS().keyboard_binds or {}
 	pointer_bindings = CONFIG_KEYBINDS().mouse_binds or {}
+
 	-- reset everything
 	for _, seat in ipairs(wm.seats) do
 		-- next time seat:manage is called, with seat.new = true it will re-set it up
+        CONFIG_FILE_RELOAD = true
 		seat.new = true
 		-- reset bindings in each seat aswell
 		for _, binding in ipairs(seat.xkb_bindings) do
