@@ -30,10 +30,10 @@ end
 
 -- seat focus request
 function m.Seat:focus(window_local)
-    local wm = require("wm")
+	local wm = require("wm")
 	if window_local == nil and #wm.wm.windows > 0 then
 		-- Fall back to topmost window
-	    window_local = wm.wm.windows[#wm.wm.windows]
+		window_local = wm.wm.windows[#wm.wm.windows]
 	end
 
 	if window_local then
@@ -91,7 +91,7 @@ end
 
 -- seat action
 function m.Seat:action(action)
-    local wm = require("wm")
+	local wm = require("wm")
 	-- if the action passed == spawn then just use just fork and exec self.arg
 	if action == "spawn" then
 		if posix.unistd.fork() == 0 then
@@ -113,7 +113,7 @@ function m.Seat:action(action)
 	elseif action == "resize" then
 		if self.hovered ~= nil then
 			self:pointer_resize(self.hovered, { bottom = true, right = true })
-        end
+		end
 	elseif action == "exit" then
 		globals.globals["river_window_manager_v1"]:exit_session()
 	else
@@ -156,7 +156,7 @@ end
 
 -- seat manage
 function m.Seat:manage()
-    local wm = require("wm")
+	local wm = require("wm")
 	if self.new then
 		self.new = nil
 		for _, tbl in ipairs(config.xkb_bindings) do
@@ -165,20 +165,20 @@ function m.Seat:manage()
 
 		for _, tbl in ipairs(config.pointer_bindings) do
 			self:add_pointer_binding(table.unpack(tbl))
-        end
+		end
 
-        if not config.config_reload then
-            self.layer_shell_seat = globals.globals["river_layer_shell_v1"]:get_seat(self.obj)
-            self.layer_shell_seat:add_listener({
-                ["focus_none"] = function(_)
-                    --rofi closed and dropped "focus-none", so we need to catch it and take away focus from it
-                    self.focused = nil
-                end,
-            })
-        end
-    end
-    -- we do this because when config file is reloaded it tries to call this code again but it cant because
-    -- a seat already exists so we check that we arent reloading first
+		if not config.config_reload then
+			self.layer_shell_seat = globals.globals["river_layer_shell_v1"]:get_seat(self.obj)
+			self.layer_shell_seat:add_listener({
+				["focus_none"] = function(_)
+					--rofi closed and dropped "focus-none", so we need to catch it and take away focus from it
+					self.focused = nil
+				end,
+			})
+		end
+	end
+	-- we do this because when config file is reloaded it tries to call this code again but it cant because
+	-- a seat already exists so we check that we arent reloading first
 
 	if self.focused and self.focused.closed then
 		self.focused = nil

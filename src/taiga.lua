@@ -12,7 +12,6 @@ local config = require("config")
 local wm = require("wm")
 local globals = require("globals")
 local libinput = require("libinput")
-local seat = require("seat")
 
 -- required protocols
 wau:require("..include.protocol.river-xkb-bindings-v1")
@@ -61,10 +60,10 @@ globals.globals["river_window_manager_v1"]:add_listener(wm.wm_handlers)
 globals.globals["river_libinput_config_v1"]:add_listener(libinput.libinput_handlers)
 
 signal.signal(signal.SIGUSR1, function()
-    config.init()
+	config.init()
 
 	for _, seat_local in ipairs(wm.wm.seats) do
-        config.config_reload = true
+		config.config_reload = true
 		seat_local.new = true
 		for _, binding in ipairs(seat_local.xkb_bindings) do
 			binding.obj:destroy()

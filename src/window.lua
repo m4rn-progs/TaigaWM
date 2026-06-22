@@ -38,9 +38,8 @@ function m.Window:manage()
 
 		self.obj:propose_dimensions(0, 0)
 		self.obj:set_capabilities(14)
-		self:set_position(0,0)
-        NOT_SPAWNED = true
-
+		self:set_position(0, 0)
+		NOT_SPAWNED = true
 	end
 
 	local move = self.pointer_move_requested
@@ -58,8 +57,7 @@ function m.Window:manage()
 	if resize ~= nil then
 		self.pointer_resize_requested = nil
 		resize.seat:pointer_resize(self, resize.edges)
-    end
-
+	end
 end
 
 function m.Window:set_position(x, y)
@@ -81,20 +79,20 @@ end
 
 -- fullscreen request handling
 function m.Window.listener:fullscreen_requested()
-    local wm = require("wm")
-    local window = self:get_user_data()
-    window.obj:fullscreen(wm.wm.outputs[1].obj)
-    window.obj:inform_fullscreen()
+	local wm = require("wm")
+	local window = self:get_user_data()
+	window.obj:fullscreen(wm.wm.outputs[1].obj)
+	window.obj:inform_fullscreen()
 end
 
 function m.Window.listener:exit_fullscreen_requested()
-    local window = self:get_user_data()
-    window.obj:exit_fullscreen()
-    window.obj:inform_not_fullscreen()
+	local window = self:get_user_data()
+	window.obj:exit_fullscreen()
+	window.obj:inform_not_fullscreen()
 end
 -- Maximize request handling
 function m.Window.listener:maximize_requested()
-    local wm = require("wm")
+	local wm = require("wm")
 	local window = self:get_user_data()
 	IS_MAXIMIZED = true
 	window.obj:inform_maximized()

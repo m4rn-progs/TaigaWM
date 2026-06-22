@@ -6,14 +6,12 @@ local globals = require("globals")
 
 local m = {}
 
-
 m.wm = {
 	outputs = {},
 	seats = {},
 	windows = {},
 	layers = { outputs = {}, seats = {} },
 }
-
 
 local function wm_manage()
 	table_helpers.table_filter_inplace(m.wm.outputs, output.Output.maybe_destroy)

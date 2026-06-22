@@ -99,7 +99,7 @@ m.default_keybinds = {
 	{ "space", m.default_mod, "spawn", "foot" },
 }
 m.default_misc_settings = {
-    vsync = true
+	vsync = true,
 }
 m.default_input_config = {
 	accel_profile = libinput.AccelProfile.ADAPTIVE,
@@ -118,38 +118,35 @@ m.pointer_bindings = {}
 m.user_inputs = {}
 m.misc_config = {}
 
-
 function m.init()
-    m.taigarc = m.open_config()
-    if m.taigarc == nil then
-        m.no_config = true
-    end
+	m.taigarc = m.open_config()
+	if m.taigarc == nil then
+		m.no_config = true
+	end
 
+	if not m.no_config then
+		m.watch_config_changes()
 
-    if not m.no_config then
-        m.watch_config_changes()
+		m.xkb_bindings = CONFIG_KEYBINDS().keyboard_binds
+		m.pointer_bindings = CONFIG_KEYBINDS().mouse_binds
+		m.misc_config = CONFIG_MISC()
+		m.custom_inputs = CONFIG_LIBINPUT(libinput)
 
-        m.xkb_bindings = CONFIG_KEYBINDS().keyboard_binds
-        m.pointer_bindings = CONFIG_KEYBINDS().mouse_binds
-        m.misc_config = CONFIG_MISC()
-        m.custom_inputs = CONFIG_LIBINPUT(libinput)
+		m.user_inputs = {
+			accel_profile = m.custom_inputs.accel_profile,
+			accel_speed = m.custom_inputs.accel_speed,
+			natural_scroll = m.custom_inputs.natural_scroll,
+			left_handed = m.custom_inputs.left_handed,
+		}
 
-        m.user_inputs = {
-            accel_profile = m.custom_inputs.accel_profile,
-            accel_speed = m.custom_inputs.accel_speed,
-            natural_scroll = m.custom_inputs.natural_scroll,
-            left_handed = m.custom_inputs.left_handed,
-        }
-
-        local autostart_tbl = CONFIG_AUTOSTART()
-        autostart.autostart(autostart_tbl)
-    else
-        m.xkb_bindings = m.default_keybinds
-        m.pointer_bindings = { {} }
-        m.user_inputs = m.default_input_config
-        m.misc_config = m.default_misc_settings
-    end
-
+		local autostart_tbl = CONFIG_AUTOSTART()
+		autostart.autostart(autostart_tbl)
+	else
+		m.xkb_bindings = m.default_keybinds
+		m.pointer_bindings = { {} }
+		m.user_inputs = m.default_input_config
+		m.misc_config = m.default_misc_settings
+	end
 end
 
 return m
