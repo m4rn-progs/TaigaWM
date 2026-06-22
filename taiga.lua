@@ -267,11 +267,12 @@ end
 function Window:manage()
 	if self.new then
 		self.new = nil
-        local half_width = wm.outputs[1].width // 4
-        local half_height = wm.outputs[1].height // 4
-		self:set_position(half_width, half_height)
+
 		self.obj:propose_dimensions(0, 0)
 		self.obj:set_capabilities(14)
+		self:set_position(0,0)
+        NOT_SPAWNED = true
+
 	end
 
 	local move = self.pointer_move_requested
@@ -289,7 +290,8 @@ function Window:manage()
 	if resize ~= nil then
 		self.pointer_resize_requested = nil
 		resize.seat:pointer_resize(self, resize.edges)
-	end
+    end
+
 end
 
 function Window:set_position(x, y)
