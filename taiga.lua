@@ -102,7 +102,7 @@ local function get_config_file()
 	-- just loop over the table and check if any exist, while expanding ~
 	for _, p in ipairs(paths) do
 		if file_exists(p) then
-			print("Path: " .. p .. " exists.")
+			print("INFO: Using config file: " .. p .. ".")
 			return expand_tilde(p)
 		end
 	end
@@ -114,11 +114,11 @@ local function open_config()
 	-- try to get a file, if we dont get one we fallback to cwd/taigarc.lua
 	CONFIG_FILE_PATH = get_config_file()
 	if CONFIG_FILE_PATH == nil then
-		print("Using backup local config file.")
+		print("INFO: Using backup config file.")
 		CONFIG_FILE_PATH = posix.getcwd() .. "/taigarc.lua"
 		-- if we still cant find a fall back, return nil
 		if not file_exists(CONFIG_FILE_PATH) then
-			print("WARNING! No config file found.")
+			print("WARNING: No config file found.")
 			return nil
 		end
 	end
@@ -126,10 +126,10 @@ local function open_config()
 	-- else, we will just load it
 	local chunk, err = loadfile(CONFIG_FILE_PATH, "t")
 	if not chunk then
-		error("load error: " .. tostring(err))
+		error("ERROR: " .. tostring(err))
 	end
 	chunk()
-	print("Successfully loaded config file.")
+	print("INFO: Successfully loaded config file.")
 	return true
 end
 
@@ -143,7 +143,7 @@ local function watch_config_changes()
 		local _ = handle:addwatch(config_dir, inotify.IN_CLOSE_WRITE | inotify.IN_MOVED_TO)
 		for ev in handle:events() do
 			if ev.name == config_name then
-				print("config file changed, reloading")
+				print("INFO: Config file changed, reloading.")
 				posix.signal.kill(parent_pid, signal.SIGUSR1)
 			end
 		end
@@ -152,43 +152,6 @@ local function watch_config_changes()
 end
 
 -- ENTRY POINT 2.0
-TAIGARC = open_config()
-
--- if the config file doesnt exist set the flag so we dont watch it
-if TAIGARC == nil then
-	NO_CONFIG = true
-end
-
--- setup inotify to run this all the time
-
-if not NO_CONFIG then
-	watch_config_changes()
-	-- config exists just read it like normal and do stuff
-	xkb_bindings = CONFIG_KEYBINDS().keyboard_binds
-	pointer_bindings = CONFIG_KEYBINDS().mouse_binds
-    MISC_CONFIG = CONFIG_MISC()
-
-	local custom_inputs = {}
-	if type(CONFIG_LIBINPUT) == "function" then
-		custom_inputs = CONFIG_LIBINPUT(libinput) or {}
-	end
-	user_inputs = {
-		accel_profile = custom_inputs.accel_profile or default_input_config.accel_profile,
-		accel_speed = custom_inputs.accel_speed or default_input_config.accel_speed,
-		natural_scroll = custom_inputs.natural_scroll or default_input_config.natural_scroll,
-		left_handed = custom_inputs.left_handed or default_input_config.left_handed,
-	}
-
-	local autostart_tbl = CONFIG_AUTOSTART()
-	autostart(autostart_tbl)
-else
-	-- if no config, set to defaults
-	xkb_bindings = DEFAULT_KEYBINDS
-	pointer_bindings = { {} }
-	user_inputs = default_input_config
-    MISC_CONFIG = DEFAULT_MISC_SETTINGS
-end
--- autostart
 
 local wm = {
 	outputs = {},
@@ -509,7 +472,7 @@ function Seat:action(action)
 	elseif action == "exit" then
 		globals["river_window_manager_v1"]:exit_session()
 	else
-		print("Seat:action: unimplemented", action)
+		print("ERROR: Seat:action: unimplemented", action)
 	end
 end
 
@@ -688,7 +651,7 @@ end
 local device_handlers = {
 	["accel_profiles_support"] = function(self, profiles)
 		if profiles > 0 then
-			print("[Libinput] Pointer device detected.")
+			print("INFO: Libinput pointer device detected.")
 
 			local res = self:set_accel_profile(user_inputs.accel_profile)
 
@@ -702,7 +665,7 @@ local device_handlers = {
 
 	["tap_support"] = function(self, finger_count)
 		if finger_count > 0 then
-			print("[Libinput] Trackpad detected. Overriding pointer config.")
+			print("INFO: Libinput trackpad detected. Overriding pointer config.")
 
 			local res_accel = self:set_accel_profile(user_inputs.accel_profile)
 			res_accel:add_listener({
@@ -723,7 +686,7 @@ local device_handlers = {
 
 local libinput_handlers = {
 	["libinput_device"] = function(self, device)
-		print("A new input device was detected!")
+		print("INFO: New libinput device detected.")
 		device:add_listener(device_handlers)
 	end,
 }
@@ -857,6 +820,46 @@ signal.signal(signal.SIGUSR1, function()
 	-- start watching for changes again
 	watch_config_changes()
 end)
+
+
+
+TAIGARC = open_config()
+
+-- if the config file doesnt exist set the flag so we dont watch it
+if TAIGARC == nil then
+	NO_CONFIG = true
+end
+
+-- setup inotify to run this all the time
+
+if not NO_CONFIG then
+	watch_config_changes()
+	-- config exists just read it like normal and do stuff
+	xkb_bindings = CONFIG_KEYBINDS().keyboard_binds
+	pointer_bindings = CONFIG_KEYBINDS().mouse_binds
+    MISC_CONFIG = CONFIG_MISC()
+
+	local custom_inputs = {}
+	if type(CONFIG_LIBINPUT) == "function" then
+		custom_inputs = CONFIG_LIBINPUT(libinput) or {}
+	end
+	user_inputs = {
+		accel_profile = custom_inputs.accel_profile or default_input_config.accel_profile,
+		accel_speed = custom_inputs.accel_speed or default_input_config.accel_speed,
+		natural_scroll = custom_inputs.natural_scroll or default_input_config.natural_scroll,
+		left_handed = custom_inputs.left_handed or default_input_config.left_handed,
+	}
+
+	local autostart_tbl = CONFIG_AUTOSTART()
+	autostart(autostart_tbl)
+else
+	-- if no config, set to defaults
+	xkb_bindings = DEFAULT_KEYBINDS
+	pointer_bindings = { {} }
+	user_inputs = default_input_config
+    MISC_CONFIG = DEFAULT_MISC_SETTINGS
+end
+
 
 while DISPLAY:dispatch() do
 end
