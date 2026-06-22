@@ -16,7 +16,6 @@ local seat = require("seat")
 
 -- required protocols
 wau:require("..include.protocol.river-xkb-bindings-v1")
-wau:require("..include.protocol.river-layer-shell-v1")
 
 -- ENTRY POINT --
 DISPLAY = wau.wl_display.connect()
@@ -62,17 +61,15 @@ globals.globals["river_window_manager_v1"]:add_listener(wm.wm_handlers)
 globals.globals["river_libinput_config_v1"]:add_listener(libinput.libinput_handlers)
 
 signal.signal(signal.SIGUSR1, function()
-	TAIGARC = config.open_config()
-	config.xkb_bindings = CONFIG_KEYBINDS().keyboard_binds or {}
-	config.pointer_bindings = CONFIG_KEYBINDS().mouse_binds or {}
+    config.init()
 
 	for _, seat_local in ipairs(wm.wm.seats) do
-        CONFIG_FILE_RELOAD = true
+        config.config_reload = true
 		seat_local.new = true
-		for _, binding in ipairs(seat.xkb_bindings) do
+		for _, binding in ipairs(seat_local.xkb_bindings) do
 			binding.obj:destroy()
 		end
-		for _, binding in ipairs(seat.pointer_bindings) do
+		for _, binding in ipairs(seat_local.pointer_bindings) do
 			binding.obj:destroy()
 		end
 		seat_local.xkb_bindings = {}

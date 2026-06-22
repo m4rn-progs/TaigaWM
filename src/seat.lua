@@ -6,6 +6,8 @@ local xkbcommon = require("..include.xkbcommon")
 local table_helpers = require("table_helpers")
 local globals = require("globals")
 local config = require("config")
+local wau = require("wau")
+wau:require("..include.protocol.river-layer-shell-v1")
 
 local m = {}
 -- define the seat
@@ -155,9 +157,9 @@ end
 -- seat manage
 function m.Seat:manage()
     local wm = require("wm")
+
 	if self.new then
 		self.new = nil
-
 		for _, tbl in ipairs(config.xkb_bindings) do
 			-- the table passed contains arg and action
 			-- since we pass a table, as many values as the table has can be acpeted in the keybind section
@@ -166,20 +168,20 @@ function m.Seat:manage()
 
 		for _, tbl in ipairs(config.pointer_bindings) do
 			self:add_pointer_binding(table.unpack(tbl))
-		end
+        end
+
+        if not config.config_reload then
+            self.layer_shell_seat = globals.globals["river_layer_shell_v1"]:get_seat(self.obj)
+            self.layer_shell_seat:add_listener({
+                ["focus_none"] = function(_)
+                    --rofi closed and dropped "focus-none", so we need to catch it and take away focus from it
+                    self.focused = nil
+                end,
+            })
+        end
     end
     -- we do this because when config file is reloaded it tries to call this code again but it cant because
     -- a seat already exists so we check that we arent reloading first
-    if not CONFIG_FILE_RELOAD and self.new then
-        self.new = nil
-		self.layer_shell_seat = globals.globals["river_layer_shell_v1"]:get_seat(self.obj)
-		self.layer_shell_seat:add_listener({
-			["focus_none"] = function(_)
-				--rofi closed and dropped "focus-none", so we need to catch it and take away focus from it
-				self.focused = nil
-			end,
-		})
-    end
 
 	if self.focused and self.focused.closed then
 		self.focused = nil
