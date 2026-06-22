@@ -283,7 +283,11 @@ end
 function Window:manage()
 	if self.new then
 		self.new = nil
-		self:set_position(0, 0)
+        local half_width = wm.outputs[1].width // 4
+        local half_height = wm.outputs[1].height // 4
+        print(half_width)
+        print(half_height)
+		self:set_position(half_width, half_height)
 		self.obj:propose_dimensions(0, 0)
 		self.obj:set_capabilities(14)
 	end
