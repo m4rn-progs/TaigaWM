@@ -216,8 +216,22 @@ end
 local Output = { mt = {}, listener = {} }
 Output.mt.__index = Output
 
+function Output:manage()
+	if self.new then
+		self.new = nil
+        --get the output
+		self.layer_shell_obj = globals["river_layer_shell_v1"]:get_output(self.obj)
+        --if its the primary monitor, we set that to default
+		if self == wm.outputs[1] then
+			self.layer_shell_obj:set_default()
+		end
+	end
+end
 function Output.create(obj)
-	local output = { obj = obj }
+	local output = {
+		obj = obj,
+		new = true,
+	}
 	setmetatable(output, Output.mt)
 	obj:set_user_data(output)
 	obj:add_listener(Output.listener)
@@ -297,7 +311,7 @@ function Window:manage()
 	if resize ~= nil then
 		self.pointer_resize_requested = nil
 		resize.seat:pointer_resize(self, resize.edges)
-    end
+	end
 end
 
 function Window:set_position(x, y)
@@ -509,6 +523,13 @@ end
 function Seat:manage()
 	if self.new then
 		self.new = nil
+		self.layer_shell_seat = globals["river_layer_shell_v1"]:get_seat(self.obj)
+		self.layer_shell_seat:add_listener({
+			["focus_none"] = function(_)
+                --rofi closed and dropped "focus-none", so we need to catch it and take away focus from it
+				self.focused = nil
+			end,
+		})
 
 		for _, tbl in ipairs(xkb_bindings) do
 			-- the table passed contains arg and action
@@ -523,16 +544,22 @@ function Seat:manage()
         self.layer_shell_output:set_default()
 	end
 
+
 	if self.focused and self.focused.closed then
 		self.focused = nil
+		if #wm.windows == 0 then
+			self:focus(nil)
+		end
 	end
 
-	self:focus(self.interacted)
-	self.interacted = nil
-
-	if self.pending_action ~= nil then
-		self:action(self.pending_action)
-		self.pending_action = nil
+	if self.interacted then
+		self:focus(self.interacted)
+		self.interacted = nil
+	elseif #wm.windows > 0 then
+		local topmost = wm.windows[#wm.windows]
+		if self.focused ~= topmost then
+			self:focus(topmost)
+		end
 	end
 
 	if self.op and self.op.window then
@@ -673,6 +700,10 @@ local function wm_manage()
 	table_filter_inplace(wm.outputs, Output.maybe_destroy)
 	table_filter_inplace(wm.windows, Window.maybe_destroy)
 	table_filter_inplace(wm.seats, Seat.maybe_destroy)
+
+	for _, output in ipairs(wm.outputs) do
+		output:manage()
+	end
 
 	for _, window in ipairs(wm.windows) do
 		window:manage()
