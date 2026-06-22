@@ -1,4 +1,3 @@
-local wm = require("wm")
 local globals = require("globals")
 local config = require("config")
 
@@ -8,10 +7,11 @@ m.Output = { mt = {}, listener = {} }
 m.Output.mt.__index = m.Output
 
 function m.Output:manage()
+    local wm = require("wm")
 	if self.new then
 		self.new = nil
 		self.layer_shell_obj = globals.globals["river_layer_shell_v1"]:get_output(self.obj)
-		if self == wm.outputs[1] then
+		if self == wm.wm.outputs[1] then
 			self.layer_shell_obj:set_default()
         end
 

@@ -2,7 +2,6 @@
 local wau = require("wau")
 
 -- local imports
-local wm = require("wm")
 
 -- wau
 wau:require("..include.protocol.river-window-management-v1")
@@ -82,8 +81,9 @@ end
 
 -- fullscreen request handling
 function m.Window.listener:fullscreen_requested()
+    local wm = require("wm")
     local window = self:get_user_data()
-    window.obj:fullscreen(wm.outputs[1].obj)
+    window.obj:fullscreen(wm.wm.outputs[1].obj)
     window.obj:inform_fullscreen()
 end
 
@@ -94,10 +94,11 @@ function m.Window.listener:exit_fullscreen_requested()
 end
 -- Maximize request handling
 function m.Window.listener:maximize_requested()
+    local wm = require("wm")
 	local window = self:get_user_data()
 	IS_MAXIMIZED = true
 	window.obj:inform_maximized()
-	window.obj:propose_dimensions(wm.outputs[1].width, wm.outputs[1].height)
+	window.obj:propose_dimensions(wm.wm.outputs[1].width, wm.wm.outputs[1].height)
 	window:set_position(0, 0)
 end
 

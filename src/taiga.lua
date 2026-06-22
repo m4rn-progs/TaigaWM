@@ -9,11 +9,8 @@ local signal = require("posix.signal")
 
 -- local imports
 local config = require("config")
-local table_helpers = require("table_helpers")
 local wm = require("wm")
 local globals = require("globals")
-local output = require("output")
-local window = require("window")
 local libinput = require("libinput")
 local seat = require("seat")
 -- required protocols
@@ -21,58 +18,6 @@ wau:require("..include.protocol.river-xkb-bindings-v1")
 wau:require("..include.protocol.river-layer-shell-v1")
 
 
--- WM SECTION --
--- wm manage
-local function wm_manage()
-	table_helpers.table_filter_inplace(wm.outputs, output.Output.maybe_destroy)
-	table_helpers.table_filter_inplace(wm.windows, window.Window.maybe_destroy)
-	table_helpers.table_filter_inplace(wm.seats, seat.Seat.maybe_destroy)
-
-	for _, local_output in ipairs(wm.outputs) do
-		local_output:manage()
-	end
-
-	for _, local_window in ipairs(wm.windows) do
-		local_window:manage()
-	end
-
-	for _, seats in ipairs(wm.seats) do
-		seats:manage()
-	end
-
-	globals.globals["river_window_manager_v1"]:manage_finish()
-end
-
--- wm render
-local function wm_render()
-	for _, seat_local in ipairs(wm.seats) do
-		seat_local:render()
-	end
-
-	globals.globals["river_window_manager_v1"]:render_finish()
-end
-
--- wm handlers
-local wm_handlers = {
-	["unavailable"] = function(self)
-		io.stderr:write("another window manager is already running\n")
-		os.exit(1)
-	end,
-	["finished"] = function(self)
-		os.exit(0)
-	end,
-	["manage_start"] = wm_manage,
-	["render_start"] = wm_render,
-	["output"] = function(self, obj)
-		table.insert(wm.outputs, output.Output.create(obj))
-	end,
-	["seat"] = function(self, obj)
-		table.insert(wm.seats, seat.Seat.create(obj))
-	end,
-	["window"] = function(self, obj)
-		table.insert(wm.windows, window.Window.create(obj))
-	end,
-}
 
 -- ENTRY POINT --
 DISPLAY = wau.wl_display.connect()
@@ -84,6 +29,7 @@ local function handle_callback_error(proxy, name, func, err)
 	io.stderr:write(("%s\n"):format(tostring(err)))
 	os.exit(1)
 end
+
 wau.wl_proxy.set_error_callback(handle_callback_error)
 
 -- Avoid passing WAYLAND_DEBUG to our children
@@ -119,7 +65,7 @@ for k in pairs(globals.required_globals) do
 end
 
 -- add listeners
-globals.globals["river_window_manager_v1"]:add_listener(wm_handlers)
+globals.globals["river_window_manager_v1"]:add_listener(wm.wm_handlers)
 -- had to add the if statement because if libinput fails (no mouse or smth) or the mouse thingy fails we can still boot the wm
 if globals.globals["river_libinput_config_v1"] then
 	globals.globals["river_libinput_config_v1"]:add_listener(libinput.libinput_handlers)
@@ -131,7 +77,7 @@ signal.signal(signal.SIGUSR1, function()
 	config.pointer_bindings = CONFIG_KEYBINDS().mouse_binds or {}
 
 	-- reset everything
-	for _, seat_local in ipairs(wm.seats) do
+	for _, seat_local in ipairs(wm.wm.seats) do
 		-- next time seat:manage is called, with seat.new = true it will re-set it up
         CONFIG_FILE_RELOAD = true
 		seat_local.new = true

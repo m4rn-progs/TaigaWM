@@ -3,8 +3,6 @@ local posix = require("posix")
 
 -- local imports
 local xkbcommon = require("..include.xkbcommon")
-local wm = require("wm")
-local window = require("window")
 local table_helpers = require("table_helpers")
 local globals = require("globals")
 local config = require("config")
@@ -30,9 +28,10 @@ end
 
 -- seat focus request
 function m.Seat:focus(window_local)
-	if window_local == nil and #wm.windows > 0 then
+    local wm = require("wm")
+	if window_local == nil and #wm.wm.windows > 0 then
 		-- Fall back to topmost window
-	    window_local = wm.windows[#wm.windows]
+	    window_local = wm.wm.windows[#wm.wm.windows]
 	end
 
 	if window_local then
@@ -40,10 +39,9 @@ function m.Seat:focus(window_local)
 			self.obj:focus_window(window_local.obj)
 			self.focused = window_local
 			-- Move to top
-            print('test')
-			local i = table_helpers.table_index_of(wm.windows, window_local)
-			table.remove(wm.windows, i)
-			table.insert(wm.windows, window_local)
+			local i = table_helpers.table_index_of(wm.wm.windows, window_local)
+			table.remove(wm.wm.windows, i)
+			table.insert(wm.wm.windows, window_local)
 			window_local.node:place_top()
 		end
 	else
@@ -91,6 +89,7 @@ end
 
 -- seat action
 function m.Seat:action(action)
+    local wm = require("wm")
 	-- if the action passed == spawn then just use just fork and exec self.arg
 	if action == "spawn" then
 		if posix.unistd.fork() == 0 then
@@ -104,7 +103,7 @@ function m.Seat:action(action)
 			self.focused.obj:close()
 		end
 	elseif action == "focus-next" then
-		self:focus(wm.windows[1])
+		self:focus(wm.wm.windows[1])
 	elseif action == "move" then
 		if self.hovered ~= nil then
 			self:pointer_move(self.hovered)
@@ -155,6 +154,7 @@ end
 
 -- seat manage
 function m.Seat:manage()
+    local wm = require("wm")
 	if self.new then
 		self.new = nil
 
@@ -183,7 +183,7 @@ function m.Seat:manage()
 
 	if self.focused and self.focused.closed then
 		self.focused = nil
-		if #wm.windows == 0 then
+		if #wm.wm.windows == 0 then
 			self:focus(nil)
 		end
 	end
@@ -191,8 +191,8 @@ function m.Seat:manage()
 	if self.interacted then
 		self:focus(self.interacted)
 		self.interacted = nil
-	elseif #wm.windows > 0 then
-		local topmost = wm.windows[#wm.windows]
+	elseif #wm.wm.windows > 0 then
+		local topmost = wm.wm.windows[#wm.wm.windows]
 		if self.focused ~= topmost then
 			self:focus(topmost)
 		end
