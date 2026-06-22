@@ -71,7 +71,7 @@ end
 function m.Seat:pointer_resize(window_local, edges)
 	if self.op == nil then
 		self:focus(window_local)
-		window.obj:inform_resize_start()
+		window_local.obj:inform_resize_start()
 		self.obj:op_start_pointer()
 		self.op = {
 			type = "resize",
@@ -241,8 +241,8 @@ function m.Seat:render()
 		if self.op.type == "move" then
 			window_local:set_position(op.start.x + op.dx, op.start.y + op.dy)
 		elseif self.op.type == "resize" then
-			local x = op.edges.left and (op.start.x + (op.start.width - window.width)) or op.start.x
-			local y = op.edges.top and (op.start.y + (op.start.height - window.height)) or op.start.y
+			local x = op.edges.left and (op.start.x + (op.start.width - window_local.width)) or op.start.x
+			local y = op.edges.top and (op.start.y + (op.start.height - window_local.height)) or op.start.y
 			window_local:set_position(x, y)
 		end
 	end
