@@ -551,6 +551,11 @@ function Seat:manage()
 		end
 	end
 
+	if self.pending_action then
+		self:action(self.pending_action)
+		self.pending_action = nil
+	end
+
 	if self.op and self.op.window then
 		local op, window = self.op, self.op.window
 
