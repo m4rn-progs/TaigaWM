@@ -327,6 +327,18 @@ function Window.listener:dimensions_hint(width, height)
 	window.height = height
 end
 
+-- fullscreen request handling
+function Window.listener:fullscreen_requested()
+    local window = self:get_user_data()
+    window.obj:fullscreen(wm.outputs[1].obj)
+    window.obj:inform_fullscreen()
+end
+
+function Window.listener:exit_fullscreen_requested()
+    local window = self:get_user_data()
+    window.obj:exit_fullscreen()
+    window.obj:inform_not_fullscreen()
+end
 -- Maximize request handling
 function Window.listener:maximize_requested()
 	local window = self:get_user_data()
@@ -474,7 +486,7 @@ function Seat:action(action)
 	elseif action == "resize" then
 		if self.hovered ~= nil then
 			self:pointer_resize(self.hovered, { bottom = true, right = true })
-		end
+        end
 	elseif action == "exit" then
 		globals["river_window_manager_v1"]:exit_session()
 	else
