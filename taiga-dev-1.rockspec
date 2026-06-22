@@ -18,7 +18,7 @@ description = {
 dependencies = {
     "lua == 5.4",
     "cffi-lua >= 0.2.4",
-    "xml2lua",  
+    "xml2lua",
     "firefly/wau",
     "luaposix",
     "inotify"
@@ -33,14 +33,15 @@ external_dependencies = {
 build = {
     type = "command",
     build_command = [[
-        for f in taiga/protocol/*.xml; do
+        for f in include/protocol/*.xml; do
             wau-scanner <$f >${f%%.xml}.lua
         done
     ]],
     install_command = [[
         # mimic build.type == "builtin" behaviour
-        install -Dm644 taiga/xkbcommon.lua $(LUADIR)/taiga/xkbcommon.lua
-        install -Dm644 -t $(LUADIR)/taiga/protocol taiga/protocol/*.lua
-        install -Dm755 taiga.lua $(BINDIR)/taiga
+        install -Dm644 include/xkbcommon.lua $(LUADIR)/include/xkbcommon.lua
+        install -Dm644 -t $(LUADIR)/include/protocol include/protocol/*.lua
+        install -m 755 src/taiga.lua $(BINDIR)/taiga
+        install -Dm644 -t $(LUADIR)/ src/*.lua
     ]],
 }
