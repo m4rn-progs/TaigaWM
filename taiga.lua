@@ -219,9 +219,7 @@ Output.mt.__index = Output
 function Output:manage()
 	if self.new then
 		self.new = nil
-        --get the output
 		self.layer_shell_obj = globals["river_layer_shell_v1"]:get_output(self.obj)
-        --if its the primary monitor, we set that to default
 		if self == wm.outputs[1] then
 			self.layer_shell_obj:set_default()
 		end
@@ -255,12 +253,6 @@ function Output.listener:dimensions(width, height)
 	local output = self:get_user_data()
 	output.width = width
 	output.height = height
-end
-
-local layer_shell_seat = globals["river_layer_shell_v1"]:get_seat()
-
-function layer_shell_seat:focus_none()
-    print("No more focus")
 end
 
 -- WINDOW SECTION
@@ -526,7 +518,7 @@ function Seat:manage()
 		self.layer_shell_seat = globals["river_layer_shell_v1"]:get_seat(self.obj)
 		self.layer_shell_seat:add_listener({
 			["focus_none"] = function(_)
-                --rofi closed and dropped "focus-none", so we need to catch it and take away focus from it
+				--rofi closed and dropped "focus-none", so we need to catch it and take away focus from it
 				self.focused = nil
 			end,
 		})
@@ -535,15 +527,12 @@ function Seat:manage()
 			-- the table passed contains arg and action
 			-- since we pass a table, as many values as the table has can be acpeted in the keybind section
 			self:add_xkb_binding(table.unpack(tbl))
-        end
+		end
 
 		for _, tbl in ipairs(pointer_bindings) do
 			self:add_pointer_binding(table.unpack(tbl))
-        end
-        self.layer_shell_output = globals["river_layer_shell_v1"]:get_output(wm.outputs[1].obj)
-        self.layer_shell_output:set_default()
+		end
 	end
-
 
 	if self.focused and self.focused.closed then
 		self.focused = nil
@@ -711,7 +700,7 @@ local function wm_manage()
 
 	for _, seat in ipairs(wm.seats) do
 		seat:manage()
-    end
+	end
 
 	globals["river_window_manager_v1"]:manage_finish()
 end
