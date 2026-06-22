@@ -157,12 +157,9 @@ end
 -- seat manage
 function m.Seat:manage()
     local wm = require("wm")
-
 	if self.new then
 		self.new = nil
 		for _, tbl in ipairs(config.xkb_bindings) do
-			-- the table passed contains arg and action
-			-- since we pass a table, as many values as the table has can be acpeted in the keybind section
 			self:add_xkb_binding(table.unpack(tbl))
 		end
 
