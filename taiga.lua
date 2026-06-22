@@ -243,6 +243,12 @@ function Output.listener:dimensions(width, height)
 	output.height = height
 end
 
+local layer_shell_seat = globals["river_layer_shell_v1"]:get_seat()
+
+function layer_shell_seat:focus_none()
+    print("No more focus")
+end
+
 -- WINDOW SECTION
 local Window = { mt = {}, listener = {} }
 Window.mt.__index = Window
@@ -508,11 +514,13 @@ function Seat:manage()
 			-- the table passed contains arg and action
 			-- since we pass a table, as many values as the table has can be acpeted in the keybind section
 			self:add_xkb_binding(table.unpack(tbl))
-		end
+        end
 
 		for _, tbl in ipairs(pointer_bindings) do
 			self:add_pointer_binding(table.unpack(tbl))
-		end
+        end
+        self.layer_shell_output = globals["river_layer_shell_v1"]:get_output(wm.outputs[1].obj)
+        self.layer_shell_output:set_default()
 	end
 
 	if self.focused and self.focused.closed then
@@ -672,7 +680,7 @@ local function wm_manage()
 
 	for _, seat in ipairs(wm.seats) do
 		seat:manage()
-	end
+    end
 
 	globals["river_window_manager_v1"]:manage_finish()
 end
