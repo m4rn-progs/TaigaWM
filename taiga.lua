@@ -34,6 +34,10 @@ DEFAULT_KEYBINDS = {
 	{ "space", default_mod, "spawn", "foot" },
 }
 
+DEFAULT_MISC_SETTINGS = {
+    vsync = true
+}
+
 -- a small gentle reminder of the horseshit that goes on in xml world: case changes
 -- wayland xml binders, when changing stuff from xml to programming languages like lua or c,
 -- will default to turning snake_case variables into PascalCase variables to try to match language conventions
@@ -51,9 +55,11 @@ local default_input_config = {
 
 CONFIG_KEYBINDS = {}
 CONFIG_AUTOSTART = {}
+CONFIG_MISC = {}
 local xkb_bindings = {}
 local pointer_bindings = {}
 local user_inputs = {}
+MISC_CONFIG = {}
 
 -- autostart related functions
 -- basically just loop through a table and exec each item in a fork
@@ -158,8 +164,10 @@ end
 if not NO_CONFIG then
 	watch_config_changes()
 	-- config exists just read it like normal and do stuff
-	xkb_bindings = CONFIG_KEYBINDS().keyboard_binds or DEFAULT_KEYBINDS
-	pointer_bindings = CONFIG_KEYBINDS().mouse_binds or {}
+	xkb_bindings = CONFIG_KEYBINDS().keyboard_binds
+	pointer_bindings = CONFIG_KEYBINDS().mouse_binds
+    MISC_CONFIG = CONFIG_MISC()
+
 	local custom_inputs = {}
 	if type(CONFIG_LIBINPUT) == "function" then
 		custom_inputs = CONFIG_LIBINPUT(libinput) or {}
@@ -178,6 +186,7 @@ else
 	xkb_bindings = DEFAULT_KEYBINDS
 	pointer_bindings = { {} }
 	user_inputs = default_input_config
+    MISC_CONFIG = DEFAULT_MISC_SETTINGS
 end
 -- autostart
 
@@ -224,9 +233,19 @@ function Output:manage()
 		if self == wm.outputs[1] then
 			self.layer_shell_obj:set_default()
         end
-        self.obj:set_presentation_mode(1)
+
+        -- presentation mode
+        if not MISC_CONFIG.vsync then
+            print("INFO: Vsync disabled.")
+            self.obj:set_presentation_mode(1)
+        else
+            print("INFO: Vsync enabled.")
+            self.obj:set_presentation_mode(0)
+        end
+
 	end
 end
+
 function Output.create(obj)
 	local output = {
 		obj = obj,

@@ -6,6 +6,7 @@ function CONFIG_KEYBINDS()
 	return {
 		keyboard_binds = {
 			{ "Return", mod, "spawn", "foot" },
+            { "d" , mod, "spawn", "rofi -show drun"},
 			{ "q", mod, "close" },
 			{ "n", mod, "focus-next" },
 			{ "Escape", mod, "exit" },
@@ -32,3 +33,10 @@ function CONFIG_AUTOSTART()
         "foot",
 	}
 end
+
+function CONFIG_MISC()
+    return {
+        vsync = false,
+    }
+end
+
