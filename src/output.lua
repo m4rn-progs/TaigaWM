@@ -3,6 +3,74 @@ local config = require("config")
 
 local m = {}
 
+m.head_listener = {
+    ["name"] = function(obj, name)
+        print("A monitor chose a name")
+        obj:get_user_data().name = name
+    end,
+    ["description"] = function(obj, description)
+        print("A monitor chose a description")
+        obj:get_user_data().desc = description
+    end,
+    ["mode"] = function(obj, mode)
+        print("a new mode was given")
+        table.insert(obj:get_user_data().mode_objs, mode)
+        mode:add_listener({
+            ["size"] = function(_, width, height)
+                print('in here')
+                obj:get_user_data().width = width
+                obj:get_user_data().height = height
+            end
+        })
+    end
+}
+
+m.head_manager_listener = {
+    ["head"] = function(_, head_obj)
+        print("A new monitor is connected")
+
+        local wm = require("wm")
+
+        local head_local = {
+            obj = head_obj,
+            name = "Unknown",
+            desc = "Unknown",
+            mode_objs = {},
+            width = 0,
+            height = 0,
+        }
+
+        head_obj:set_user_data(head_local)
+        head_obj:add_listener(m.head_listener)
+        table.insert(wm.wm.heads, head_local)
+    end,
+    ["done"] = function(manager, serial)
+        local wm = require("wm")
+        print("Current connected monitor info: ")
+
+        for i, head_local in ipairs(wm.wm.heads) do
+            print(string.format("Head [%d]: name = %s, desc = %s, serial = %d, mode = %dx%d", i, head_local.name, head_local.desc, serial, head_local.width, head_local.height))
+        end
+
+        local zwlr_output_config = manager:create_configuration(serial)
+
+        zwlr_output_config:add_listener({
+            ["succeeded"] = function(obj) print("Config Succeeded!"); obj:destroy() end,
+            ["failed"] = function(obj)
+                print("COMPOSITOR REJECTED CONFIGURATION")
+                obj:destroy()
+            end
+        })
+
+        for _, head_local in ipairs(wm.wm.heads) do
+            local zwlr_head_config = zwlr_output_config:enable_head(head_local.obj)
+            zwlr_head_config:set_scale(1024)
+        end
+
+        zwlr_output_config:apply()
+    end
+}
+
 m.Output = { mt = {}, listener = {} }
 m.Output.mt.__index = m.Output
 

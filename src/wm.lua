@@ -11,6 +11,7 @@ m.wm = {
 	seats = {},
 	windows = {},
 	layers = { outputs = {}, seats = {} },
+    heads = {}
 }
 
 local function wm_manage()

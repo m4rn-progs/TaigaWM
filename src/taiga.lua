@@ -12,9 +12,11 @@ local config = require("config")
 local wm = require("wm")
 local globals = require("globals")
 local libinput = require("libinput")
+local output = require("output")
 
 -- required protocols
 wau:require("..include.protocol.river-xkb-bindings-v1")
+wau:require("...include.protocol.wlr-output-management-unstable-v1")
 
 -- ENTRY POINT --
 DISPLAY = wau.wl_display.connect()
@@ -46,6 +48,10 @@ registry:add_listener({
 				)
 			)
 			globals.globals[iface] = self:bind(name, wau[iface], required_version)
+            if iface == "zwlr_output_manager_v1" then
+			    local obj = self:bind(name, wau[iface], required_version)
+                obj:add_listener(output.head_manager_listener)
+            end
 		end
 	end,
 })
