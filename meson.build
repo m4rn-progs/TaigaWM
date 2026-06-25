@@ -45,6 +45,7 @@ exe = executable(
     wayland_client,
     xkbcommon,
   ],
+  link_args: ['-llua', '-lm'],
   include_directories: inc,
   install: true,
 )

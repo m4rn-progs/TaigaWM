@@ -43,6 +43,20 @@ int main(void) {
 	    fprintf(stderr, "Failed to find config file.\n");
 	}
 
+	size_t len;
+	char **keybinds = parse_keybinds(config_path, &len);
+	if (keybinds != NULL) {
+	    for (size_t i = 0 ; i < len ; i++) {
+		    printf("keybinds [%zu]: %s\n", i, keybinds[i]);
+		}
+		for (size_t i = 0 ; i <= len ; i++) {
+            free(keybinds[i]);
+        }
+        free(keybinds);
+	} else {
+	    fprintf(stderr, "Falling back to backup config.\n");
+	}
+
 	river_window_manager_v1_add_listener(window_manager_v1, &wm_listener, NULL);
 
 	while (true) {
