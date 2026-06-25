@@ -1,31 +1,33 @@
-# TaigaWM
+<!--
+SPDX-FileCopyrightText: © 2026 Isaac Freund
+SPDX-License-Identifier: 0BSD
+-->
 
-Small, custom tiling window manager written in Lua for the BorealOS project.
+# tinyrwm.c
 
-## Project status
-Active development — incomplete.
+Tiny river window manager implemented in C.
 
-## Short description
-TaigaWM is a minimal, dependency-light tiling window manager for X11, configured entirely via a single Lua file (`taiga.lua`). It focuses on a tiny, auditable codebase with sensible defaults and easy extensibility for power users.
+## Dependencies
 
-## During-development focus
-- Core tiling and basic layouts implemented.
-- Improving layouts, per-workspace rules, and multi-monitor support.
-- Hardening configuration parsing, adding tests, and setting up CI.
-- Expanding documentation and example configs.
+The following system dependencies are required:
 
-## Known limitations
-- Limited layout options compared to mature tiling WMs.
-- Basic multi-monitor handling.
-- Sparse documentation; configuration may require reading source.
+- pkg-config
+- meson
+- ninja
+- wayland
+- xkbcommon
 
-## Minimal example (taiga.lua)
-```lua
-return {
-  modkey = "Mod4",
-  layouts = { "tile", "floating" },
-  keys = {
-    { {"Mod4"}, "Return", function() os.execute("xterm &") end },
-    { {"Mod4","Shift"}, "q", function() os.execute("pkill taiga") end }
-  }
-}
+The "development" versions are required if applicable to your distribution.
+
+## Building
+
+```sh
+meson setup build
+ninja -C build
+```
+
+## Running
+
+```
+river -c ./build/tinyrwm
+```

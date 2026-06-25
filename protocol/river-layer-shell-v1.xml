@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <protocol name="river_layer_shell_v1">
   <copyright>
     SPDX-FileCopyrightText: © 2025 Isaac Freund
@@ -44,8 +44,11 @@
     </description>
 
     <enum name="error">
-      <entry name="object_already_created" value="0"
-        summary="the layer_shell_output/seat object was already created."/>
+      <entry
+                name="object_already_created"
+                value="0"
+                summary="the layer_shell_output/seat object was already created."
+            />
     </enum>
 
     <request name="destroy" type="destructor">
@@ -60,8 +63,8 @@
         It is a protocol error to make this request more than once for a given
         river_output_v1 object.
       </description>
-      <arg name="id" type="new_id" interface="river_layer_shell_output_v1"/>
-      <arg name="output" type="object" interface="river_output_v1"/>
+      <arg name="id" type="new_id" interface="river_layer_shell_output_v1" />
+      <arg name="output" type="object" interface="river_output_v1" />
     </request>
 
     <request name="get_seat">
@@ -69,8 +72,8 @@
         It is a protocol error to make this request more than once for a given
         river_seat_v1 object.
       </description>
-      <arg name="id" type="new_id" interface="river_layer_shell_seat_v1"/>
-      <arg name="seat" type="object" interface="river_seat_v1"/>
+      <arg name="id" type="new_id" interface="river_layer_shell_seat_v1" />
+      <arg name="seat" type="object" interface="river_seat_v1" />
     </request>
   </interface>
 
@@ -103,10 +106,10 @@
         This event will be followed by a manage_start event after all other new
         state has been sent by the server.
       </description>
-      <arg name="x" type="int" summary="global x coordinate"/>
-      <arg name="y" type="int" summary="global y coordinate"/>
-      <arg name="width" type="int" summary="area width"/>
-      <arg name="height" type="int" summary="area height"/>
+      <arg name="x" type="int" summary="global x coordinate" />
+      <arg name="y" type="int" summary="global y coordinate" />
+      <arg name="width" type="int" summary="area width" />
+      <arg name="height" type="int" summary="area height" />
     </event>
 
     <request name="set_default">
