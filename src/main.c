@@ -11,6 +11,7 @@
 #include "window.h"
 #include "wm.h"
 #include "xkb.h"
+#include "config.h"
 
 int main(void) {
 	struct wl_display *display = wl_display_connect(NULL);
@@ -35,6 +36,13 @@ int main(void) {
 	}
 
 	wm_init();
+	char *config_path = locate_config();
+	if (config_path != NULL) {
+	    printf("Found config at: %s\n", config_path);
+	} else {
+	    fprintf(stderr, "Failed to find config file.\n");
+	}
+
 	river_window_manager_v1_add_listener(window_manager_v1, &wm_listener, NULL);
 
 	while (true) {

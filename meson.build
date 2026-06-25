@@ -39,6 +39,7 @@ exe = executable(
   'src/seat.c',
   'src/wm.c',
   'src/layer_shell.c',
+  'src/config.c',
   generated,
   dependencies: [
     wayland_client,

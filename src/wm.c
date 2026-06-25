@@ -107,7 +107,6 @@ void wm_handle_seat(
 	seat->obj = river_seat;
 	seat->new = true;
 	seat->layer_shell_seat = river_layer_shell_v1_get_seat(layer_shell, seat->obj);
-	printf("layer_shell_seat ptr: %p\n", (void *)seat->layer_shell_seat);
 	wl_list_init(&seat->xkb_bindings);
 	wl_list_init(&seat->pointer_bindings);
 
