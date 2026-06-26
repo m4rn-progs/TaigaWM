@@ -8,6 +8,7 @@ Autostart = {
     "foot",
     "rofi -show drun",
     "noctalia",
+    "swaybg -i ~/Documents/Wallpapers/Raiden.jpg",
 }
 
 Libinput = {

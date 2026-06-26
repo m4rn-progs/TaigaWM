@@ -116,7 +116,7 @@ int parse_and_add_keybind(char *keybind_str, struct Seat *seat) {
     token = strtok(mods, "+");
     while(token != NULL) {
         if (strcmp(token, "super") == 0) {
-            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD5;
+            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD4;
         } else if (strcmp(token, "ctrl") == 0) {
             mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_CTRL;
         } else if (strcmp(token, "alt") == 0) {
