@@ -1,6 +1,5 @@
 #include <river-libinput-config-v1-client-protocol.h>
 #include <stdint.h>
-#include <stdio.h>
 
 #include "libinput.h"
 
