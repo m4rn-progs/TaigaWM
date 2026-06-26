@@ -45,6 +45,7 @@ struct Seat {
 
 extern const struct river_seat_v1_listener river_seat_listener;
 
+void fallback_config(struct Seat *seat);
 void seat_pointer_move(struct Seat *seat, struct Window *window);
 void seat_pointer_resize(struct Seat *seat, struct Window *window, uint32_t edges);
 void seat_handle_removed(void *data, struct river_seat_v1 *obj);
