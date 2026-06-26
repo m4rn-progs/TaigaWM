@@ -185,13 +185,11 @@ void seat_manage(struct Seat *seat) {
 		char **keybinds = parse_keybinds(config_path, &len);
 		if (keybinds != NULL) {
 		    for (size_t i = 0 ; i < len ; i++) {
-				printf("keybinds [%zu]: %s\n", i, keybinds[i]);
 				parse_and_add_keybind(keybinds[i], seat);
 				free(keybinds[i]);
 			}
 			free(keybinds);   // free the array of char*
             keybinds = NULL;
-            printf("done\n");
 		} else {
 		    fprintf(stderr, "Falling back to backup config.\n");
 			const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD4;

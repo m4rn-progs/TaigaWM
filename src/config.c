@@ -11,6 +11,7 @@
 #include "xkb.h"
 #include "seat.h"
 
+// add home + str to tmp buf
 void homeify(char **tmp_buf, char *home, char *after_home) {
     size_t home_sz = strlen(home);
     size_t af_sz = strlen(after_home);
@@ -20,6 +21,7 @@ void homeify(char **tmp_buf, char *home, char *after_home) {
     snprintf(*tmp_buf, home_sz + 1 + af_sz + 1, "%s/%s", home, after_home);
 }
 
+//basically a strtok loop
 void parse_get(char **save, char **str, const char *delim) {
     char *token = strtok(*str, delim);
     *str = NULL;
@@ -31,6 +33,7 @@ void parse_get(char **save, char **str, const char *delim) {
     strcpy(*save, token);
 }
 
+// huge function to parse, and .... add keybinds. duh.
 int parse_and_add_keybind(char *keybind_str, struct Seat *seat) {
     const char *delim = " ";
     char *mods = NULL;
@@ -38,50 +41,95 @@ int parse_and_add_keybind(char *keybind_str, struct Seat *seat) {
     char *action = NULL;
     char *cmd = NULL;
 
+    // save keybind str for later
+    char *save = malloc(strlen(keybind_str));
+    memcpy(save, keybind_str, strlen(keybind_str) + 1);
+
+    // get mods str
     parse_get(&mods, &keybind_str, delim);
     if (mods == NULL) {
         fprintf(stderr, "ERROR! Missing modifiers.\n");
         return 1;
     }
 
+    // get key str
     parse_get(&key, &keybind_str, delim);
     if (key == NULL) {
         fprintf(stderr, "ERROR! Missing key.\n");
         return 2;
     }
 
+    // get action str
     parse_get(&action, &keybind_str, delim);
     if (action == NULL) {
         fprintf(stderr, "ERROR! Missing action.\n");
         return 3;
     }
 
+    // get the cmd str
+    parse_get(&cmd, &keybind_str, delim);
+
+    // variable init
+    char *token;
+    size_t total;
+    char *final_cmd;
+    final_cmd = malloc(1);
+    final_cmd[0] = '\0';
+    total = 0;
+
+    // skip the first 4 tokens cuz we are restarting
+    token = strtok(save, " ");
+    token = strtok(NULL, " ");
+    token = strtok(NULL, " ");
+    token = strtok(NULL, " ");
+
+    // loop over all delims and basically add the rest of the cmds to final_cmd
+    while(token != NULL) {
+        if (total == 0) {
+            final_cmd = realloc(final_cmd, strlen(token + 1));
+            strcpy(final_cmd, token);
+            total = strlen(token);
+        } else {
+            final_cmd = realloc(final_cmd, total + 1 + strlen(token) + 1);
+            strcat(final_cmd, " ");
+            strcat(final_cmd, token);
+            total = strlen(final_cmd);
+        }
+        token = strtok(NULL, " ");
+    }
+
+    // free the temp stuff
+    free(save);
+
+    // add all the mods together if there are any if not, no mod will be used
+    uint32_t mods_local = RIVER_SEAT_V1_MODIFIERS_NONE;
+    token = strtok(mods, "+");
+    while(token != NULL) {
+        if (strcmp(token, "super") == 0) {
+            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD5;
+        } else if (strcmp(token, "ctrl") == 0) {
+            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_CTRL;
+        } else if (strcmp(token, "alt") == 0) {
+            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD1;
+        } else if (strcmp(token, "shift") == 0) {
+            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_SHIFT;
+        } else {
+            fprintf(stderr, "EXTREME WARNING! No modifer selected, you probably DON'T want that.\n");
+        }
+        token = strtok(NULL, "+");
+    }
+
+    // check the action to decide what to do
     if (strcmp(action, "spawn") == 0) {
-        parse_get(&cmd, &keybind_str, delim);
         if (cmd == NULL) {
             fprintf(stderr, "ERROR! Missing command.\n");
             return 4;
         }
-
-        uint32_t mods_local = RIVER_SEAT_V1_MODIFIERS_NONE;
-        char *token = strtok(mods, "+");
-        while(token != NULL) {
-            if (strcmp(token, "super") == 0) {
-                mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD5;
-            } else if (strcmp(token, "ctrl") == 0) {
-                mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_CTRL;
-            } else if (strcmp(token, "alt") == 0) {
-                mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD1;
-            } else if (strcmp(token, "shift") == 0) {
-                mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_SHIFT;
-            } else {
-                fprintf(stderr, "ERROR! Unimplemented mod: %s\n", token);
-            }
-            token = strtok(NULL, "+");
-        }
-
-        xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_SPAWN_SH, cmd);
-    } else if (strcmp())
+        xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_SPAWN_SH, strdup(final_cmd));
+        free(final_cmd);
+    } else if (strcmp(action, "killactive") == 0) {
+        xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_CLOSE, NULL);
+    }
 
     return 0;
 }
@@ -136,6 +184,7 @@ char **parse_keybinds(char *config_path, size_t *len_return) {
     return keybinds_buf;
 }
 
+// locate the config file
 char *locate_config(void) {
     // we will add home later.
     char *config_locations[] = {
@@ -144,22 +193,36 @@ char *locate_config(void) {
         "/usr/share/taigarc.lua",
     };
 
+    // get len
     size_t config_locations_len = sizeof(config_locations) / sizeof(config_locations[0]);
+
+    // for every possible config location
     for (size_t i = 0 ; i < config_locations_len ; i++) {
+        // if it doesnt start with / we want to add home to it
         if (config_locations[i][0] != '/') {
+            // proper string
             char *home = getenv("HOME");
             char *tmp_buf = NULL;
             homeify(&tmp_buf, home, config_locations[i]);
+
+            // try open it
             FILE *tmp_file = fopen(tmp_buf, "r");
             if(tmp_file != NULL) {
                 printf("Found a config\n");
+
+                fclose(tmp_file);
                 return tmp_buf;
             }
+
+            //clean
             free(tmp_buf);
         } else {
+            // try open it
             FILE *tmp_file = fopen(config_locations[i], "r");
             if(tmp_file != NULL) {
                 printf("Found a config\n");
+
+                fclose(tmp_file);
                 return config_locations[i];
             }
         }
