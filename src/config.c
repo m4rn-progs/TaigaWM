@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <stdio.h>
 #include <lua.h>
 #include <lualib.h>
@@ -234,5 +235,23 @@ char *locate_config(void) {
             }
         }
     }
+
+    fprintf(stdout, "Trying to load fallback config ./taigarc.lua\n");
+
+    // get cwd and prepend it to file name
+    char cwd[1024];
+    char full_path[2048];
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        return NULL;
+    }
+    snprintf(full_path, sizeof(full_path), "%s/%s", cwd, "taigarc.lua");
+
+    // try open it
+    FILE *tmp_file = fopen(full_path, "r");
+    if(tmp_file != NULL) {
+        fclose(tmp_file);
+        return strdup(full_path);
+    }
+
     return NULL;
 }
