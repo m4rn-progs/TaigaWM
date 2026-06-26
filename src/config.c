@@ -135,6 +135,10 @@ int parse_and_add_keybind(char *keybind_str, struct Seat *seat) {
 }
 
 char **parse_keybinds(char *config_path, size_t *len_return) {
+    if (config_path == NULL) {
+        return NULL;
+    }
+
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
 

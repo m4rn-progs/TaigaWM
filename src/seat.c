@@ -169,6 +169,19 @@ void seat_action(struct Seat *seat, enum Action action) {
 	}
 }
 
+void fallback_config(struct Seat *seat) {
+    fprintf(stderr, "Falling back to sane defaults.\n");
+    const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD1;
+	xkb_binding_create(seat, super, XKB_KEY_Return, ACTION_SPAWN_SH, "foot");
+	xkb_binding_create(seat, super, XKB_KEY_d, ACTION_SPAWN_SH, "rofi -show drun");
+	xkb_binding_create(seat, super, XKB_KEY_q, ACTION_CLOSE, NULL);
+	xkb_binding_create(seat, super, XKB_KEY_n, ACTION_FOCUS_NEXT, NULL);
+	xkb_binding_create(seat, super, XKB_KEY_Escape, ACTION_EXIT, NULL);
+	pointer_binding_create(seat, super, BTN_LEFT, ACTION_MOVE);
+	pointer_binding_create(seat, super, BTN_RIGHT, ACTION_RESIZE);
+
+}
+
 void seat_manage(struct Seat *seat) {
 	if (seat->new) {
 		seat->new = false;
@@ -178,7 +191,7 @@ void seat_manage(struct Seat *seat) {
 		if (config_path != NULL) {
 		    printf("Found config at: %s\n", config_path);
 		} else {
-		    fprintf(stderr, "Failed to find config file.\n");
+		    printf("Failed to load config.\n");
 		}
 
 		size_t len;
@@ -191,15 +204,7 @@ void seat_manage(struct Seat *seat) {
 			free(keybinds);   // free the array of char*
             keybinds = NULL;
 		} else {
-		    fprintf(stderr, "Falling back to backup config.\n");
-			const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD4;
-			xkb_binding_create(seat, super, XKB_KEY_Return, ACTION_SPAWN_SH, "foot");
-			xkb_binding_create(seat, super, XKB_KEY_d, ACTION_SPAWN_SH, "rofi -show drun");
-			xkb_binding_create(seat, super, XKB_KEY_q, ACTION_CLOSE, NULL);
-			xkb_binding_create(seat, super, XKB_KEY_n, ACTION_FOCUS_NEXT, NULL);
-			xkb_binding_create(seat, super, XKB_KEY_Escape, ACTION_EXIT, NULL);
-			pointer_binding_create(seat, super, BTN_LEFT, ACTION_MOVE);
-			pointer_binding_create(seat, super, BTN_RIGHT, ACTION_RESIZE);
+		    fallback_config(seat);
 		}
 	}
 
