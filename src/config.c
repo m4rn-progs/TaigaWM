@@ -143,7 +143,7 @@ int parse_and_add_keybind(char *keybind_str, struct Seat *seat) {
     return 0;
 }
 
-char **parse_keybinds(char *config_path, size_t *len_return) {
+char **get_list_of_strings_from_lua_table(const char *config_path, size_t *len_return, const char *table_name) {
     if (config_path == NULL) {
         return NULL;
     }
@@ -156,26 +156,25 @@ char **parse_keybinds(char *config_path, size_t *len_return) {
         return NULL;
     }
 
-    if (get_lua_table_by_name(L, "Keybinds")) {
-        fprintf(stderr, "Failed to find 'Keybinds' section.\n");
+    if (get_lua_table_by_name(L, table_name)) {
+        fprintf(stderr, "Failed to find '%s' section.\n", table_name);
         lua_close(L);
         return NULL;
     }
 
     size_t len = lua_rawlen(L, -1);
     size_t used = 0;
-
-    char **keybinds_buf = malloc(len * sizeof(*keybinds_buf));
-    for (size_t i = 0; i < len; i++) keybinds_buf[i] = NULL;
+    char **strings_buf = malloc(len * sizeof(*strings_buf));
+    for (size_t i = 0; i < len; i++) strings_buf[i] = NULL;
 
     for (size_t i = 1; i <= len; i++) {
         lua_rawgeti(L, -1, i);
 
         if (!lua_isstring(L, -1)) {
-            fprintf(stderr, "Failed to read keybinds\n");
+            fprintf(stderr, "Failed to read '%s' section.\n", table_name);
             lua_pop(L, 1);
-            for (size_t j = 0; j < used; j++) free(keybinds_buf[j]);
-            free(keybinds_buf);
+            for (size_t j = 0; j < used; j++) free(strings_buf[j]);
+            free(strings_buf);
             lua_close(L);
             return NULL;
         }
@@ -183,8 +182,8 @@ char **parse_keybinds(char *config_path, size_t *len_return) {
         const char *str = lua_tostring(L, -1);
         size_t sl = strlen(str);
 
-        keybinds_buf[used] = malloc(sl + 1);
-        memcpy(keybinds_buf[used], str, sl + 1);
+        strings_buf[used] = malloc(sl + 1);
+        memcpy(strings_buf[used], str, sl + 1);
         used++;
 
         lua_pop(L, 1);
@@ -192,7 +191,8 @@ char **parse_keybinds(char *config_path, size_t *len_return) {
 
     *len_return = len;
     lua_close(L);
-    return keybinds_buf;
+    return strings_buf;
+
 }
 
 // locate the config file
@@ -219,8 +219,6 @@ char *locate_config(void) {
             // try open it
             FILE *tmp_file = fopen(tmp_buf, "r");
             if(tmp_file != NULL) {
-                printf("Found a config\n");
-
                 fclose(tmp_file);
                 return tmp_buf;
             }
@@ -231,8 +229,6 @@ char *locate_config(void) {
             // try open it
             FILE *tmp_file = fopen(config_locations[i], "r");
             if(tmp_file != NULL) {
-                printf("Found a config\n");
-
                 fclose(tmp_file);
                 return config_locations[i];
             }

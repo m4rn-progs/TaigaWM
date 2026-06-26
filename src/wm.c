@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "wm.h"
 #include "window.h"
@@ -15,6 +16,8 @@
 #include "xkb.h"
 #include "layer_shell.h"
 #include "libinput.h"
+#include "config.h"
+#include "autostart.h"
 
 struct WindowManager wm;
 
@@ -95,11 +98,15 @@ void wm_handle_output(
 	struct Output *output = calloc(1, sizeof(struct Output));
 	output->obj = river_output;
 	output->layer_shell_output = river_layer_shell_v1_get_output(layer_shell, river_output);
-	river_layer_shell_output_v1_set_default(output->layer_shell_output);
+
+	if (! wm.layer_shell_has_default_output) {
+		river_layer_shell_output_v1_set_default(output->layer_shell_output);
+		wm.layer_shell_has_default_output = true;
+	}
 
 	river_output_v1_add_listener(output->obj, &river_output_listener, output);
-
 	wl_list_insert(wm.outputs.prev, &output->link);
+
 }
 
 void wm_handle_seat(

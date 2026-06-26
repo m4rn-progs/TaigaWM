@@ -4,13 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 #include <wayland-client-core.h>
 #include <wayland-client-protocol.h>
 
 #include "window.h"
 #include "wm.h"
 #include "xkb.h"
+#include "config.h"
+#include "autostart.h"
 
 int main(void) {
 	struct wl_display *display = wl_display_connect(NULL);
@@ -36,6 +37,17 @@ int main(void) {
 
 	wm_init();
 	river_window_manager_v1_add_listener(window_manager_v1, &wm_listener, NULL);
+
+	const char *config_path = locate_config();
+	if (config_path == NULL) {
+	    fprintf(stderr, "Failed to open config file.\n");
+	}
+	size_t autostarts_len;
+	char **autostarts = get_list_of_strings_from_lua_table(config_path, &autostarts_len, "Autostart");
+	if (autostarts != NULL) {
+	    autostart(autostarts, autostarts_len);
+	}
+	// even if its null, this function will just return null too
 
 	while (true) {
 		if (wl_display_dispatch(display) < 0) {

@@ -44,6 +44,7 @@ exe = executable(
   'src/layer_shell.c',
   'src/config.c',
   'src/libinput.c',
+  'src/autostart.c',
   generated,
   dependencies: [
     wayland_client,

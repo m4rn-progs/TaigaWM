@@ -4,11 +4,13 @@
 #include <wayland-util.h>
 #include <river-window-management-v1-client-protocol.h>
 #include <wayland-client-protocol.h>
+#include <stdbool.h>
 
 struct WindowManager {
 	struct wl_list outputs; // Output
 	struct wl_list windows; // Window
 	struct wl_list seats; // Seat
+	bool layer_shell_has_default_output;
 };
 
 extern struct WindowManager wm;

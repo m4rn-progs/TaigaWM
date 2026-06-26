@@ -12,7 +12,6 @@
 #include "seat.h"
 #include "config.h"
 
-
 void seat_handle_removed(void *data, struct river_seat_v1 *obj) {
 	struct Seat *seat = data;
 	seat->removed = true;
@@ -187,21 +186,21 @@ void seat_handle_new(struct Seat *seat) {
 
 	// open the config and load the keybinds
 	char *config_path = locate_config();
-	if (config_path != NULL) {
-	    printf("Found config at: %s\n", config_path);
-	} else {
-	    printf("Failed to load config.\n");
+	if (config_path == NULL) {
+	    fprintf(stderr, "Failed to open config file.");
 	}
 
-	size_t len;
-	char **keybinds = parse_keybinds(config_path, &len);
+
+	// even if its null, this function will just return null too
+	size_t keybinds_len;
+	char **keybinds = get_list_of_strings_from_lua_table(config_path, &keybinds_len, "Keybinds");
 	if (keybinds != NULL) {
-	    for (size_t i = 0 ; i < len ; i++) {
+	    for (size_t i = 0 ; i < keybinds_len ; i++) {
 			parse_and_add_keybind(keybinds[i], seat);
 			free(keybinds[i]);
 		}
 		free(keybinds);   // free the array of char*
-            keybinds = NULL;
+         keybinds = NULL;
 	} else {
 	    fallback_config(seat);
 	}

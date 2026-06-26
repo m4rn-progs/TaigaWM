@@ -1,0 +1,15 @@
+#include <unistd.h>
+#include <stdlib.h>
+
+#include "autostart.h"
+
+void autostart(char **autostart_list, size_t autostart_list_sz) {
+    for (size_t i = 0 ; i < autostart_list_sz ; i++) {
+        if (fork() == 0) {
+            fprintf(stdout, "Executing: %s\n", autostart_list[i]);
+            execl("/bin/sh", "/bin/sh", "-c", autostart_list[i], NULL);
+        }
+        free(autostart_list[i]);
+    }
+    free(autostart_list);
+}
