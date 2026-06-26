@@ -19,12 +19,15 @@ add_project_arguments(cc.get_supported_arguments([
 
 wayland_client = dependency('wayland-client')
 xkbcommon = dependency('xkbcommon')
+libinput = dependency('libinput')
 
 wl_mod = import('wayland')
 generated = wl_mod.scan_xml(
   'protocol/river-window-management-v1.xml',
   'protocol/river-xkb-bindings-v1.xml',
   'protocol/river-layer-shell-v1.xml',
+  'protocol/river-libinput-config-v1.xml',
+  'protocol/river-input-management-v1.xml',
 )
 
 inc = include_directories('include')
@@ -40,10 +43,12 @@ exe = executable(
   'src/wm.c',
   'src/layer_shell.c',
   'src/config.c',
+  'src/libinput.c',
   generated,
   dependencies: [
     wayland_client,
     xkbcommon,
+    libinput,
   ],
   link_args: ['-llua', '-lm'],
   include_directories: inc,

@@ -1,6 +1,7 @@
 #include <wayland-util.h>
 #include <river-window-management-v1-client-protocol.h>
 #include <river-layer-shell-v1-client-protocol.h>
+#include <river-libinput-config-v1-client-protocol.h>
 #include <wayland-client-protocol.h>
 #include <wayland-util.h>
 #include <stdio.h>
@@ -13,6 +14,7 @@
 #include "seat.h"
 #include "xkb.h"
 #include "layer_shell.h"
+#include "libinput.h"
 
 struct WindowManager wm;
 
@@ -64,7 +66,6 @@ void wm_handle_manage_start(void *data, struct river_window_manager_v1 *obj) {
 	wl_list_for_each(seat, &wm.seats, link) {
 		seat_manage(seat);
 	}
-
 	river_window_manager_v1_manage_finish(window_manager_v1);
 }
 
@@ -136,6 +137,9 @@ void handle_global(void *data, struct wl_registry *registry, uint32_t name,
 		xkb_bindings_v1 = wl_registry_bind(registry, name, &river_xkb_bindings_v1_interface, 1);
 	} else if (strcmp(interface, river_layer_shell_v1_interface.name) == 0) {
         layer_shell = wl_registry_bind(registry, name, &river_layer_shell_v1_interface, 1);
+    } else if (strcmp(interface, river_libinput_config_v1_interface.name) == 0) {
+        river_libinput_config = wl_registry_bind(registry, name, &river_libinput_config_v1_interface, 1);
+        river_libinput_config_v1_add_listener(river_libinput_config, &river_libinput_config_listener, NULL);
     }
 }
 
