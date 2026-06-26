@@ -10,6 +10,7 @@
 #include "xkb.h"
 #include "actions.h"
 #include "seat.h"
+#include "config.h"
 
 
 void seat_handle_removed(void *data, struct river_seat_v1 *obj) {
@@ -171,14 +172,37 @@ void seat_action(struct Seat *seat, enum Action action) {
 void seat_manage(struct Seat *seat) {
 	if (seat->new) {
 		seat->new = false;
-		const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD1;
-		xkb_binding_create(seat, super, XKB_KEY_Return, ACTION_SPAWN_SH, "foot");
-		xkb_binding_create(seat, super, XKB_KEY_d, ACTION_SPAWN_SH, "rofi -show drun");
-		xkb_binding_create(seat, super, XKB_KEY_q, ACTION_CLOSE, NULL);
-		xkb_binding_create(seat, super, XKB_KEY_n, ACTION_FOCUS_NEXT, NULL);
-		xkb_binding_create(seat, super, XKB_KEY_Escape, ACTION_EXIT, NULL);
-		pointer_binding_create(seat, super, BTN_LEFT, ACTION_MOVE);
-		pointer_binding_create(seat, super, BTN_RIGHT, ACTION_RESIZE);
+
+		// open the config and load the keybinds
+		char *config_path = locate_config();
+		if (config_path != NULL) {
+		    printf("Found config at: %s\n", config_path);
+		} else {
+		    fprintf(stderr, "Failed to find config file.\n");
+		}
+
+		size_t len;
+		char **keybinds = parse_keybinds(config_path, &len);
+		if (keybinds != NULL) {
+		    for (size_t i = 0 ; i < len ; i++) {
+				printf("keybinds [%zu]: %s\n", i, keybinds[i]);
+				parse_and_add_keybind(keybinds[i], seat);
+				free(keybinds[i]);
+			}
+			free(keybinds);   // free the array of char*
+            keybinds = NULL;
+            printf("done\n");
+		} else {
+		    fprintf(stderr, "Falling back to backup config.\n");
+			const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD4;
+			xkb_binding_create(seat, super, XKB_KEY_Return, ACTION_SPAWN_SH, "foot");
+			xkb_binding_create(seat, super, XKB_KEY_d, ACTION_SPAWN_SH, "rofi -show drun");
+			xkb_binding_create(seat, super, XKB_KEY_q, ACTION_CLOSE, NULL);
+			xkb_binding_create(seat, super, XKB_KEY_n, ACTION_FOCUS_NEXT, NULL);
+			xkb_binding_create(seat, super, XKB_KEY_Escape, ACTION_EXIT, NULL);
+			pointer_binding_create(seat, super, BTN_LEFT, ACTION_MOVE);
+			pointer_binding_create(seat, super, BTN_RIGHT, ACTION_RESIZE);
+		}
 	}
 
 	// If no window was interacted with in the current manage sequence,
