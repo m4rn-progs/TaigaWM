@@ -11,6 +11,15 @@
 #include "xkb.h"
 #include "seat.h"
 
+// open a lua table, just for slighly cleaner code
+int get_lua_table_by_name(lua_State *state, const char *name) {
+    lua_getglobal(state, name);
+    if (!lua_istable(state, -1)) {
+        return 1;
+    }
+    return 0;
+}
+
 // add home + str to tmp buf
 void homeify(char **tmp_buf, char *home, char *after_home) {
     size_t home_sz = strlen(home);
@@ -147,9 +156,7 @@ char **parse_keybinds(char *config_path, size_t *len_return) {
         return NULL;
     }
 
-    lua_getglobal(L, "Keybinds");
-
-    if (!lua_istable(L, -1)) {
+    if (get_lua_table_by_name(L, "Keybinds")) {
         fprintf(stderr, "Failed to find 'Keybinds' section.\n");
         lua_close(L);
         return NULL;

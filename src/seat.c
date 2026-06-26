@@ -182,30 +182,34 @@ void fallback_config(struct Seat *seat) {
 
 }
 
+void seat_handle_new(struct Seat *seat) {
+    seat->new = false;
+
+	// open the config and load the keybinds
+	char *config_path = locate_config();
+	if (config_path != NULL) {
+	    printf("Found config at: %s\n", config_path);
+	} else {
+	    printf("Failed to load config.\n");
+	}
+
+	size_t len;
+	char **keybinds = parse_keybinds(config_path, &len);
+	if (keybinds != NULL) {
+	    for (size_t i = 0 ; i < len ; i++) {
+			parse_and_add_keybind(keybinds[i], seat);
+			free(keybinds[i]);
+		}
+		free(keybinds);   // free the array of char*
+            keybinds = NULL;
+	} else {
+	    fallback_config(seat);
+	}
+}
+
 void seat_manage(struct Seat *seat) {
 	if (seat->new) {
-		seat->new = false;
-
-		// open the config and load the keybinds
-		char *config_path = locate_config();
-		if (config_path != NULL) {
-		    printf("Found config at: %s\n", config_path);
-		} else {
-		    printf("Failed to load config.\n");
-		}
-
-		size_t len;
-		char **keybinds = parse_keybinds(config_path, &len);
-		if (keybinds != NULL) {
-		    for (size_t i = 0 ; i < len ; i++) {
-				parse_and_add_keybind(keybinds[i], seat);
-				free(keybinds[i]);
-			}
-			free(keybinds);   // free the array of char*
-            keybinds = NULL;
-		} else {
-		    fallback_config(seat);
-		}
+	    seat_handle_new(seat);
 	}
 
 	// If no window was interacted with in the current manage sequence,
