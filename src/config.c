@@ -63,18 +63,25 @@ int parse_and_add_keybind(char *keybind_str, struct Seat *seat) {
             return 4;
         }
 
-        uint32_t mods_local;
-        if (strcmp(mods, "super") == 0) {
-            mods_local = RIVER_SEAT_V1_MODIFIERS_MOD4;
-        } else if (strcmp(mods, "alt") == 0) {
-            mods_local = RIVER_SEAT_V1_MODIFIERS_MOD1;
-        } else {
-            fprintf(stderr, "ERROR! Unimplemented mod.\n");
-            return 5;
+        uint32_t mods_local = RIVER_SEAT_V1_MODIFIERS_NONE;
+        char *token = strtok(mods, "+");
+        while(token != NULL) {
+            if (strcmp(token, "super") == 0) {
+                mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD5;
+            } else if (strcmp(token, "ctrl") == 0) {
+                mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_CTRL;
+            } else if (strcmp(token, "alt") == 0) {
+                mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD1;
+            } else if (strcmp(token, "shift") == 0) {
+                mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_SHIFT;
+            } else {
+                fprintf(stderr, "ERROR! Unimplemented mod: %s\n", token);
+            }
+            token = strtok(NULL, "+");
         }
 
         xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_SPAWN_SH, cmd);
-    }
+    } else if (strcmp())
 
     return 0;
 }
