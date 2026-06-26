@@ -16,8 +16,6 @@
 #include "xkb.h"
 #include "layer_shell.h"
 #include "libinput.h"
-#include "config.h"
-#include "autostart.h"
 
 struct WindowManager wm;
 

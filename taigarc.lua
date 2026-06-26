@@ -7,7 +7,7 @@ Keybinds = {
 Autostart = {
     "foot",
     "rofi -show drun",
-    "swaybg -m fill -i $HOME/Pictures/gruvbox_girlv2.png",
+    "noctalia",
 }
 
 Libinput = {
