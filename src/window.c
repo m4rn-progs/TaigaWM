@@ -1,6 +1,7 @@
 #include <wayland-util.h>
 #include <river-window-management-v1-client-protocol.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "window.h"
 #include "seat.h"
@@ -56,14 +57,28 @@ void window_handle_pointer_resize_requested(
 
 void window_handle_fullscreen_requested(void *data, struct river_window_v1 *obj, struct river_output_v1 *river_output) {
     struct Window *window = data;
+
     window->fullscreen = true;
+    window->oldx = window->x;
+    window->oldy = window->y;
+
     river_window_v1_inform_fullscreen(window->obj);
+
+    struct Output *output;
+    wl_list_for_each(output, &wm.outputs, link) {
+        river_window_v1_propose_dimensions(window->obj, output->width, output->height);
+        break;
+    }
+
+    window_set_position(window, 0, 0);
 }
 
 void window_handle_exit_fullscreen_requested(void *data, struct river_window_v1 *obj) {
     struct Window *window = data;
     window->fullscreen = false;
     river_window_v1_inform_not_fullscreen(window->obj);
+    river_window_v1_propose_dimensions(window->obj, 0, 0);
+    window_set_position(window, window->oldx, window->oldy);
 }
 
 void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {
