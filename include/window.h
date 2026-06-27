@@ -13,9 +13,14 @@ struct Window {
 
 	bool new;
 	bool closed;
+	bool fullscreen;
+	bool maximized;
 
 	int32_t x;
 	int32_t y;
+	int32_t oldx;
+	int32_t oldy;
+
 	int32_t width;
 	int32_t height;
 

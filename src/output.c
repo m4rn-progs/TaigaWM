@@ -24,6 +24,11 @@ void output_maybe_destroy(struct Output *output) {
 	free(output);
 }
 
+void output_handle_dimensions(void *data, struct river_output_v1 *obj, int32_t width, int32_t height) {
+    struct Output *output = data;
+    output->width = width;
+    output->height = height;
+}
+
 void output_handle_wl_output(void *data, struct river_output_v1 *obj, uint32_t name) {}
 void output_handle_position(void *data, struct river_output_v1 *obj, int32_t x, int32_t y) {}
-void output_handle_dimensions(void *data, struct river_output_v1 *obj, int32_t width, int32_t height) {}

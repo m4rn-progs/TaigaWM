@@ -8,6 +8,8 @@ struct Output {
 	struct river_output_v1 *obj;
 	struct river_layer_shell_output_v1 *layer_shell_output;
 	bool removed;
+	int32_t width;
+	int32_t height;
 	struct wl_list link; // WindowManager.outputs
 };
 

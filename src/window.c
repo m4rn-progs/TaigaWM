@@ -5,6 +5,7 @@
 #include "window.h"
 #include "seat.h"
 #include "wm.h"
+#include "output.h"
 
 struct river_window_manager_v1 *window_manager_v1;
 const struct river_window_v1_listener river_window_listener = {
@@ -53,6 +54,43 @@ void window_handle_pointer_resize_requested(
 	window->pointer_resize_requested_edges = edges;
 }
 
+void window_handle_fullscreen_requested(void *data, struct river_window_v1 *obj, struct river_output_v1 *river_output) {
+    struct Window *window = data;
+    window->fullscreen = true;
+    river_window_v1_inform_fullscreen(window->obj);
+}
+
+void window_handle_exit_fullscreen_requested(void *data, struct river_window_v1 *obj) {
+    struct Window *window = data;
+    window->fullscreen = false;
+    river_window_v1_inform_not_fullscreen(window->obj);
+}
+
+void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {
+    struct Window *window = data;
+
+    window->maximized = true;
+    window->oldx = window->x;
+    window->oldy = window->y;
+
+    river_window_v1_inform_maximized(window->obj);
+
+    struct Output *output;
+    wl_list_for_each(output, &wm.outputs, link) {
+        river_window_v1_propose_dimensions(window->obj, output->width, output->height);
+        break;
+    }
+    window_set_position(window, 0, 0);
+}
+
+void window_handle_unmaximize_requested(void *data, struct river_window_v1 *obj) {
+    struct Window *window = data;
+    window->maximized = false;
+    river_window_v1_inform_unmaximized(window->obj);
+    river_window_v1_propose_dimensions(window->obj, 0, 0);
+    window_set_position(window, window->oldx, window->oldy);
+}
+
 // Ignored events
 void window_handle_dimensions_hint(void *data, struct river_window_v1 *obj, int32_t min_width, int32_t min_height, int32_t max_width, int32_t max_height) {}
 void window_handle_app_id(void *data, struct river_window_v1 *obj, const char *app_id) {}
@@ -60,10 +98,6 @@ void window_handle_title(void *data, struct river_window_v1 *obj, const char *ti
 void window_handle_parent(void *data, struct river_window_v1 *obj, struct river_window_v1 *parent) {}
 void window_handle_decoration_hint(void *data, struct river_window_v1 *obj, uint32_t hint) {}
 void window_handle_show_window_menu_requested(void *data, struct river_window_v1 *obj, int32_t x, int32_t y) {}
-void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {}
-void window_handle_unmaximize_requested(void *data, struct river_window_v1 *obj) {}
-void window_handle_fullscreen_requested(void *data, struct river_window_v1 *obj, struct river_output_v1 *river_output) {}
-void window_handle_exit_fullscreen_requested(void *data, struct river_window_v1 *obj) {}
 void window_handle_minimize_requested(void *data, struct river_window_v1 *obj) {}
 void window_handle_unreliable_pid(void *data, struct river_window_v1 *obj, int32_t unreliable_pid) {}
 void window_handle_presentation_hint(void *data, struct river_window_v1 *obj, uint32_t hint) {}
@@ -105,13 +139,18 @@ void window_manage(struct Window *window) {
 		river_window_v1_propose_dimensions(window->obj, 0, 0);
 	}
 	if (window->pointer_move_requested != NULL) {
+	    if (window->maximized) {
+			window_handle_unmaximize_requested(window, window->obj);
+		}
 		seat_pointer_move(window->pointer_move_requested, window);
 		window->pointer_move_requested = NULL;
 	}
 	if (window->pointer_resize_requested != NULL) {
+        if (window->maximized) {
+            window_handle_unmaximize_requested(window, window->obj);
+        }
 		seat_pointer_resize(window->pointer_resize_requested, window,
 				window->pointer_resize_requested_edges);
 		window->pointer_resize_requested = NULL;
 	}
 }
-

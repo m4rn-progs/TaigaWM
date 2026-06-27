@@ -1,5 +1,5 @@
 Keybinds = {
-    "alt Return spawn foot",
+    "alt+shift space spawn foot",
     "alt+shift Return spawn rofi -show drun",
     "alt q killactive",
     "alt escape exit",
@@ -7,8 +7,7 @@ Keybinds = {
 
 Autostart = {
     "foot",
-    "rofi -show drun",
-    "noctalia"
+    "swaybg -m fill -i $HOME/Pictures/taiga.png"
 }
 
 Libinput = {
