@@ -22,23 +22,11 @@ void setup_inotify(void) {
     const char *config_path = locate_config();
     if (fork() == 0) {
         int fd = inotify_init();
-        char buf[1024] __attribute__((aligned(__alignof__(struct inotify_event))));
+        char buf[1024];
         inotify_add_watch(fd, config_path, IN_MODIFY);
 
         while (read(fd, buf, sizeof(buf)) > 0) {
-            char *ptr = buf;
-            while (ptr < buf + sizeof(buf)) {
-                struct inotify_event *event = (struct inotify_event *)ptr;
-
-                if (event->mask & IN_MODIFY) {
-                    kill(getppid(), SIGUSR1);
-                }
-                if (event->mask & IN_IGNORED) {
-                    inotify_add_watch(fd, config_path, IN_MODIFY);
-                }
-
-                ptr += sizeof(struct inotify_event) + event->len;
-            }
+            kill(getppid(), SIGUSR1);
         }
         exit(0);
     }
