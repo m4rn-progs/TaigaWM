@@ -2,13 +2,13 @@ Keybinds = {
     "alt Return spawn foot",
     "alt+shift Return spawn rofi -show drun",
     "alt q killactive",
+    "alt escape exit",
 }
 
 Autostart = {
     "foot",
     "rofi -show drun",
-    "noctalia",
-    "swaybg -i ~/Documents/Wallpapers/Raiden.jpg",
+    "noctalia"
 }
 
 Libinput = {

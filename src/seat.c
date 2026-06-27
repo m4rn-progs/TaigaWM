@@ -184,6 +184,12 @@ void fallback_config(struct Seat *seat) {
 void seat_handle_new(struct Seat *seat) {
     seat->new = false;
 
+    //destroy all keybinds first if they exist
+    struct XkbBinding *xkb_binding, *xkb_binding_tmp;
+	wl_list_for_each_safe(xkb_binding, xkb_binding_tmp, &seat->xkb_bindings, link) {
+	    xkb_binding_destroy(xkb_binding);
+	}
+
 	// open the config and load the keybinds
 	char *config_path = locate_config();
 	if (config_path == NULL) {

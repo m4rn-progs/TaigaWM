@@ -139,6 +139,8 @@ int parse_and_add_keybind(char *keybind_str, struct Seat *seat) {
         free(final_cmd);
     } else if (strcmp(action, "killactive") == 0) {
         xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_CLOSE, NULL);
+    } else if (strcmp(action, "exit") == 0) {
+        xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_EXIT, NULL);
     }
 
     return 0;
