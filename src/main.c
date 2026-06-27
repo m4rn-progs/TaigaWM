@@ -91,6 +91,7 @@ int main(void) {
             wl_list_for_each(seat, &wm.seats, link) {
                 seat->new = true;
             }
+            setup_inotify();
         }
     }
 
