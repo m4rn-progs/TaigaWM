@@ -1,3 +1,4 @@
+#include <complex.h>
 #include <wayland-util.h>
 #include <river-window-management-v1-client-protocol.h>
 #include <river-layer-shell-v1-client-protocol.h>
@@ -16,6 +17,7 @@
 #include "xkb.h"
 #include "layer_shell.h"
 #include "libinput.h"
+#include "config.h"
 
 struct WindowManager wm;
 
@@ -100,6 +102,16 @@ void wm_handle_output(
 	if (! wm.layer_shell_has_default_output) {
 		river_layer_shell_output_v1_set_default(output->layer_shell_output);
 		wm.layer_shell_has_default_output = true;
+	}
+
+	const char *config_path = locate_config();
+	bool tearing = get_bool_from_var_from_table(config_path, "Misc", "tearing");
+	if (tearing) {
+	    fprintf(stdout, "INFO: Tearing enabled.\n");
+        river_output_v1_set_presentation_mode(output->obj, 1);
+	} else {
+        fprintf(stdout, "INFO: Tearing disabled.\n");
+        river_output_v1_set_presentation_mode(output->obj, 0);
 	}
 
 	river_output_v1_add_listener(output->obj, &river_output_listener, output);

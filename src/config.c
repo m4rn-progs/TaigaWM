@@ -127,7 +127,7 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
     return 0;
 }
 
-char **get_list_of_strings_from_lua_table(const char *config_path, size_t *len_return, const char *table_name) {
+lua_State *lua_open_table(const char *config_path, const char *table_name) {
     if (config_path == NULL) {
         return NULL;
     }
@@ -143,6 +143,56 @@ char **get_list_of_strings_from_lua_table(const char *config_path, size_t *len_r
     if (get_lua_table_by_name(L, table_name)) {
         fprintf(stderr, "Failed to find '%s' section.\n", table_name);
         lua_close(L);
+        return NULL;
+    }
+
+    return L;
+
+}
+
+bool get_bool_from_var_from_table(const char *config_path, const char *table_name, const char *var_name) {
+    lua_State *L;
+    if((L = lua_open_table(config_path, table_name)) == NULL) {
+        return NULL;
+    }
+
+    lua_getfield(L, -1, var_name);
+    int luatype = lua_type(L, -1);
+
+    if (luatype == LUA_TBOOLEAN){
+        bool b = lua_toboolean(L, -1);
+
+        lua_close(L);
+        return b;
+    } else {
+        lua_close(L);
+        return NULL;
+    }
+}
+
+const char *get_string_from_var_from_table(const char *config_path, const char *table_name, const char *var_name) {
+    lua_State *L;
+    if((L = lua_open_table(config_path, table_name)) == NULL) {
+        return NULL;
+    }
+
+    lua_getfield(L, -1, var_name);
+    int luatype = lua_type(L, -1);
+
+    if (luatype == LUA_TSTRING){
+        const char *s = lua_tostring(L, -1);
+
+        lua_close(L);
+        return s;
+    } else {
+        lua_close(L);
+        return NULL;
+    }
+}
+
+char **get_list_of_strings_from_lua_table(const char *config_path, size_t *len_return, const char *table_name) {
+    lua_State *L;
+    if((L = lua_open_table(config_path, table_name)) == NULL) {
         return NULL;
     }
 
