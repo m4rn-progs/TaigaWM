@@ -195,23 +195,14 @@ void seat_handle_new(struct Seat *seat) {
         pointer_binding_destroy(pointer_binding);
     }
 
-	// open the config and load the keybinds
-	char *config_path = locate_config();
-	if (config_path == NULL) {
-	    fprintf(stderr, "Failed to open config file.");
-	}
-
-
-	// even if its null, this function will just return null too
-	size_t keybinds_len;
-	char **keybinds = get_list_of_strings_from_lua_table(config_path, &keybinds_len, "Keybinds");
-	if (keybinds != NULL) {
-	    for (size_t i = 0 ; i < keybinds_len ; i++) {
-			parse_and_add_keybind(keybinds[i], seat);
-			free(keybinds[i]);
+	load_config();
+	if (keybind_config.keybinds != NULL) {
+	    for (size_t i = 0 ; i < keybind_config.keybinds_len ; i++) {
+			parse_and_add_keybind(keybind_config.keybinds[i], seat);
+			free(keybind_config.keybinds[i]);
 		}
-		free(keybinds);   // free the array of char*
-         keybinds = NULL;
+		free(keybind_config.keybinds);   // free the array of char*
+        keybind_config.keybinds = NULL;
 	} else {
 	    fallback_config(seat);
 	}

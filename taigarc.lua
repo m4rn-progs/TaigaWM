@@ -1,13 +1,11 @@
 Keybinds = {
-    "alt+shift space spawn foot",
-    "alt+shift Return spawn rofi -show drun",
+    "alt+shift space spawn kitty",
     "alt q killactive",
     "alt escape exit",
 } -- valid config
 
 Autostart = {
-    "foot",
-    "swaybg -m fill -i $HOME/Pictures/taiga.png"
+    "kitty",
 } -- valid config
 
 Libinput = {
@@ -23,6 +21,6 @@ Xkb = {
 } -- invalid config
 
 Misc = {
-    tearing = true,
+    tearing = false,
     -- etc
 } -- valid config

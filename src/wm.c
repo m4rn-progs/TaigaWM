@@ -104,9 +104,7 @@ void wm_handle_output(
 		wm.layer_shell_has_default_output = true;
 	}
 
-	const char *config_path = locate_config();
-	bool tearing = get_bool_from_var_from_table(config_path, "Misc", "tearing");
-	if (tearing) {
+	if (misc_config.tearing) {
 	    fprintf(stdout, "INFO: Tearing enabled.\n");
         river_output_v1_set_presentation_mode(output->obj, 1);
 	} else {

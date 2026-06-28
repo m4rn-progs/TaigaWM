@@ -66,11 +66,10 @@ int main(void) {
     wm_init();
     river_window_manager_v1_add_listener(window_manager_v1, &wm_listener, NULL);
 
-    const char *config_path = locate_config();
-    size_t autostarts_len;
-    char **autostarts = get_list_of_strings_from_lua_table(config_path, &autostarts_len, "Autostart");
-    if (autostarts != NULL) {
-        autostart(autostarts, autostarts_len);
+    load_config();
+
+    if (autostart_config.autostarts != NULL) {
+        autostart(autostart_config.autostarts, autostart_config.autostarts_len);
     }
 
     setup_inotify();
@@ -91,6 +90,7 @@ int main(void) {
             wl_list_for_each(seat, &wm.seats, link) {
                 seat->new = true;
             }
+            setup_inotify();
         }
     }
 

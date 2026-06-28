@@ -11,6 +11,12 @@
 
 #include "xkb.h"
 #include "seat.h"
+#include "config.h"
+
+
+struct KeybindConfig keybind_config = {0};
+struct AutostartConfig autostart_config = {0};
+struct MiscConfig misc_config = {0};
 
 // open a lua table, just for slighly cleaner code
 int get_lua_table_by_name(lua_State *state, const char *name) {
@@ -292,4 +298,31 @@ char *locate_config(void) {
     }
 
     return NULL;
+}
+
+int load_config(void) {
+    const char *config_path = locate_config();
+    if (config_path == NULL) {
+        fprintf(stderr, "Failed to open a config file.");
+        return 1;
+    }
+
+    size_t autostart_len;
+    char **autostart = get_list_of_strings_from_lua_table(config_path, &autostart_len, "Autostart");
+
+    size_t binds_len;
+    char **binds = get_list_of_strings_from_lua_table(config_path, &binds_len, "Keybinds");
+
+    bool tearing = get_bool_from_var_from_table(config_path, "Misc", "tearing");
+
+    keybind_config.keybinds = binds;
+    keybind_config.keybinds_len = binds_len;
+    
+    autostart_config.autostarts = autostart;
+    autostart_config.autostarts_len = autostart_len;
+
+    misc_config.tearing = tearing;
+
+    return 0;
+
 }
