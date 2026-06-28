@@ -31,112 +31,93 @@ void homeify(char **tmp_buf, char *home, char *after_home) {
     snprintf(*tmp_buf, home_sz + 1 + af_sz + 1, "%s/%s", home, after_home);
 }
 
-//basically a strtok loop
-void parse_get(char **save, char **str, const char *delim) {
-    char *token = strtok(*str, delim);
-    *str = NULL;
-    if (token == NULL) {
-        save = NULL;
-        return;
-    }
-    *save = malloc(strlen(token) + 1);
-    strcpy(*save, token);
-}
 
 // huge function to parse, and .... add keybinds. duh.
-int parse_and_add_keybind(char *keybind_str, struct Seat *seat) {
-    const char *delim = " ";
-    char *mods = NULL;
-    char *key = NULL;
-    char *action = NULL;
-    char *cmd = NULL;
+// m4rn-progs note here,
+// I have decided to rewrite this to use pre-allocated memory. Since we'll
+// be calling this function in seat.c for each bit of config we have,
+// I don't want to keep calling malloc like 50 times per line and for each " " char.
+// Therefore, pre-allocate memory via array and operate in that array, and just destroy the array
+int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
+    // pre-alloc that array
+    size_t len = strlen(keybind_str);
+    
+    char buf[len + 1];
+    strcpy(buf, keybind_str);
 
-    // save keybind str for later
-    char *save = malloc(strlen(keybind_str));
-    memcpy(save, keybind_str, strlen(keybind_str) + 1);
+    char *saveptr1, *saveptr2;
+    //start tokenizing
 
-    // get mods str
-    parse_get(&mods, &keybind_str, delim);
-    if (mods == NULL) {
-        fprintf(stderr, "ERROR! Missing modifiers.\n");
-        return 1;
+    // get mod str
+    char *mods = strtok_r(buf, " ", &saveptr1);
+    if (!mods) { 
+        fprintf(stderr, "ERROR! Missing modifiers.\n"); 
+        return 1; 
     }
 
-    // get key str
-    parse_get(&key, &keybind_str, delim);
-    if (key == NULL) {
-        fprintf(stderr, "ERROR! Missing key.\n");
-        return 2;
+    //get key str
+    char *key = strtok_r(NULL, " ", &saveptr1);
+    if (!key) { 
+        fprintf(stderr, "ERROR! Missing key.\n"); 
+        return 2; 
     }
-
-    // get action str
-    parse_get(&action, &keybind_str, delim);
-    if (action == NULL) {
-        fprintf(stderr, "ERROR! Missing action.\n");
-        return 3;
+    
+    //get action str
+    char *action = strtok_r(NULL, " ", &saveptr1);
+    if (!action) { 
+        fprintf(stderr, "ERROR! Missing action.\n"); 
+        return 3; 
     }
+    
+    // prepare a buffer that will soon enough get copied to the heap
+    char final_cmd_buf[len + 1];
+    size_t final_cmd_len = 0;
+    
+    // prepare the cmd_token that will be in that buffer
+    char *cmd_tok = strtok_r(NULL, " ", &saveptr1);
 
-    // get the cmd str
-    parse_get(&cmd, &keybind_str, delim);
-
-    // variable init
-    char *token;
-    size_t total;
-    char *final_cmd;
-    final_cmd = malloc(1);
-    final_cmd[0] = '\0';
-    total = 0;
-
-    // skip the first 4 tokens cuz we are restarting
-    token = strtok(save, " ");
-    token = strtok(NULL, " ");
-    token = strtok(NULL, " ");
-    token = strtok(NULL, " ");
-
-    // loop over all delims and basically add the rest of the cmds to final_cmd
-    while(token != NULL) {
-        if (total == 0) {
-            final_cmd = realloc(final_cmd, strlen(token + 1));
-            strcpy(final_cmd, token);
-            total = strlen(token);
-        } else {
-            final_cmd = realloc(final_cmd, total + 1 + strlen(token) + 1);
-            strcat(final_cmd, " ");
-            strcat(final_cmd, token);
-            total = strlen(final_cmd);
+     // "loop over all delims and basically add the rest of the cmds to final_cmd" - zoey, 2026
+    while (cmd_tok != NULL) {
+        size_t tok_len = strlen(cmd_tok);
+        
+        if (final_cmd_len > 0) {
+            final_cmd_buf[final_cmd_len++] = ' ';
         }
-        token = strtok(NULL, " ");
+        
+        memcpy(final_cmd_buf + final_cmd_len, cmd_tok, tok_len);
+        final_cmd_len += tok_len;
+        
+        cmd_tok = strtok_r(NULL, " ", &saveptr1);
     }
+    final_cmd_buf[final_cmd_len] = '\0';
 
-    // free the temp stuff
-    free(save);
-
-    // add all the mods together if there are any if not, no mod will be used
     uint32_t mods_local = RIVER_SEAT_V1_MODIFIERS_NONE;
-    token = strtok(mods, "+");
-    while(token != NULL) {
-        if (strcmp(token, "super") == 0) {
-            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD4;
-        } else if (strcmp(token, "ctrl") == 0) {
-            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_CTRL;
-        } else if (strcmp(token, "alt") == 0) {
-            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_MOD1;
-        } else if (strcmp(token, "shift") == 0) {
-            mods_local = mods_local | RIVER_SEAT_V1_MODIFIERS_SHIFT;
+    char *mod_tok = strtok_r(mods, "+", &saveptr2);
+    
+    // add all the mods together if there are any if not, no mod will be used
+    while (mod_tok != NULL) {
+        if (strcmp(mod_tok, "super") == 0) {
+            mods_local |= RIVER_SEAT_V1_MODIFIERS_MOD4;
+        } else if (strcmp(mod_tok, "ctrl") == 0) {
+            mods_local |= RIVER_SEAT_V1_MODIFIERS_CTRL;
+        } else if (strcmp(mod_tok, "alt") == 0) {
+            mods_local |= RIVER_SEAT_V1_MODIFIERS_MOD1;
+        } else if (strcmp(mod_tok, "shift") == 0) {
+            mods_local |= RIVER_SEAT_V1_MODIFIERS_SHIFT;
         } else {
             fprintf(stderr, "EXTREME WARNING! No modifer selected, you probably DON'T want that.\n");
         }
-        token = strtok(NULL, "+");
+        mod_tok = strtok_r(NULL, "+", &saveptr2);
     }
-
+    
     // check the action to decide what to do
     if (strcmp(action, "spawn") == 0) {
-        if (cmd == NULL) {
-            fprintf(stderr, "ERROR! Missing command.\n");
-            return 4;
+        if (final_cmd_len == 0) { 
+            fprintf(stderr, "ERROR! Missing command.\n"); 
+            return 4; 
         }
-        xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_SPAWN_SH, strdup(final_cmd));
-        free(final_cmd);
+        // look mom the buffer got copied to heap
+        xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_SPAWN_SH, strdup(final_cmd_buf));
     } else if (strcmp(action, "killactive") == 0) {
         xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_CLOSE, NULL);
     } else if (strcmp(action, "exit") == 0) {
