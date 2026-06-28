@@ -190,6 +190,11 @@ void seat_handle_new(struct Seat *seat) {
 	    xkb_binding_destroy(xkb_binding);
 	}
 
+    struct PointerBinding *pointer_binding, *pointer_binding_tmp;
+    wl_list_for_each_safe(pointer_binding, pointer_binding_tmp, &seat->pointer_bindings, link) {
+        pointer_binding_destroy(pointer_binding);
+    }
+
 	// open the config and load the keybinds
 	char *config_path = locate_config();
 	if (config_path == NULL) {

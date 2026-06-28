@@ -197,6 +197,11 @@ char *locate_config(void) {
         if (config_locations[i][0] != '/') {
             // proper string
             char *home = getenv("HOME");
+            if (home == NULL) {
+                fprintf(stderr, "WARNING: HOME environment variable not set. Skipping %s\n", config_locations[i]);
+                continue;
+            }
+
             char *tmp_buf = NULL;
             homeify(&tmp_buf, home, config_locations[i]);
 
