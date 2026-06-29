@@ -4,6 +4,11 @@ Keybinds = {
     "alt escape exit",
 } -- valid config
 
+PointerBinds = {
+    "alt left_click move",
+    "alt right_click resize",
+} -- valid config
+
 Autostart = {
     "kitty",
 } -- valid config

@@ -168,17 +168,21 @@ void seat_action(struct Seat *seat, enum Action action) {
 	}
 }
 
-void fallback_config(struct Seat *seat) {
+void fallback_pointerbinds(struct Seat *seat) {
+    fprintf(stderr, "WARNING: falling back to sane default pointer binds.\n");
+    const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD4;
+	pointer_binding_create(seat, super, BTN_LEFT, ACTION_MOVE);
+	pointer_binding_create(seat, super, BTN_RIGHT, ACTION_RESIZE);
+}
+
+void fallback_keybinds(struct Seat *seat) {
     fprintf(stderr, "WARNING: falling back to sane default keybinds.\n");
-    const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD1;
+    const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD4;
 	xkb_binding_create(seat, super, XKB_KEY_Return, ACTION_SPAWN_SH, "foot");
 	xkb_binding_create(seat, super, XKB_KEY_d, ACTION_SPAWN_SH, "rofi -show drun");
 	xkb_binding_create(seat, super, XKB_KEY_q, ACTION_CLOSE, NULL);
 	xkb_binding_create(seat, super, XKB_KEY_n, ACTION_FOCUS_NEXT, NULL);
 	xkb_binding_create(seat, super, XKB_KEY_Escape, ACTION_EXIT, NULL);
-	pointer_binding_create(seat, super, BTN_LEFT, ACTION_MOVE);
-	pointer_binding_create(seat, super, BTN_RIGHT, ACTION_RESIZE);
-
 }
 
 void seat_handle_new(struct Seat *seat) {
@@ -194,7 +198,8 @@ void seat_handle_new(struct Seat *seat) {
     wl_list_for_each_safe(pointer_binding, pointer_binding_tmp, &seat->pointer_bindings, link) {
         pointer_binding_destroy(pointer_binding);
     }
-
+	
+	// set pointer bindings
 	load_config();
 	if (keybind_config.keybinds != NULL) {
 	    for (size_t i = 0 ; i < keybind_config.keybinds_len ; i++) {
@@ -204,7 +209,18 @@ void seat_handle_new(struct Seat *seat) {
 		free(keybind_config.keybinds);   // free the array of char*
         keybind_config.keybinds = NULL;
 	} else {
-	    fallback_config(seat);
+	    fallback_keybinds(seat);
+	}
+
+	if (pointer_config.pointerbinds != NULL) {
+	    for (size_t i = 0 ; i < pointer_config.pointerbinds_len ; i++) {
+			parse_and_add_pointerbind(pointer_config.pointerbinds[i], seat);
+			free(pointer_config.pointerbinds[i]);
+		}
+		free(pointer_config.pointerbinds);   // free the array of char*
+        pointer_config.pointerbinds = NULL;
+	} else {
+		fallback_pointerbinds(seat);
 	}
 }
 

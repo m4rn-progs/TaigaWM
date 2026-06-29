@@ -8,6 +8,7 @@
 #include <lauxlib.h>
 #include <wayland-util.h>
 #include <xkbcommon/xkbcommon.h>
+#include <linux/input-event-codes.h>
 
 #include "xkb.h"
 #include "seat.h"
@@ -15,6 +16,7 @@
 
 
 struct KeybindConfig keybind_config = {0};
+struct PointerConfig pointer_config = {0};
 struct AutostartConfig autostart_config = {0};
 struct LibinputConfig libinput_config = {0};
 struct MiscConfig misc_config = {0};
@@ -38,6 +40,77 @@ void homeify(char **tmp_buf, char *home, char *after_home) {
     snprintf(*tmp_buf, home_sz + 1 + af_sz + 1, "%s/%s", home, after_home);
 }
 
+// mods mousebutton action
+int parse_and_add_pointerbind(const char *pointer_str, struct Seat *seat) {
+    // pre-alloc that array
+    size_t len = strlen(pointer_str);
+
+    char buf[len + 1];
+    strcpy(buf, pointer_str);
+
+    char *saveptr1, *saveptr2;
+    //start tokenizing
+
+    //get mod str
+    char *mods = strtok_r(buf, " ", &saveptr1);
+    if (!mods) {
+        fprintf(stderr, "ERROR: missing modifiers.\n"); 
+        return 1; 
+    }
+
+    char *mb = strtok_r(NULL, " ", &saveptr1);
+    if (!mb) {
+        fprintf(stderr, "ERROR: missing mouse button.\n"); 
+        return 1; 
+    }
+
+    char *action = strtok_r(NULL, " ", &saveptr1);
+    if (!action) { 
+        fprintf(stderr, "ERROR: missing action.\n"); 
+        return 3; 
+    }
+
+
+    uint32_t mods_local = RIVER_SEAT_V1_MODIFIERS_NONE;
+    char *mod_tok = strtok_r(mods, "+", &saveptr2);
+    
+    // add all the mods together if there are any if not, no mod will be used
+    while (mod_tok != NULL) {
+        if (strcmp(mod_tok, "super") == 0) {
+            mods_local |= RIVER_SEAT_V1_MODIFIERS_MOD4;
+        } else if (strcmp(mod_tok, "ctrl") == 0) {
+            mods_local |= RIVER_SEAT_V1_MODIFIERS_CTRL;
+        } else if (strcmp(mod_tok, "alt") == 0) {
+            mods_local |= RIVER_SEAT_V1_MODIFIERS_MOD1;
+        } else if (strcmp(mod_tok, "shift") == 0) {
+            mods_local |= RIVER_SEAT_V1_MODIFIERS_SHIFT;
+        } else {
+            fprintf(stderr, "EXTREME WARNING: no modifer selected, you probably DON'T want that.\n");
+        }
+        mod_tok = strtok_r(NULL, "+", &saveptr2);
+    }
+
+
+    uint32_t button = 0;
+    if (strcmp(mb, "left_click") == 0) {
+        button = BTN_LEFT;
+    } else if (strcmp(mb, "right_click") == 0) {
+        button = BTN_RIGHT;
+    } else {
+        fprintf(stderr, "ERROR: invalid button\n");
+    }
+
+    if (strcmp(action, "move") == 0) {
+	    pointer_binding_create(seat, mods_local, button, ACTION_MOVE);
+    } else if (strcmp(action, "resize") == 0) {
+	    pointer_binding_create(seat, mods_local, button, ACTION_RESIZE);
+    } else {
+        fprintf(stderr, "ERROR: unknown action.\n");
+        return 1;
+    }
+
+    return 0;
+}
 
 // huge function to parse, and .... add keybinds. duh.
 // m4rn-progs note here,
@@ -129,6 +202,9 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
         xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_CLOSE, NULL);
     } else if (strcmp(action, "exit") == 0) {
         xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_EXIT, NULL);
+    } else {
+        fprintf(stderr, "ERROR: unknown action.\n");
+        return 1;
     }
 
     return 0;
@@ -313,6 +389,12 @@ int load_config(void) {
     char **binds = get_list_of_strings_from_lua_table(config_path, &binds_len, "Keybinds");
     keybind_config.keybinds = binds;
     keybind_config.keybinds_len = binds_len;
+
+    // Pointer binds
+    size_t pbinds_len;
+    char **pbinds = get_list_of_strings_from_lua_table(config_path, &pbinds_len, "PointerBinds");
+    pointer_config.pointerbinds = pbinds;
+    pointer_config.pointerbinds_len = pbinds_len;
 
     // autostart
     size_t autostart_len;
