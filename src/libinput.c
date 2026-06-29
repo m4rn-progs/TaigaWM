@@ -77,19 +77,19 @@ void river_libinput_config_handle_libinput_device(void *data, struct river_libin
 
 void river_libinput_device_handle_accel_profiles_support(void *data, struct river_libinput_device_v1 *device, uint32_t profiles) {
     if (strcmp(libinput_config.accel_profile, "flat") == 0) {
-        fprintf(stdout, "INFO: Accel profile set to flat.\n");
+        fprintf(stdout, "INFO: accel profile set to flat.\n");
         river_libinput_device_v1_set_accel_profile(device, RIVER_LIBINPUT_DEVICE_V1_ACCEL_PROFILES_FLAT);
 
     } else if (strcmp(libinput_config.accel_profile, "adaptive") == 0) {
-        fprintf(stdout, "INFO: Accel profile set to adaptive.\n");
+        fprintf(stdout, "INFO: accel profile set to adaptive.\n");
         river_libinput_device_v1_set_accel_profile(device, RIVER_LIBINPUT_DEVICE_V1_ACCEL_PROFILES_ADAPTIVE);
 
     } else if (strcmp(libinput_config.accel_profile, "none") == 0) {
-        fprintf(stdout, "INFO: Accel profile set to none.\n");
+        fprintf(stdout, "INFO: accel profile set to none.\n");
         river_libinput_device_v1_set_accel_profile(device, RIVER_LIBINPUT_DEVICE_V1_ACCEL_PROFILES_NONE);
 
     } else {
-        fprintf(stderr, "ERROR: Invalid accel profile, falling back to none.\n");
+        fprintf(stderr, "ERROR: invalid accel profile, falling back to none.\n");
         river_libinput_device_v1_set_accel_profile(device, RIVER_LIBINPUT_DEVICE_V1_ACCEL_PROFILES_NONE);
     }
 }

@@ -45,7 +45,7 @@ int main(void) {
 
     struct wl_display *display = wl_display_connect(NULL);
     if (display == NULL) {
-        fprintf(stderr, "Failed to connect to Wayland server.\n");
+        fprintf(stderr, "ERROR: failed to connect to Wayland server.\n");
         return 1;
     }
 

@@ -169,7 +169,7 @@ void seat_action(struct Seat *seat, enum Action action) {
 }
 
 void fallback_config(struct Seat *seat) {
-    fprintf(stderr, "Falling back to sane defaults.\n");
+    fprintf(stderr, "WARNING: falling back to sane default keybinds.\n");
     const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD1;
 	xkb_binding_create(seat, super, XKB_KEY_Return, ACTION_SPAWN_SH, "foot");
 	xkb_binding_create(seat, super, XKB_KEY_d, ACTION_SPAWN_SH, "rofi -show drun");

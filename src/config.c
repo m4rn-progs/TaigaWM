@@ -58,21 +58,21 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
     // get mod str
     char *mods = strtok_r(buf, " ", &saveptr1);
     if (!mods) { 
-        fprintf(stderr, "ERROR! Missing modifiers.\n"); 
+        fprintf(stderr, "ERROR: missing modifiers.\n"); 
         return 1; 
     }
 
     //get key str
     char *key = strtok_r(NULL, " ", &saveptr1);
     if (!key) { 
-        fprintf(stderr, "ERROR! Missing key.\n"); 
+        fprintf(stderr, "ERROR: missing key.\n"); 
         return 2; 
     }
     
     //get action str
     char *action = strtok_r(NULL, " ", &saveptr1);
     if (!action) { 
-        fprintf(stderr, "ERROR! Missing action.\n"); 
+        fprintf(stderr, "ERROR: missing action.\n"); 
         return 3; 
     }
     
@@ -112,7 +112,7 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
         } else if (strcmp(mod_tok, "shift") == 0) {
             mods_local |= RIVER_SEAT_V1_MODIFIERS_SHIFT;
         } else {
-            fprintf(stderr, "EXTREME WARNING! No modifer selected, you probably DON'T want that.\n");
+            fprintf(stderr, "EXTREME WARNING: No modifer selected, you probably DON'T want that.\n");
         }
         mod_tok = strtok_r(NULL, "+", &saveptr2);
     }
@@ -120,7 +120,7 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
     // check the action to decide what to do
     if (strcmp(action, "spawn") == 0) {
         if (final_cmd_len == 0) { 
-            fprintf(stderr, "ERROR! Missing command.\n"); 
+            fprintf(stderr, "ERROR: Missing command.\n"); 
             return 4; 
         }
         // look mom the buffer got copied to heap
@@ -143,12 +143,12 @@ lua_State *lua_open_table(const char *config_path, const char *table_name) {
     luaL_openlibs(L);
 
     if (luaL_dofile(L, config_path) != LUA_OK) {
-        fprintf(stderr, "Failed to open lua config file.\n");
+        fprintf(stderr, "ERROR: failed to open lua config file.\n");
         return NULL;
     }
 
     if (get_lua_table_by_name(L, table_name)) {
-        fprintf(stderr, "Failed to find '%s' section.\n", table_name);
+        fprintf(stderr, "ERROR: failed to find '%s' section.\n", table_name);
         lua_close(L);
         return NULL;
     }
@@ -212,7 +212,7 @@ char **get_list_of_strings_from_lua_table(const char *config_path, size_t *len_r
         lua_rawgeti(L, -1, i);
 
         if (!lua_isstring(L, -1)) {
-            fprintf(stderr, "Failed to read '%s' section.\n", table_name);
+            fprintf(stderr, "ERROR: failed to read '%s' section.\n", table_name);
             lua_pop(L, 1);
             for (size_t j = 0; j < used; j++) free(strings_buf[j]);
             free(strings_buf);
@@ -281,7 +281,7 @@ char *locate_config(void) {
         }
     }
 
-    fprintf(stdout, "Trying to load fallback config ./taigarc.lua\n");
+    fprintf(stdout, "INFO: trying to load fallback config ./taigarc.lua\n");
 
     // get cwd and prepend it to file name
     char cwd[1024];
@@ -304,7 +304,7 @@ char *locate_config(void) {
 int load_config(void) {
     const char *config_path = locate_config();
     if (config_path == NULL) {
-        fprintf(stderr, "Failed to open a config file.");
+        fprintf(stderr, "ERROR: failed to open a config file.");
         return 1;
     }
 

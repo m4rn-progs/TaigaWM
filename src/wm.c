@@ -39,7 +39,7 @@ const struct wl_registry_listener registry_listener = {
 };
 
 void wm_handle_unavailable(void *data, struct river_window_manager_v1 *obj) {
-	fprintf(stderr, "error: another window manager is already running\n");
+	fprintf(stderr, "ERROR: another window manager is already running\n");
 	exit(1);
 }
 
@@ -105,10 +105,10 @@ void wm_handle_output(
 	}
 
 	if (misc_config.tearing) {
-	    fprintf(stdout, "INFO: Tearing enabled.\n");
+	    fprintf(stdout, "INFO: tearing enabled.\n");
         river_output_v1_set_presentation_mode(output->obj, 1);
 	} else {
-        fprintf(stdout, "INFO: Tearing disabled.\n");
+        fprintf(stdout, "INFO: tearing disabled.\n");
         river_output_v1_set_presentation_mode(output->obj, 0);
 	}
 
