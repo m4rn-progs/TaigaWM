@@ -17,7 +17,7 @@ Libinput = {
     tap_to_click = false,
     accel_profile = "flat",
     -- etc
-} -- invalid config
+} -- valid config
 
 Xkb = {
     layout = "us",
