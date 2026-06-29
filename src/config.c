@@ -112,7 +112,7 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
         } else if (strcmp(mod_tok, "shift") == 0) {
             mods_local |= RIVER_SEAT_V1_MODIFIERS_SHIFT;
         } else {
-            fprintf(stderr, "EXTREME WARNING: No modifer selected, you probably DON'T want that.\n");
+            fprintf(stderr, "EXTREME WARNING: no modifer selected, you probably DON'T want that.\n");
         }
         mod_tok = strtok_r(NULL, "+", &saveptr2);
     }
@@ -120,7 +120,7 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
     // check the action to decide what to do
     if (strcmp(action, "spawn") == 0) {
         if (final_cmd_len == 0) { 
-            fprintf(stderr, "ERROR: Missing command.\n"); 
+            fprintf(stderr, "ERROR: missing command.\n"); 
             return 4; 
         }
         // look mom the buffer got copied to heap

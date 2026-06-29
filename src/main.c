@@ -55,12 +55,12 @@ int main(void) {
     struct wl_registry *registry = wl_display_get_registry(display);
     wl_registry_add_listener(registry, &registry_listener, NULL);
     if (wl_display_roundtrip(display) < 0) {
-        fprintf(stderr, "Roundtrip failed.\n");
+        fprintf(stderr, "ERROR: roundtrip failed.\n");
         return 1;
     }
 
     if (window_manager_v1 == NULL || xkb_bindings_v1 == NULL) {
-        fprintf(stderr, "Compositor is not river compatible.\n");
+        fprintf(stderr, "ERROR: compositor is not river compatible.\n");
         return 1;
     }
 
@@ -78,12 +78,12 @@ int main(void) {
             if (errno == EINTR) {
                 continue;
             }
-            fprintf(stderr, "dispatch failed\n");
+            fprintf(stderr, "ERROR: dispatch failed\n");
             return 1;
         }
 
         if (config_changed) {
-            fprintf(stdout, "Config file changed, Reloading.\n");
+            fprintf(stdout, "INFO: config file changed, Reloading.\n");
             config_changed = 0;
             struct Seat *seat;
             wl_list_for_each(seat, &wm.seats, link) {
