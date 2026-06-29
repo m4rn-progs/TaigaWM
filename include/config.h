@@ -16,6 +16,10 @@ struct AutostartConfig {
     size_t autostarts_len;
 };
 
+struct LibinputConfig {
+    char *accel_profile;
+};
+
 struct MiscConfig {
     bool tearing;
 };
@@ -24,6 +28,7 @@ struct MiscConfig {
 
 extern struct KeybindConfig keybind_config;
 extern struct AutostartConfig autostart_config;
+extern struct LibinputConfig libinput_config;
 extern struct MiscConfig misc_config;
 
 int get_lua_table_by_name(lua_State *state, const char *name);
@@ -32,7 +37,7 @@ void parse_get(char **save, char **str, const char *delim);
 int parse_and_add_keybind(const char *keybind_str, struct Seat *seat);
 lua_State *lua_open_table(const char *config_path, const char *table_name);
 bool get_bool_from_var_from_table(const char *config_path, const char *table_name, const char *var_name);
-const char *get_string_from_var_from_table(const char *config_path, const char *table_name, const char *var_name);
+char *get_string_from_var_from_table(const char *config_path, const char *table_name, const char *var_name);
 char **get_list_of_strings_from_lua_table(const char *config_path, size_t *len_return, const char *table_name);
 char *locate_config(void);
 int load_config(void);

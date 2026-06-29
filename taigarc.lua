@@ -21,6 +21,6 @@ Xkb = {
 } -- invalid config
 
 Misc = {
-    tearing = false,
+    tearing = true,
     -- etc
 } -- valid config

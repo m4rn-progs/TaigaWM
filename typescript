@@ -1,0 +1,994 @@
+Script started on 2026-06-29 09:56:18-06:00 [TERM="linux" TTY="/dev/tty2" COLUMNS="160" LINES="45"]
+[1m[7m%[27m[1m[m                                                                                                                                                                [m[27m[24m[J[39m[m[49m[40m[39m zoey@linux [44m[30m[30m ~/Documents/TaigaWM [43m[34m[30m  dev ± [49m[33m[39m [K[?2004hrriver -c build/taiga[?2004l
+info: initializing river version 0.4.5 +xwayland
+info(wlroots): [libseat] [libseat/backend/seatd.c:64] Could not connect to socket /run/seatd.sock: No such file or directory
+info(wlroots): [libseat] [libseat/libseat.c:76] Backend 'seatd' failed to open seat, skipping
+info(wlroots): [libseat] [libseat/libseat.c:73] Seat opened with backend 'logind'
+info(wlroots): [backend/session/session.c:117] Successfully loaded libseat session
+error(wlroots): [libseat] [libseat/backend/logind.c:121] Could not take device: Device or resource busy
+error(wlroots): [backend/session/session.c:340] Failed to open device: '/dev/dri/card0': Device or resource busy
+info(wlroots): [backend/backend.c:248] Found 1 GPUs
+info(wlroots): [backend/drm/backend.c:225] Initializing DRM backend for /dev/dri/card1 (amdgpu)
+info(wlroots): [backend/drm/drm.c:312] Found 6 DRM CRTCs
+info(wlroots): [backend/drm/drm.c:270] Found 14 DRM planes
+info(wlroots): [render/egl.c:205] Supported EGL client extensions: EGL_EXT_device_base EGL_EXT_device_enumeration EGL_EXT_device_query EGL_EXT_platform_base EGL_KHR_client_get_all_proc_addresses EGL_EXT_client_extensions EGL_KHR_debug EGL_EXT_platform_device EGL_EXT_explicit_device EGL_EXT_platform_wayland EGL_KHR_platform_wayland EGL_EXT_platform_x11 EGL_KHR_platform_x11 EGL_EXT_platform_xcb EGL_MESA_platform_gbm EGL_KHR_platform_gbm EGL_MESA_platform_surfaceless
+info(wlroots): [render/egl.c:369] Using EGL 1.5
+info(wlroots): [render/egl.c:370] Supported EGL display extensions: EGL_ANDROID_blob_cache EGL_ANDROID_native_fence_sync EGL_EXT_config_select_group EGL_EXT_create_context_robustness EGL_EXT_image_dma_buf_import EGL_EXT_image_dma_buf_import_modifiers EGL_EXT_query_reset_notification_strategy EGL_EXT_surface_compression EGL_IMG_context_priority EGL_KHR_cl_event2 EGL_KHR_config_attribs EGL_KHR_context_flush_control EGL_KHR_create_context EGL_KHR_create_context_no_error EGL_KHR_fence_sync EGL_KHR_get_all_proc_addresses EGL_KHR_gl_colorspace EGL_KHR_gl_renderbuffer_image EGL_KHR_gl_texture_2D_image EGL_KHR_gl_texture_3D_image EGL_KHR_gl_texture_cubemap_image EGL_KHR_image_base EGL_KHR_no_config_context EGL_KHR_reusable_sync EGL_KHR_surfaceless_context EGL_EXT_pixel_format_float EGL_KHR_wait_sync EGL_MESA_configless_context EGL_MESA_gl_interop EGL_MESA_image_dma_buf_export EGL_MESA_query_driver EGL_MESA_x11_native_visual_id 
+info(wlroots): [render/egl.c:372] Supported EGL device extensions: EGL_EXT_device_drm EGL_EXT_device_drm_render_node EGL_EXT_device_query_name EGL_EXT_device_persistent_id
+info(wlroots): [render/egl.c:374] EGL vendor: Mesa Project
+info(wlroots): [render/egl.c:376] EGL driver name: radeonsi
+info(wlroots): [render/gles2/renderer.c:538] Creating GLES2 renderer
+info(wlroots): [render/gles2/renderer.c:539] Using OpenGL ES 3.2 Mesa 26.1.3-arch1.2
+info(wlroots): [render/gles2/renderer.c:540] GL vendor: AMD
+info(wlroots): [render/gles2/renderer.c:541] GL renderer: AMD Radeon RX 6700 XT (radeonsi, navi22, ACO, DRM 3.64, 6.18.37-1-lts)
+info(wlroots): [render/gles2/renderer.c:542] Supported GLES2 extensions: GL_EXT_blend_minmax GL_EXT_multi_draw_arrays GL_EXT_texture_filter_anisotropic GL_EXT_texture_compression_s3tc GL_EXT_texture_compression_dxt1 GL_EXT_texture_compression_rgtc GL_EXT_texture_format_BGRA8888 GL_OES_compressed_ETC1_RGB8_texture GL_OES_depth24 GL_OES_element_index_uint GL_OES_fbo_render_mipmap GL_OES_mapbuffer GL_OES_rgb8_rgba8 GL_OES_standard_derivatives GL_OES_stencil8 GL_OES_texture_3D GL_OES_texture_float GL_OES_texture_float_linear GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_texture_npot GL_OES_vertex_half_float GL_EXT_draw_instanced GL_EXT_texture_sRGB_decode GL_OES_EGL_image GL_OES_depth_texture GL_AMD_performance_monitor GL_OES_packed_depth_stencil GL_EXT_texture_type_2_10_10_10_REV GL_NV_conditional_render GL_OES_get_program_binary GL_APPLE_texture_max_level GL_EXT_discard_framebuffer GL_EXT_read_format_bgra GL_EXT_texture_storage GL_NV_pack_subimage GL_NV_texture_barrier GL_EXT_frag_depth GL_NV_fbo_color_attachments GL_OES_EGL_image_external GL_OES_EGL_sync GL_OES_vertex_array_object GL_OES_viewport_array GL_ANGLE_pack_reverse_row_order GL_ANGLE_texture_compression_dxt3 GL_ANGLE_texture_compression_dxt5 GL_EXT_occlusion_query_boolean GL_EXT_robustness GL_EXT_sRGB GL_EXT_texture_rg GL_EXT_unpack_subimage GL_NV_draw_buffers GL_NV_read_buffer GL_NV_read_depth GL_NV_read_depth_stencil GL_NV_read_stencil GL_APPLE_sync GL_EXT_draw_buffers GL_EXT_instanced_arrays GL_EXT_map_buffer_range GL_EXT_shadow_samplers GL_KHR_debug GL_KHR_robustness GL_KHR_texture_compression_astc_ldr GL_NV_generate_mipmap_sRGB GL_NV_pixel_buffer_object GL_OES_depth_texture_cube_map GL_OES_required_internalformat GL_OES_surfaceless_context GL_EXT_color_buffer_float GL_EXT_debug_label GL_EXT_sRGB_write_control GL_EXT_separate_shader_objects GL_EXT_shader_group_vote GL_EXT_shader_implicit_conversions GL_EXT_shader_integer_mix GL_EXT_tessellation_point_size GL_EXT_tessellation_shader GL_ANDROID_extension_pack_es31a GL_EXT_base_instance GL_EXT_compressed_ETC1_RGB8_sub_texture GL_EXT_copy_image GL_EXT_draw_buffers_indexed GL_EXT_draw_elements_base_vertex GL_EXT_gpu_shader5 GL_EXT_multi_draw_indirect GL_EXT_polygon_offset_clamp GL_EXT_primitive_bounding_box GL_EXT_render_snorm GL_EXT_shader_io_blocks GL_EXT_texture_border_clamp GL_EXT_texture_buffer GL_EXT_texture_cube_map_array GL_EXT_texture_norm16 GL_EXT_texture_view GL_KHR_blend_equation_advanced GL_KHR_context_flush_control GL_KHR_robust_buffer_access_behavior GL_NV_image_formats GL_NV_shader_noperspective_interpolation GL_OES_copy_image GL_OES_draw_buffers_indexed GL_OES_draw_elements_base_vertex GL_OES_gpu_shader5 GL_OES_primitive_bounding_box GL_OES_sample_shading GL_OES_sample_variables GL_OES_shader_io_blocks GL_OES_shader_multisample_interpolation GL_OES_tessellation_point_size GL_OES_tessellation_shader GL_OES_texture_border_clamp GL_OES_texture_buffer GL_OES_texture_cube_map_array GL_OES_texture_stencil8 GL_OES_texture_storage_multisample_2d_array GL_OES_texture_view GL_EXT_blend_func_extended GL_EXT_buffer_storage GL_EXT_float_blend GL_EXT_geometry_point_size GL_EXT_geometry_shader GL_EXT_shader_samples_identical GL_EXT_texture_filter_minmax GL_EXT_texture_sRGB_R8 GL_EXT_texture_sRGB_RG8 GL_KHR_no_error GL_KHR_texture_compression_astc_sliced_3d GL_OES_EGL_image_external_essl3 GL_OES_geometry_point_size GL_OES_geometry_shader GL_OES_shader_image_atomic GL_EXT_clear_texture GL_EXT_clip_cull_distance GL_EXT_conservative_depth GL_EXT_disjoint_timer_query GL_EXT_texture_compression_s3tc_srgb GL_EXT_window_rectangles GL_MESA_shader_integer_functions GL_EXT_clip_control GL_EXT_color_buffer_half_float GL_EXT_memory_object GL_EXT_memory_object_fd GL_EXT_semaphore GL_EXT_semaphore_fd GL_EXT_texture_compression_bptc GL_EXT_texture_mirror_clamp_to_edge GL_KHR_parallel_shader_compile GL_NV_alpha_to_coverage_dither_control GL_AMD_framebuffer_multisample_advanced GL_EXT_EGL_image_storage GL_EXT_texture_shadow_lod GL_INTEL_blackhole_render GL_MESA_framebuffer_flip_y GL_NV_compute_shader_derivatives GL_EXT_demote_to_helper_invocation GL_EXT_depth_clamp GL_EXT_texture_query_lod GL_KHR_shader_subgroup GL_MESA_sampler_objects GL_NV_timeline_semaphore GL_EXT_EGL_image_storage_compression GL_EXT_texture_storage_compression GL_MESA_bgra GL_MESA_texture_const_bandwidth GL_EXT_mesh_shader GL_EXT_shader_clock 
+error(wlroots): [xwayland/sockets.c:64] Failed to bind socket @/tmp/.X11-unix/X0: Address already in use
+info: raised file descriptor limit of the river process to 4096
+info(wlroots): [xwayland/server.c:107] Starting Xwayland on :2
+info(wlroots): [backend/drm/drm.c:1781] Scanning DRM connectors on /dev/dri/card1
+info(wlroots): [backend/drm/drm.c:1836] Found connector 'DP-1'
+info(wlroots): [backend/drm/drm.c:1861] 'DP-1' connected
+info(wlroots): [backend/drm/drm.c:1646] Detected modes:
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 164.998 Hz (preferred)
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 59.951 Hz (preferred)
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 143.999 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 119.989 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 74.999 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1920x1080 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1920x1080 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1920x1080 @ 59.940 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1920x1080 @ 50.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1680x1050 @ 59.954 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1400x1050 @ 59.978 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1600x900 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1280x1024 @ 75.025 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1280x1024 @ 60.020 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1440x900 @ 59.887 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1280x960 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1280x800 @ 59.810 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1152x864 @ 59.972 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1024x768 @ 75.029 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1024x768 @ 70.069 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1024x768 @ 60.004 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   800x600 @ 75.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   800x600 @ 60.317 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   640x480 @ 75.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   640x480 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   640x480 @ 59.940 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   640x480 @ 59.940 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   720x400 @ 70.082 Hz 
+info(wlroots): [backend/drm/drm.c:1707] Physical size: 600x330
+info(wlroots): [backend/drm/drm.c:1836] Found connector 'DP-2'
+info(wlroots): [backend/drm/drm.c:1861] 'DP-2' connected
+info(wlroots): [backend/drm/drm.c:1646] Detected modes:
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 164.998 Hz (preferred)
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 59.951 Hz (preferred)
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 143.999 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 119.989 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   2560x1440 @ 74.999 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1920x1080 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1920x1080 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1920x1080 @ 59.940 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1920x1080 @ 50.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1680x1050 @ 59.954 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1400x1050 @ 59.978 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1600x900 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1280x1024 @ 75.025 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1280x1024 @ 60.020 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1440x900 @ 59.887 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1280x960 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1280x800 @ 59.810 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1152x864 @ 59.972 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1024x768 @ 75.029 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1024x768 @ 70.069 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   1024x768 @ 60.004 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   800x600 @ 75.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   800x600 @ 60.317 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   640x480 @ 75.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   640x480 @ 60.000 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   640x480 @ 59.940 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   640x480 @ 59.940 Hz 
+info(wlroots): [backend/drm/drm.c:1670]   720x400 @ 70.082 Hz 
+info(wlroots): [backend/drm/drm.c:1707] Physical size: 600x330
+info(wlroots): [backend/drm/drm.c:1836] Found connector 'DP-3'
+info(wlroots): [backend/drm/drm.c:1836] Found connector 'HDMI-A-1'
+info(wlroots): [backend/drm/drm.c:1895] connector DP-1: Requesting modeset
+info(wlroots): [backend/drm/drm.c:1895] connector DP-2: Requesting modeset
+info: running init executable 'build/taiga'
+info: running server
+Trying to load fallback config ./taigarc.lua
+error(wlroots): [backend/drm/atomic.c:299] Failed to destroy blob: Operation not permitted
+Trying to load fallback config ./taigarc.lua
+Executing: kitty
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+Accel profile: flat
+INFO: Accel profile set to flat.
+INFO: Tearing enabled.
+INFO: Tearing enabled.
+Trying to load fallback config ./taigarc.lua
+The XKEYBOARD keymap compiler (xkbcomp) reports:
+> Warning:          Multiple symbols for level 1/group 1 on key <FK23>
+>                   Using F23, ignoring XF86TouchpadOff
+> Warning:          Symbol map for key <FK23> redefined
+>                   Using last definition for conflicting fields
+> Warning:          Symbol map for key <FK24> redefined
+>                   Using last definition for conflicting fields
+> Warning:          Could not resolve keysym XF86ElectronicPrivacyScreenOn
+> Warning:          Could not resolve keysym XF86ElectronicPrivacyScreenOff
+> Warning:          Could not resolve keysym XF86ActionOnSelection
+> Warning:          Could not resolve keysym XF86ContextualInsert
+> Warning:          Could not resolve keysym XF86ContextualQuery
+Errors from xkbcomp are not fatal to the X server
+The XKEYBOARD keymap compiler (xkbcomp) reports:
+> Warning:          Unsupported maximum keycode 709, clipping.
+>                   X11 cannot support keycodes above 255.
+> Warning:          Virtual modifier Hyper multiply defined
+>                   Using 0, ignoring 0
+> Warning:          Virtual modifier ScrollLock multiply defined
+>                   Using 0, ignoring 0
+Errors from xkbcomp are not fatal to the X server
+xkbcommon: ERROR: [XKB-679] couldn't find a Compose file for locale "" (mapped to "")
+[0.056] [glfw error 65544]: Failed to create XKB compose table for locale 
+[0.096] Failed to load libsystemd.so with error: libsystemd.so.0.38.0: cannot open shared object file: No such file or directory
+
+error(input): inactive text input tried to commit an update, client bug?
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-2, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+info(output): tearing page flip test failed for DP-1, retrying without tearing
+error(input): inactive text input tried to commit an update, client bug?
+info(wm): window manager requested to exit session
+(EE) failed to read Wayland events: Broken pipe
+[1m[7m%[27m[1m[m                                                                                                                                                                [m[27m[24m[J[39m[m[49m[40m[39m zoey@linux [44m[30m[30m ~/Documents/TaigaWM [43m[34m[30m  dev ± [49m[33m[39m [K[?2004heexit[?2004l
+
+Script done on 2026-06-29 09:56:32-06:00 [COMMAND_EXIT_CODE="0"]

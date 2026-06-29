@@ -37,6 +37,7 @@ void handle_config_change(int sig) {
 }
 
 int main(void) {
+    load_config();
     struct sigaction sa = {0};
     sa.sa_handler = handle_config_change;
     sa.sa_flags = SA_RESTART;
@@ -64,15 +65,13 @@ int main(void) {
     }
 
     wm_init();
-    river_window_manager_v1_add_listener(window_manager_v1, &wm_listener, NULL);
+    setup_inotify();
 
-    load_config();
+    river_window_manager_v1_add_listener(window_manager_v1, &wm_listener, NULL);
 
     if (autostart_config.autostarts != NULL) {
         autostart(autostart_config.autostarts, autostart_config.autostarts_len);
     }
-
-    setup_inotify();
 
     while (true) {
         if (wl_display_dispatch(display) < 0) {

@@ -1,0 +1,5 @@
+Script started on 2026-06-29 09:54:16-06:00 [COMMAND="build/taiga" TERM="linux" TTY="/dev/pts/4" COLUMNS="160" LINES="45"]
+Trying to load fallback config ./taigarc.lua
+Compositor is not river compatible.
+
+Script done on 2026-06-29 09:54:16-06:00 [COMMAND_EXIT_CODE="1"]

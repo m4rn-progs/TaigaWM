@@ -16,6 +16,7 @@
 
 struct KeybindConfig keybind_config = {0};
 struct AutostartConfig autostart_config = {0};
+struct LibinputConfig libinput_config = {0};
 struct MiscConfig misc_config = {0};
 
 // open a lua table, just for slighly cleaner code
@@ -176,7 +177,7 @@ bool get_bool_from_var_from_table(const char *config_path, const char *table_nam
     }
 }
 
-const char *get_string_from_var_from_table(const char *config_path, const char *table_name, const char *var_name) {
+char *get_string_from_var_from_table(const char *config_path, const char *table_name, const char *var_name) {
     lua_State *L;
     if((L = lua_open_table(config_path, table_name)) == NULL) {
         return NULL;
@@ -189,7 +190,7 @@ const char *get_string_from_var_from_table(const char *config_path, const char *
         const char *s = lua_tostring(L, -1);
 
         lua_close(L);
-        return s;
+        return (char *)s;
     } else {
         lua_close(L);
         return NULL;
@@ -307,22 +308,27 @@ int load_config(void) {
         return 1;
     }
 
-    size_t autostart_len;
-    char **autostart = get_list_of_strings_from_lua_table(config_path, &autostart_len, "Autostart");
-
+    // keybinds
     size_t binds_len;
     char **binds = get_list_of_strings_from_lua_table(config_path, &binds_len, "Keybinds");
-
-    bool tearing = get_bool_from_var_from_table(config_path, "Misc", "tearing");
-
     keybind_config.keybinds = binds;
     keybind_config.keybinds_len = binds_len;
-    
+
+    // autostart
+    size_t autostart_len;
+    char **autostart = get_list_of_strings_from_lua_table(config_path, &autostart_len, "Autostart");
     autostart_config.autostarts = autostart;
     autostart_config.autostarts_len = autostart_len;
 
+    // libinput
+    char *accel_profile = get_string_from_var_from_table(config_path, "Libinput", "accel_profile");
+
+    // have to use strdup or no workie
+    libinput_config.accel_profile = strdup(accel_profile);
+    
+    // misc
+    bool tearing = get_bool_from_var_from_table(config_path, "Misc", "tearing");
     misc_config.tearing = tearing;
 
     return 0;
-
 }
