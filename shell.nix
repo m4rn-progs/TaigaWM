@@ -9,6 +9,7 @@ pkgs.mkShell {
         ninja
         meson
         cmake
+        river
     ];
 
     buildInputs = with pkgs; [
