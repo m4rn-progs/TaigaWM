@@ -14,7 +14,6 @@
 #include "seat.h"
 #include "config.h"
 
-
 struct KeybindConfig keybind_config = {0};
 struct PointerConfig pointer_config = {0};
 struct AutostartConfig autostart_config = {0};
