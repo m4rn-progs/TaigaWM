@@ -19,6 +19,7 @@ struct PointerConfig pointer_config = {0};
 struct AutostartConfig autostart_config = {0};
 struct LibinputConfig libinput_config = {0};
 struct MiscConfig misc_config = {0};
+const char *config_path = NULL;
 
 // open a lua table, just for slighly cleaner code
 int get_lua_table_by_name(lua_State *state, const char *name) {
@@ -377,7 +378,7 @@ char *locate_config(void) {
 }
 
 int load_config(void) {
-    const char *config_path = locate_config();
+    config_path = locate_config();
     if (config_path == NULL) {
         fprintf(stderr, "ERROR: failed to open a config file.");
         return 1;

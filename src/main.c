@@ -18,7 +18,6 @@
 volatile sig_atomic_t config_changed = 0;
 
 void setup_inotify(void) {
-    const char *config_path = locate_config();
     if (fork() == 0) {
         int fd = inotify_init();
         char buf[1024];

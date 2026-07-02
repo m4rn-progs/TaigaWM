@@ -34,6 +34,7 @@ extern struct PointerConfig pointer_config;
 extern struct AutostartConfig autostart_config;
 extern struct LibinputConfig libinput_config;
 extern struct MiscConfig misc_config;
+extern const char *config_path;
 
 int get_lua_table_by_name(lua_State *state, const char *name);
 void homeify(char **tmp_buf, char *home, char *after_home);
