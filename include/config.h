@@ -1,8 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <stdio.h>
 #include <lua.h>
+#include <stdio.h>
 
 #include "seat.h"
 
@@ -42,9 +42,14 @@ void parse_get(char **save, char **str, const char *delim);
 int parse_and_add_pointerbind(const char *pointer_str, struct Seat *seat);
 int parse_and_add_keybind(const char *keybind_str, struct Seat *seat);
 lua_State *lua_open_table(const char *config_path, const char *table_name);
-bool get_bool_from_var_from_table(const char *config_path, const char *table_name, const char *var_name);
-char *get_string_from_var_from_table(const char *config_path, const char *table_name, const char *var_name);
-char **get_list_of_strings_from_lua_table(const char *config_path, size_t *len_return, const char *table_name);
+bool get_bool_from_var_from_table(const char *config_path,
+                                  const char *table_name, const char *var_name);
+char *get_string_from_var_from_table(const char *config_path,
+                                     const char *table_name,
+                                     const char *var_name);
+char **get_list_of_strings_from_lua_table(const char *config_path,
+                                          size_t *len_return,
+                                          const char *table_name);
 char *locate_config(void);
 int load_config(void);
 

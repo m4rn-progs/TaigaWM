@@ -1,19 +1,19 @@
+#include <errno.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/inotify.h>
 #include <unistd.h>
 #include <wayland-client-core.h>
 #include <wayland-client-protocol.h>
-#include <sys/inotify.h>
-#include <errno.h>
 #include <wayland-util.h>
 
+#include "autostart.h"
+#include "config.h"
 #include "window.h"
 #include "wm.h"
 #include "xkb.h"
-#include "config.h"
-#include "autostart.h"
 
 volatile sig_atomic_t config_changed = 0;
 
@@ -30,9 +30,7 @@ void setup_inotify(void) {
     }
 }
 
-void handle_config_change(int sig) {
-    config_changed = 1;
-}
+void handle_config_change(int sig) { config_changed = 1; }
 
 int main(void) {
     load_config();
@@ -84,9 +82,7 @@ int main(void) {
             fprintf(stdout, "INFO: config file changed, Reloading.\n");
             config_changed = 0;
             struct Seat *seat;
-            wl_list_for_each(seat, &wm.seats, link) {
-                seat->new = true;
-            }
+            wl_list_for_each(seat, &wm.seats, link) { seat->new = true; }
             setup_inotify();
         }
     }

@@ -20,6 +20,7 @@ add_project_arguments(cc.get_supported_arguments([
 wayland_client = dependency('wayland-client')
 xkbcommon = dependency('xkbcommon')
 libinput = dependency('libinput')
+lua = dependency('lua')
 
 wl_mod = import('wayland')
 generated = wl_mod.scan_xml(
@@ -50,8 +51,8 @@ exe = executable(
     wayland_client,
     xkbcommon,
     libinput,
+    lua,
   ],
-  link_args: ['-llua', '-lm'],
   include_directories: inc,
   install: true,
 )
