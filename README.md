@@ -1,31 +1,46 @@
 # TaigaWM
 
-Small, custom tiling window manager written in Lua for the BorealOS project.
+A small, floating window manager written in C for river.
+
+Used primarily in the borealOS project.
 
 ## Project status
-Active development — incomplete.
 
-## Short description
-TaigaWM is a minimal, dependency-light tiling window manager for X11, configured entirely via a single Lua file (`taiga.lua`). It focuses on a tiny, auditable codebase with sensible defaults and easy extensibility for power users.
+Very early, expect bugs, missing features, etc.. 
+However, it's very usable.
 
-## During-development focus
-- Core tiling and basic layouts implemented.
-- Improving layouts, per-workspace rules, and multi-monitor support.
-- Hardening configuration parsing, adding tests, and setting up CI.
-- Expanding documentation and example configs.
+## Installation
 
-## Known limitations
-- Limited layout options compared to mature tiling WMs.
-- Basic multi-monitor handling.
-- Sparse documentation; configuration may require reading source.
+The following deps are needed
 
-## Minimal example (taiga.lua)
-```lua
-return {
-  modkey = "Mod4",
-  layouts = { "tile", "floating" },
-  keys = {
-    { {"Mod4"}, "Return", function() os.execute("xterm &") end },
-    { {"Mod4","Shift"}, "q", function() os.execute("pkill taiga") end }
-  }
-}
+- meson
+- cmake
+- pkg-config
+- wayland-dev
+- libxkbcommon-dev
+- libinput-dev
+- lua-dev >= 5.4
+- wlroots 
+- river compositor >= 4.0
+
+### Compiling
+```bash
+git clone https://github.com/m4rn-progs/TaigaWM
+cd TaigaWM
+meson setup build
+ninja -C build
+```
+
+### Running
+```bash
+river -c build/taiga
+```
+
+## Configuration
+Taiga is configured using lua, with hot reload support.
+
+Copy the default config file to one of the supported locations:
+- ~/.taigarc.lua
+- ~/.config/taiga/taigarc.lua
+
+The default config has examples in it.
