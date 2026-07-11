@@ -1,6 +1,6 @@
 #include <river-window-management-v1-client-protocol.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "output.h"
 #include "seat.h"
