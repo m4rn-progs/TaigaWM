@@ -27,8 +27,10 @@ struct Seat {
     struct wl_list xkb_bindings;     // XkbBinding
     struct wl_list pointer_bindings; // PointerBinding
     struct river_layer_shell_seat_v1 *layer_shell_seat;
+    struct Output *focused_output;
     enum Action pending_action;
     char *pending_cmd;
+    bool no_autostart;
 
     enum SeatOp op;
     // For SEAT_OP_MOVE and SEAT_OP_RESIZE
@@ -65,6 +67,7 @@ void seat_handle_wl_seat(void *data, struct river_seat_v1 *obj, uint32_t id);
 void seat_handle_shell_surface_interaction(
     void *data, struct river_seat_v1 *obj,
     struct river_shell_surface_v1 *river_shell_surface);
+void handle_focused_output_change(struct Seat *seat);
 void seat_handle_pointer_position(void *data, struct river_seat_v1 *obj,
                                   int32_t x, int32_t y);
 void seat_maybe_destroy(struct Seat *seat);

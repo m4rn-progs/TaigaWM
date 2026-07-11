@@ -221,19 +221,20 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
 }
 
 lua_State *lua_open_table(const char *config_path, const char *table_name) {
-    if (config_path == NULL) {
-        return NULL;
-    }
-
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
+
     if (luaL_dofile(L, config_path) != LUA_OK) {
-        fprintf(stderr, "ERROR: failed to open lua config file.\n");
+        fprintf(stderr, "ERROR: Lua failed to load '%s': %s\n", 
+                config_path, lua_tostring(L, -1));
+        lua_close(L);
         return NULL;
     }
 
-    if (get_lua_table_by_name(L, table_name)) {
-        fprintf(stderr, "ERROR: failed to find '%s' section.\n", table_name);
+    lua_getglobal(L, table_name);
+    if (!lua_istable(L, -1)) {
+        fprintf(stderr, "ERROR: '%s' is not a table in '%s'\n", 
+                table_name, config_path);
         lua_close(L);
         return NULL;
     }
@@ -275,19 +276,23 @@ char *get_string_from_var_from_table(const char *config_path,
     int luatype = lua_type(L, -1);
 
     if (luatype == LUA_TSTRING) {
-        const char *s = lua_tostring(L, -1);
-
+        // const char *s = lua_tostring(L, -1);
+        // lua_close(L);
+        // return (char *)s;
+        char *result = NULL;
+        if (lua_isstring(L, -1)) {
+            result = strdup(lua_tostring(L, -1));
+        }
         lua_close(L);
-        return (char *)s;
+        return result;
+
     } else {
         lua_close(L);
         return NULL;
     }
 }
 
-char **get_list_of_strings_from_lua_table(const char *config_path,
-                                          size_t *len_return,
-                                          const char *table_name) {
+char **get_list_of_strings_from_lua_table(const char *config_path, size_t *len_return, const char *table_name) {
     lua_State *L;
     if ((L = lua_open_table(config_path, table_name)) == NULL) {
         return NULL;
@@ -313,13 +318,8 @@ char **get_list_of_strings_from_lua_table(const char *config_path,
             return NULL;
         }
 
-        const char *str = lua_tostring(L, -1);
-        size_t sl = strlen(str);
-
-        strings_buf[used] = malloc(sl + 1);
-        memcpy(strings_buf[used], str, sl + 1);
+        strings_buf[used] = strdup(lua_tostring(L, -1));
         used++;
-
         lua_pop(L, 1);
     }
 
@@ -410,7 +410,7 @@ int load_config(void) {
         get_list_of_strings_from_lua_table(config_path, &binds_len, "Keybinds");
     keybind_config.keybinds = binds;
     keybind_config.keybinds_len = binds_len;
-
+    
     // Pointer binds
     size_t pbinds_len;
     char **pbinds = get_list_of_strings_from_lua_table(config_path, &pbinds_len,
@@ -424,14 +424,15 @@ int load_config(void) {
         config_path, &autostart_len, "Autostart");
     autostart_config.autostarts = autostart;
     autostart_config.autostarts_len = autostart_len;
-
-    // libinput
+    
     char *accel_profile = get_string_from_var_from_table(
-        config_path, "Libinput", "accel_profile");
+    config_path, "Libinput", "accel_profile");
     bool tap_to_click = get_bool_from_var_from_table(config_path, "Libinput", "tap_to_click");
-
-    // have to use strdup or no workie
-    libinput_config.accel_profile = strdup(accel_profile);
+    
+    if (libinput_config.accel_profile) {
+        free(libinput_config.accel_profile);
+    }
+    libinput_config.accel_profile = accel_profile;
     libinput_config.tap_to_click = tap_to_click;
 
     // misc

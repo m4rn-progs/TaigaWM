@@ -96,13 +96,9 @@ void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {
 
     river_window_v1_inform_maximized(window->obj);
 
-    struct Output *output;
-    wl_list_for_each(output, &wm.outputs, link) {
-        river_window_v1_propose_dimensions(window->obj, output->width,
-                                           output->height);
-        break;
-    }
-    window_set_position(window, 0, 0);
+    struct Output *output = get_focused_output();
+    river_window_v1_propose_dimensions(window->obj, output->width, output->height);
+    window_set_position(window, output->posx, output->posy);
 }
 
 void window_handle_unmaximize_requested(void *data,
@@ -118,7 +114,9 @@ void window_handle_unmaximize_requested(void *data,
     window->maximized = false;
     river_window_v1_inform_unmaximized(window->obj);
     river_window_v1_propose_dimensions(window->obj, 0, 0);
-    window_set_position(window, seat->cur_ptr_posx - seat->cur_ptr_posx / 2, seat->cur_ptr_posy - 10);
+
+    // fuckery that might not work on other res idk
+    window_set_position(window, seat->cur_ptr_posx, seat->cur_ptr_posy);
 }
 
 // Ignored events
@@ -176,7 +174,8 @@ void window_set_position(struct Window *window, int32_t x, int32_t y) {
 void window_manage(struct Window *window) {
     if (window->new) {
         window->new = false;
-        window_set_position(window, 0, 0);
+        struct Output *output = get_focused_output();
+        window_set_position(window, output->width / 3, output->height / 5);
         river_window_v1_propose_dimensions(window->obj, 0, 0);
     }
     if (window->pointer_move_requested != NULL) {

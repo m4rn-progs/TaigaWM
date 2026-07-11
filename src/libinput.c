@@ -137,10 +137,10 @@ void river_libinput_device_handle_tap_support(
     void *data, struct river_libinput_device_v1 *device, int32_t finger_count) {
     fprintf(stderr, "finger_count: %d", finger_count);
     if (libinput_config.tap_to_click) {
-        fprintf(stdout, "INFO: tap_to_click enabled.");
+        fprintf(stdout, "INFO: tap_to_click enabled.\n");
         river_libinput_device_v1_set_tap(device, 1);
     } else {
-        fprintf(stdout, "INFO: tap_to_click disabled.");
+        fprintf(stdout, "INFO: tap_to_click disabled.\n");
         river_libinput_device_v1_set_tap(device, 0);
     }
 

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 #include "output.h"
+#include "wm.h"
+#include "seat.h"
 
 const struct river_output_v1_listener river_output_listener = {
     .removed = output_handle_removed,
@@ -34,4 +36,31 @@ void output_handle_dimensions(void *data, struct river_output_v1 *obj,
 void output_handle_wl_output(void *data, struct river_output_v1 *obj,
                              uint32_t name) {}
 void output_handle_position(void *data, struct river_output_v1 *obj, int32_t x,
-                            int32_t y) {}
+                            int32_t y) {
+    struct Output *output = data;
+    output->posx = x;
+    output->posy = y;
+}
+
+struct Output *get_focused_output(void) {
+    if (wl_list_empty(&wm.seats)) {
+        return NULL;
+    }
+    
+    struct Seat *seat;
+    seat = wl_container_of(wm.seats.next, seat, link);
+
+    struct Output *output;
+    wl_list_for_each(output, &wm.outputs, link) {
+        int32_t within_x = seat->cur_ptr_posx >= output->posx &&
+                           seat->cur_ptr_posx < output->posx + output->width;
+        int32_t within_y = seat->cur_ptr_posy >= output->posy &&
+                           seat->cur_ptr_posy < output->posy + output->height;
+
+        if (within_x && within_y) {
+            return output;
+        }
+    }
+
+    return NULL;
+}

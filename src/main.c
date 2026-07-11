@@ -9,7 +9,6 @@
 #include <wayland-client-protocol.h>
 #include <wayland-util.h>
 
-#include "autostart.h"
 #include "config.h"
 #include "window.h"
 #include "wm.h"
@@ -62,13 +61,8 @@ int main(void) {
 
     wm_init();
     setup_inotify();
-
     river_window_manager_v1_add_listener(window_manager_v1, &wm_listener, NULL);
-
-    if (autostart_config.autostarts != NULL) {
-        autostart(autostart_config.autostarts, autostart_config.autostarts_len);
-    }
-
+    
     while (true) {
         if (wl_display_dispatch(display) < 0) {
             if (errno == EINTR) {
@@ -85,7 +79,7 @@ int main(void) {
             wl_list_for_each(seat, &wm.seats, link) { seat->new = true; }
             setup_inotify();
         }
-    }
 
+    }
     return 0;
 }

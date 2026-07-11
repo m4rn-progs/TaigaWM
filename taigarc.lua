@@ -1,5 +1,6 @@
 Keybinds = {
-    "alt+shift space spawn alacritty",
+    "alt+shift return spawn alacritty",
+    "alt+shift x spawn rofi -show drun"
     "alt q killactive",
     "alt escape exit",
 } -- valid config

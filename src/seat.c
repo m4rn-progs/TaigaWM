@@ -11,6 +11,10 @@
 #include "window.h"
 #include "wm.h"
 #include "xkb.h"
+#include "output.h"
+#include "autostart.h"
+
+#include <river-layer-shell-v1-client-protocol.h>
 
 void seat_handle_removed(void *data, struct river_seat_v1 *obj) {
     struct Seat *seat = data;
@@ -46,11 +50,27 @@ void seat_handle_op_release(void *data, struct river_seat_v1 *obj) {
     seat->op_release = true;
 }
 
+void handle_focused_output_change(struct Seat *seat) {
+    fprintf(stdout, "INFO: Changing default layer shell output.\n");
+    river_layer_shell_output_v1_set_default(seat->focused_output->layer_shell_output);
+}
+
 void seat_handle_pointer_position(void *data, struct river_seat_v1 *obj,
                                   int32_t x, int32_t y) {
     struct Seat *seat = data;
     seat->cur_ptr_posx = x;
     seat->cur_ptr_posy = y;
+
+    struct Output *new_output = get_focused_output();
+    struct Output *old_output = seat->focused_output;
+
+    if (new_output != old_output) {
+        seat->focused_output = new_output;
+        if (new_output != NULL) {
+            fprintf(stdout, "INFO: Focused output changed.\n");
+            handle_focused_output_change(seat);
+        }
+    }
 }
 
 // Ignored events
@@ -215,11 +235,12 @@ void seat_handle_new(struct Seat *seat) {
                           &seat->pointer_bindings, link) {
         pointer_binding_destroy(pointer_binding);
     }
-
-    // set pointer bindings
+    
     load_config();
+    // set pointer bindings
     if (keybind_config.keybinds != NULL) {
         for (size_t i = 0; i < keybind_config.keybinds_len; i++) {
+            fprintf(stdout, "INFO: Adding keybind str: %s\n", keybind_config.keybinds[i]);
             parse_and_add_keybind(keybind_config.keybinds[i], seat);
             free(keybind_config.keybinds[i]);
         }
@@ -238,6 +259,11 @@ void seat_handle_new(struct Seat *seat) {
         pointer_config.pointerbinds = NULL;
     } else {
         fallback_pointerbinds(seat);
+    }
+    
+    if (autostart_config.autostarts != NULL && ! seat->no_autostart) {
+        autostart(autostart_config.autostarts, autostart_config.autostarts_len);
+        seat->no_autostart = true;
     }
 }
 

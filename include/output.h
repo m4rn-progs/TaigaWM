@@ -10,6 +10,9 @@ struct Output {
     bool removed;
     int32_t width;
     int32_t height;
+    int32_t posx;
+    int32_t posy;
+
     struct wl_list link; // WindowManager.outputs
 };
 
@@ -22,4 +25,5 @@ void output_handle_position(void *data, struct river_output_v1 *obj, int32_t x,
 void output_handle_dimensions(void *data, struct river_output_v1 *obj,
                               int32_t width, int32_t height);
 void output_maybe_destroy(struct Output *output);
+struct Output *get_focused_output(void);
 #endif
