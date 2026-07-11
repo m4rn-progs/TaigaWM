@@ -6,7 +6,6 @@
 #include <xkbcommon/xkbcommon.h>
 
 #include "actions.h"
-#include "autostart.h"
 #include "config.h"
 #include "output.h"
 #include "seat.h"
@@ -180,8 +179,7 @@ void seat_action(struct Seat *seat, enum Action action) {
     case ACTION_FOCUS_NEXT:
         if (!wl_list_empty(&wm.windows)) {
             // Focus the bottom window
-            struct Window *window =
-                wl_container_of(wm.windows.next, window, link);
+            struct Window *window = wl_container_of(wm.windows.next, window, link);
             seat_focus(seat, window);
         }
         break;
@@ -261,11 +259,6 @@ void seat_handle_new(struct Seat *seat) {
         pointer_config.pointerbinds = NULL;
     } else {
         fallback_pointerbinds(seat);
-    }
-
-    if (autostart_config.autostarts != NULL && !seat->no_autostart) {
-        autostart(autostart_config.autostarts, autostart_config.autostarts_len);
-        seat->no_autostart = true;
     }
 }
 

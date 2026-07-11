@@ -17,7 +17,6 @@ PointerBinds = {
 -- autostart cmds
 Autostart = {
     "alacritty",
-    "swaybg -m fill -i path/to/your/image"
 }
 
 -- key = value

@@ -101,14 +101,12 @@ void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {
 void window_handle_unmaximize_requested(void *data,
                                         struct river_window_v1 *obj) {
 
-    // get the seat, assuming only 1 seat. idk if this is bad
-    struct Seat *seat = NULL;
-    wl_container_of(wm.seats.next, seat, link);
+    struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
 
     struct Window *window = data;
     window->maximized = false;
-    river_window_v1_inform_unmaximized(window->obj);
-    river_window_v1_propose_dimensions(window->obj, 0, 0);
+    river_window_v1_inform_unmaximized(obj);
+    river_window_v1_propose_dimensions(obj, 0, 0);
 
     // fuckery that might not work on other res idk
     window_set_position(window, seat->cur_ptr_posx, seat->cur_ptr_posy);

@@ -47,8 +47,7 @@ struct Output *get_focused_output(void) {
         return NULL;
     }
 
-    struct Seat *seat;
-    seat = wl_container_of(wm.seats.next, seat, link);
+    struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
 
     struct Output *output;
     wl_list_for_each(output, &wm.outputs, link) {
