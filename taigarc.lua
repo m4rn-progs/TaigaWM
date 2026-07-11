@@ -1,32 +1,32 @@
-Keybinds = {
-    "alt+shift return spawn alacritty",
-    "alt+shift x spawn rofi -show drun",
-    "alt q killactive",
-    "alt escape exit",
-} -- valid config
+-- everything here is all that is supported in the current development state.
 
+-- mods+othermods key action <optional command>
+Keybinds = {
+    "super return spawn alacritty",
+    "super d spawn rofi -show drun",
+    "super q killactive",
+    "super+shift e exit",
+}
+
+-- mods+othermods mouse_button action
 PointerBinds = {
     "alt left_click move",
     "alt right_click resize",
-} -- valid config
+}
 
+-- autostart cmds
 Autostart = {
     "alacritty",
-} -- valid config
+    "swaybg -m fill -i path/to/your/image"
+}
 
+-- key = value
 Libinput = {
     tap_to_click = true,
     accel_profile = "flat",
-    -- etc
-} -- valid config
+}
 
-Xkb = {
-    layout = "us",
-    variant = "dvorak",
-    -- etc
-} -- invalid config
-
+-- key = value
 Misc = {
     tearing = true,
-    -- etc
-} -- valid config
+}
