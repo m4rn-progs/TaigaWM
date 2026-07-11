@@ -15,7 +15,7 @@ const struct river_output_v1_listener river_output_listener = {
 
 void output_handle_removed(void *data, struct river_output_v1 *obj) {
     struct Output *output = data;
-    output->removed = true;
+    output->removed = true;    
 }
 
 void output_maybe_destroy(struct Output *output) {
