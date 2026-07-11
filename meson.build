@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: 0BSD
 
 project(
-  'tinyrwm',
+  'taiga',
   'c',
   meson_version: '>= 1.8.0',
   version: '0.1',
