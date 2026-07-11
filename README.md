@@ -20,7 +20,6 @@ The following deps are needed
 - libxkbcommon-dev
 - libinput-dev
 - lua-dev >= 5.4
-- wlroots 
 - river compositor >= 4.0
 
 ### Compiling
