@@ -1,5 +1,6 @@
 #include <river-window-management-v1-client-protocol.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "output.h"
 #include "seat.h"
@@ -28,15 +29,19 @@ void output_maybe_destroy(struct Output *output) {
 
 void output_handle_dimensions(void *data, struct river_output_v1 *obj,
                               int32_t width, int32_t height) {
+    fprintf(stdout, "INFO: Output dimensions = %dx%d\n", width, height);
     struct Output *output = data;
     output->width = width;
     output->height = height;
 }
 
 void output_handle_wl_output(void *data, struct river_output_v1 *obj,
-                             uint32_t name) {}
+                             uint32_t name) {
+    printf("new wloutput\n");
+}
 void output_handle_position(void *data, struct river_output_v1 *obj, int32_t x,
                             int32_t y) {
+    fprintf(stdout, "INFO: Output position = %dx%d\n", x, y);
     struct Output *output = data;
     output->posx = x;
     output->posy = y;
