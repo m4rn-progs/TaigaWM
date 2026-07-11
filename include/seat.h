@@ -39,7 +39,9 @@ struct Seat {
     // For SEAT_OP_RESIZE only
     int32_t op_start_width, op_start_height;
     uint32_t op_edges;
-
+    
+    int32_t cur_ptr_posx;
+    int32_t cur_ptr_posy;
     struct wl_list link; // WindowManager.seats
 };
 

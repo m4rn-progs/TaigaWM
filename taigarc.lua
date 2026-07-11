@@ -1,5 +1,5 @@
 Keybinds = {
-    "alt+shift space spawn kitty",
+    "alt+shift space spawn alacritty",
     "alt q killactive",
     "alt escape exit",
 } -- valid config
@@ -10,7 +10,7 @@ PointerBinds = {
 } -- valid config
 
 Autostart = {
-    "kitty",
+    "alacritty",
 } -- valid config
 
 Libinput = {

@@ -46,13 +46,18 @@ void seat_handle_op_release(void *data, struct river_seat_v1 *obj) {
     seat->op_release = true;
 }
 
+void seat_handle_pointer_position(void *data, struct river_seat_v1 *obj,
+                                  int32_t x, int32_t y) {
+    struct Seat *seat = data;
+    seat->cur_ptr_posx = x;
+    seat->cur_ptr_posy = y;
+}
+
 // Ignored events
 void seat_handle_wl_seat(void *data, struct river_seat_v1 *obj, uint32_t id) {}
 void seat_handle_shell_surface_interaction(
     void *data, struct river_seat_v1 *obj,
     struct river_shell_surface_v1 *river_shell_surface) {}
-void seat_handle_pointer_position(void *data, struct river_seat_v1 *obj,
-                                  int32_t x, int32_t y) {}
 
 const struct river_seat_v1_listener river_seat_listener = {
     .removed = seat_handle_removed,
