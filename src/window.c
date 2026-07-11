@@ -169,7 +169,7 @@ void window_manage(struct Window *window) {
     if (window->new) {
         window->new = false;
         struct Output *output = get_focused_output();
-        window_set_position(window, output->width / 3, output->height / 5);
+        window_set_position(window, output->posx + output->width / 3, output->posy + output->height / 5);
         river_window_v1_propose_dimensions(window->obj, 0, 0);
     }
     if (window->pointer_move_requested != NULL) {
