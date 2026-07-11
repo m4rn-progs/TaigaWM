@@ -1,5 +1,4 @@
 #include <lauxlib.h>
-#include <limits.h>
 #include <linux/input-event-codes.h>
 #include <lua.h>
 #include <lualib.h>
@@ -228,7 +227,6 @@ lua_State *lua_open_table(const char *config_path, const char *table_name) {
 
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
-
     if (luaL_dofile(L, config_path) != LUA_OK) {
         fprintf(stderr, "ERROR: failed to open lua config file.\n");
         return NULL;

@@ -20,7 +20,11 @@ add_project_arguments(cc.get_supported_arguments([
 wayland_client = dependency('wayland-client')
 xkbcommon = dependency('xkbcommon')
 libinput = dependency('libinput')
-lua = dependency('lua')
+
+lua = dependency('lua5.5', method: 'pkg-config', required: false)
+if not lua.found()
+  lua = dependency('lua', method: 'pkg-config', required: true)
+endif
 
 wl_mod = import('wayland')
 generated = wl_mod.scan_xml(
