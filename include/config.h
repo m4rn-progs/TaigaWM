@@ -23,6 +23,7 @@ struct AutostartConfig {
 
 struct LibinputConfig {
     char *accel_profile;
+    bool tap_to_click;
 };
 
 struct MiscConfig {

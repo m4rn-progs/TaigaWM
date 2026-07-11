@@ -14,7 +14,7 @@ Autostart = {
 } -- valid config
 
 Libinput = {
-    tap_to_click = false,
+    tap_to_click = true,
     accel_profile = "flat",
     -- etc
 } -- valid config

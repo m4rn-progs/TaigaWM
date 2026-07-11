@@ -133,6 +133,18 @@ void river_libinput_device_handle_accel_profiles_support(
             device, RIVER_LIBINPUT_DEVICE_V1_ACCEL_PROFILES_NONE);
     }
 }
+void river_libinput_device_handle_tap_support(
+    void *data, struct river_libinput_device_v1 *device, int32_t finger_count) {
+    fprintf(stderr, "finger_count: %d", finger_count);
+    if (libinput_config.tap_to_click) {
+        fprintf(stdout, "INFO: tap_to_click enabled.");
+        river_libinput_device_v1_set_tap(device, 1);
+    } else {
+        fprintf(stdout, "INFO: tap_to_click disabled.");
+        river_libinput_device_v1_set_tap(device, 0);
+    }
+
+}
 
 void river_libinput_config_handle_finished(
     void *data, struct river_libinput_config_v1 *config) {}
@@ -147,9 +159,6 @@ void river_libinput_device_handle_send_events_default(
     void *data, struct river_libinput_device_v1 *device, uint32_t mode) {}
 void river_libinput_device_handle_send_events_current(
     void *data, struct river_libinput_device_v1 *device, uint32_t mode) {}
-void river_libinput_device_handle_tap_support(
-    void *data, struct river_libinput_device_v1 *device, int32_t finger_count) {
-}
 void river_libinput_device_handle_tap_default(
     void *data, struct river_libinput_device_v1 *device, uint32_t state) {}
 void river_libinput_device_handle_tap_current(

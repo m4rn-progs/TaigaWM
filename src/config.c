@@ -428,9 +428,11 @@ int load_config(void) {
     // libinput
     char *accel_profile = get_string_from_var_from_table(
         config_path, "Libinput", "accel_profile");
+    bool tap_to_click = get_bool_from_var_from_table(config_path, "Libinput", "tap_to_click");
 
     // have to use strdup or no workie
     libinput_config.accel_profile = strdup(accel_profile);
+    libinput_config.tap_to_click = tap_to_click;
 
     // misc
     bool tearing = get_bool_from_var_from_table(config_path, "Misc", "tearing");
