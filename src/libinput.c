@@ -143,7 +143,6 @@ void river_libinput_device_handle_tap_support(
         fprintf(stdout, "INFO: tap_to_click disabled.\n");
         river_libinput_device_v1_set_tap(device, 0);
     }
-
 }
 
 void river_libinput_config_handle_finished(

@@ -3,10 +3,10 @@
 #include <wayland-util.h>
 
 #include "output.h"
+#include "pointer.h"
 #include "seat.h"
 #include "window.h"
 #include "wm.h"
-#include "pointer.h"
 
 struct river_window_manager_v1 *window_manager_v1;
 const struct river_window_v1_listener river_window_listener = {
@@ -70,7 +70,7 @@ void window_handle_fullscreen_requested(void *data, struct river_window_v1 *obj,
 
     struct Output *output = get_focused_output();
     river_window_v1_propose_dimensions(window->obj, output->width,
-                                           output->height);
+                                       output->height);
     window_set_position(window, 0, 0);
 }
 
@@ -93,7 +93,8 @@ void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {
     river_window_v1_inform_maximized(window->obj);
 
     struct Output *output = get_focused_output();
-    river_window_v1_propose_dimensions(window->obj, output->width, output->height);
+    river_window_v1_propose_dimensions(window->obj, output->width,
+                                       output->height);
     window_set_position(window, output->posx, output->posy);
 }
 
@@ -169,7 +170,8 @@ void window_manage(struct Window *window) {
     if (window->new) {
         window->new = false;
         struct Output *output = get_focused_output();
-        window_set_position(window, output->posx + output->width / 3, output->posy + output->height / 5);
+        window_set_position(window, output->posx + output->width / 3,
+                            output->posy + output->height / 5);
         river_window_v1_propose_dimensions(window->obj, 0, 0);
     }
     if (window->pointer_move_requested != NULL) {

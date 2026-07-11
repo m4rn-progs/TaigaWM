@@ -62,7 +62,7 @@ int main(void) {
     wm_init();
     setup_inotify();
     river_window_manager_v1_add_listener(window_manager_v1, &wm_listener, NULL);
-    
+
     while (true) {
         if (wl_display_dispatch(display) < 0) {
             if (errno == EINTR) {
@@ -79,7 +79,6 @@ int main(void) {
             wl_list_for_each(seat, &wm.seats, link) { seat->new = true; }
             setup_inotify();
         }
-
     }
     return 0;
 }

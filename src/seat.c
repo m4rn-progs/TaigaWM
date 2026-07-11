@@ -6,13 +6,13 @@
 #include <xkbcommon/xkbcommon.h>
 
 #include "actions.h"
+#include "autostart.h"
 #include "config.h"
+#include "output.h"
 #include "seat.h"
 #include "window.h"
 #include "wm.h"
 #include "xkb.h"
-#include "output.h"
-#include "autostart.h"
 
 #include <river-layer-shell-v1-client-protocol.h>
 
@@ -52,7 +52,8 @@ void seat_handle_op_release(void *data, struct river_seat_v1 *obj) {
 
 void handle_focused_output_change(struct Seat *seat) {
     fprintf(stdout, "INFO: Changing default layer shell output.\n");
-    river_layer_shell_output_v1_set_default(seat->focused_output->layer_shell_output);
+    river_layer_shell_output_v1_set_default(
+        seat->focused_output->layer_shell_output);
 }
 
 void seat_handle_pointer_position(void *data, struct river_seat_v1 *obj,
@@ -235,12 +236,13 @@ void seat_handle_new(struct Seat *seat) {
                           &seat->pointer_bindings, link) {
         pointer_binding_destroy(pointer_binding);
     }
-    
+
     load_config();
     // set pointer bindings
     if (keybind_config.keybinds != NULL) {
         for (size_t i = 0; i < keybind_config.keybinds_len; i++) {
-            fprintf(stdout, "INFO: Adding keybind str: %s\n", keybind_config.keybinds[i]);
+            fprintf(stdout, "INFO: Adding keybind str: %s\n",
+                    keybind_config.keybinds[i]);
             parse_and_add_keybind(keybind_config.keybinds[i], seat);
             free(keybind_config.keybinds[i]);
         }
@@ -260,8 +262,8 @@ void seat_handle_new(struct Seat *seat) {
     } else {
         fallback_pointerbinds(seat);
     }
-    
-    if (autostart_config.autostarts != NULL && ! seat->no_autostart) {
+
+    if (autostart_config.autostarts != NULL && !seat->no_autostart) {
         autostart(autostart_config.autostarts, autostart_config.autostarts_len);
         seat->no_autostart = true;
     }

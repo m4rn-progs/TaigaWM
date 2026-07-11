@@ -2,8 +2,8 @@
 #include <stdlib.h>
 
 #include "output.h"
-#include "wm.h"
 #include "seat.h"
+#include "wm.h"
 
 const struct river_output_v1_listener river_output_listener = {
     .removed = output_handle_removed,
@@ -46,7 +46,7 @@ struct Output *get_focused_output(void) {
     if (wl_list_empty(&wm.seats)) {
         return NULL;
     }
-    
+
     struct Seat *seat;
     seat = wl_container_of(wm.seats.next, seat, link);
 

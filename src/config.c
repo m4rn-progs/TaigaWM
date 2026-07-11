@@ -225,16 +225,16 @@ lua_State *lua_open_table(const char *config_path, const char *table_name) {
     luaL_openlibs(L);
 
     if (luaL_dofile(L, config_path) != LUA_OK) {
-        fprintf(stderr, "ERROR: Lua failed to load '%s': %s\n", 
-                config_path, lua_tostring(L, -1));
+        fprintf(stderr, "ERROR: Lua failed to load '%s': %s\n", config_path,
+                lua_tostring(L, -1));
         lua_close(L);
         return NULL;
     }
 
     lua_getglobal(L, table_name);
     if (!lua_istable(L, -1)) {
-        fprintf(stderr, "ERROR: '%s' is not a table in '%s'\n", 
-                table_name, config_path);
+        fprintf(stderr, "ERROR: '%s' is not a table in '%s'\n", table_name,
+                config_path);
         lua_close(L);
         return NULL;
     }
@@ -292,7 +292,9 @@ char *get_string_from_var_from_table(const char *config_path,
     }
 }
 
-char **get_list_of_strings_from_lua_table(const char *config_path, size_t *len_return, const char *table_name) {
+char **get_list_of_strings_from_lua_table(const char *config_path,
+                                          size_t *len_return,
+                                          const char *table_name) {
     lua_State *L;
     if ((L = lua_open_table(config_path, table_name)) == NULL) {
         return NULL;
@@ -410,7 +412,7 @@ int load_config(void) {
         get_list_of_strings_from_lua_table(config_path, &binds_len, "Keybinds");
     keybind_config.keybinds = binds;
     keybind_config.keybinds_len = binds_len;
-    
+
     // Pointer binds
     size_t pbinds_len;
     char **pbinds = get_list_of_strings_from_lua_table(config_path, &pbinds_len,
@@ -424,11 +426,12 @@ int load_config(void) {
         config_path, &autostart_len, "Autostart");
     autostart_config.autostarts = autostart;
     autostart_config.autostarts_len = autostart_len;
-    
+
     char *accel_profile = get_string_from_var_from_table(
-    config_path, "Libinput", "accel_profile");
-    bool tap_to_click = get_bool_from_var_from_table(config_path, "Libinput", "tap_to_click");
-    
+        config_path, "Libinput", "accel_profile");
+    bool tap_to_click =
+        get_bool_from_var_from_table(config_path, "Libinput", "tap_to_click");
+
     if (libinput_config.accel_profile) {
         free(libinput_config.accel_profile);
     }
