@@ -68,13 +68,9 @@ void window_handle_fullscreen_requested(void *data, struct river_window_v1 *obj,
 
     river_window_v1_inform_fullscreen(window->obj);
 
-    struct Output *output;
-    wl_list_for_each(output, &wm.outputs, link) {
-        river_window_v1_propose_dimensions(window->obj, output->width,
+    struct Output *output = get_focused_output();
+    river_window_v1_propose_dimensions(window->obj, output->width,
                                            output->height);
-        break;
-    }
-
     window_set_position(window, 0, 0);
 }
 
@@ -105,10 +101,8 @@ void window_handle_unmaximize_requested(void *data,
                                         struct river_window_v1 *obj) {
 
     // get the seat, assuming only 1 seat. idk if this is bad
-    struct Seat *seat;
-    wl_list_for_each(seat, &wm.seats, link) {
-        break;
-    }
+    struct Seat *seat = NULL;
+    wl_container_of(wm.seats.next, seat, link);
 
     struct Window *window = data;
     window->maximized = false;
