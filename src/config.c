@@ -276,9 +276,7 @@ char *get_string_from_var_from_table(const char *config_path,
     int luatype = lua_type(L, -1);
 
     if (luatype == LUA_TSTRING) {
-        // const char *s = lua_tostring(L, -1);
-        // lua_close(L);
-        // return (char *)s;
+        // we strdup it cuz if we dont, lua_close will take the string with it
         char *result = NULL;
         if (lua_isstring(L, -1)) {
             result = strdup(lua_tostring(L, -1));
@@ -292,6 +290,9 @@ char *get_string_from_var_from_table(const char *config_path,
     }
 }
 
+// this function is just crazy honestly
+// allocate a buffer to hold strings, then loop over the table adding strings to
+// the buffer probably leaks memory
 char **get_list_of_strings_from_lua_table(const char *config_path,
                                           size_t *len_return,
                                           const char *table_name) {

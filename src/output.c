@@ -15,7 +15,7 @@ const struct river_output_v1_listener river_output_listener = {
 
 void output_handle_removed(void *data, struct river_output_v1 *obj) {
     struct Output *output = data;
-    output->removed = true;    
+    output->removed = true;
 }
 
 void output_maybe_destroy(struct Output *output) {
@@ -37,8 +37,9 @@ void output_handle_dimensions(void *data, struct river_output_v1 *obj,
 
 void output_handle_wl_output(void *data, struct river_output_v1 *obj,
                              uint32_t name) {
-    printf("new wloutput\n");
+    fprintf(stdout, "INFO: New wl_output\n");
 }
+
 void output_handle_position(void *data, struct river_output_v1 *obj, int32_t x,
                             int32_t y) {
     fprintf(stdout, "INFO: Output position = %dx%d\n", x, y);
@@ -52,8 +53,10 @@ struct Output *get_focused_output(void) {
         return NULL;
     }
 
+    // This just gets the first seat
     struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
 
+    // Maths magic for detecting focus
     struct Output *output;
     wl_list_for_each(output, &wm.outputs, link) {
         int32_t within_x = seat->cur_ptr_posx >= output->posx &&

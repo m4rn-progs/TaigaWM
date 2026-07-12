@@ -203,6 +203,8 @@ void seat_action(struct Seat *seat, enum Action action) {
 }
 
 void fallback_pointerbinds(struct Seat *seat) {
+    // Set the fallback pointer binds
+
     fprintf(stderr, "WARNING: falling back to sane default pointer binds.\n");
     const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD4;
     pointer_binding_create(seat, super, BTN_LEFT, ACTION_MOVE);
@@ -210,6 +212,8 @@ void fallback_pointerbinds(struct Seat *seat) {
 }
 
 void fallback_keybinds(struct Seat *seat) {
+    // Set the fallback key binds
+
     fprintf(stderr, "WARNING: falling back to sane default keybinds.\n");
     const uint32_t super = RIVER_SEAT_V1_MODIFIERS_MOD4;
     xkb_binding_create(seat, super, XKB_KEY_Return, ACTION_SPAWN_SH, "foot");
@@ -319,6 +323,7 @@ void seat_manage(struct Seat *seat) {
 }
 
 void seat_render(struct Seat *seat) {
+    // Move and resize stuff, river did this for us.
     switch (seat->op) {
     case SEAT_OP_NONE:
         break;

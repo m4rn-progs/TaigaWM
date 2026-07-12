@@ -60,38 +60,49 @@ void window_handle_pointer_resize_requested(void *data,
 
 void window_handle_fullscreen_requested(void *data, struct river_window_v1 *obj,
                                         struct river_output_v1 *river_output) {
+    // Meta
     struct Window *window = data;
-
     window->fullscreen = true;
     window->oldx = window->x;
     window->oldy = window->y;
 
+    // Inform fullscreen
     river_window_v1_inform_fullscreen(window->obj);
 
+    // set window to fullscreen on focused monitor
     struct Output *output = get_focused_output();
     river_window_v1_propose_dimensions(window->obj, output->width,
                                        output->height);
-    window_set_position(window, 0, 0);
+    window_set_position(window, output->posx, output->posy);
 }
 
 void window_handle_exit_fullscreen_requested(void *data,
                                              struct river_window_v1 *obj) {
+    // Meta
     struct Window *window = data;
     window->fullscreen = false;
+
+    // Inform not fullscreen
     river_window_v1_inform_not_fullscreen(window->obj);
+
+    // Let window choose its dimensions
     river_window_v1_propose_dimensions(window->obj, 0, 0);
+
+    // Set window to old position before fullscreen
     window_set_position(window, window->oldx, window->oldy);
 }
 
 void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {
+    // Meta
     struct Window *window = data;
-
     window->maximized = true;
     window->oldx = window->x;
     window->oldy = window->y;
 
+    // Inform maximized
     river_window_v1_inform_maximized(window->obj);
 
+    // Get the focused output and maximize it on that output
     struct Output *output = get_focused_output();
     river_window_v1_propose_dimensions(window->obj, output->width,
                                        output->height);
@@ -100,15 +111,16 @@ void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {
 
 void window_handle_unmaximize_requested(void *data,
                                         struct river_window_v1 *obj) {
-
+    // Meta
     struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
-
     struct Window *window = data;
     window->maximized = false;
+
+    // Inform unmax and let the window choose it's WxH
     river_window_v1_inform_unmaximized(obj);
     river_window_v1_propose_dimensions(obj, 0, 0);
 
-    // fuckery that might not work on other res idk
+    // Set window 0x0 to cusror pos
     window_set_position(window, seat->cur_ptr_posx, seat->cur_ptr_posy);
 }
 
