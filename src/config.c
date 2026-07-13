@@ -422,7 +422,7 @@ int load_config(void) {
     // Pointer binds
     size_t pbinds_len;
     char **pbinds = get_list_of_strings_from_lua_table(config_path, &pbinds_len,
-                                                       "PointerBinds");
+                                                       "Pointerbinds");
     pointer_config.pointerbinds = pbinds;
     pointer_config.pointerbinds_len = pbinds_len;
 

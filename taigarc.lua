@@ -10,7 +10,7 @@ Keybinds = {
 }
 
 -- mods+othermods mouse_button action
-PointerBinds = {
+Pointerbinds = {
     "alt left_click move",
     "alt right_click resize",
 }
