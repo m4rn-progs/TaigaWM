@@ -9,6 +9,7 @@ enum Action {
     ACTION_MOVE,
     ACTION_RESIZE,
     ACTION_EXIT,
+    ACTION_FULLSCREEN,
 };
 
 #endif

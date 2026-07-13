@@ -6,6 +6,7 @@ Keybinds = {
     "super d spawn rofi -show drun",
     "super q killactive",
     "super+shift e exit",
+    "super f fullscreen"
 }
 
 -- mods+othermods mouse_button action
