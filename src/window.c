@@ -58,12 +58,14 @@ void window_handle_pointer_resize_requested(void *data,
     window->pointer_resize_requested_edges = edges;
 }
 
-void seat_fullscreen_request(struct Window *window, struct Output *output) {
+void seat_enter_fullscreen(struct Window *window, struct Output *output) {
     window_handle_fullscreen_requested(window, window->obj, output->obj);
 }
-void seat_fullscreen_unrequest(struct Window *window) {
+
+void seat_exit_fullscreen(struct Window *window) {
     window_handle_exit_fullscreen_requested(window, window->obj);
 }
+
 void window_handle_fullscreen_requested(void *data, struct river_window_v1 *obj,
                                         struct river_output_v1 *river_output) {
     // Meta

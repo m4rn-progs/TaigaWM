@@ -200,12 +200,13 @@ void seat_action(struct Seat *seat, enum Action action) {
         river_window_manager_v1_exit_session(window_manager_v1);
         break;
     case ACTION_FULLSCREEN:
+        // its called seat_enter_fullscreen cuz we are calling it from seat
         if (seat->focused->fullscreen) {
             fprintf(stdout, "INFO: Leaving fullscreen\n");
-            seat_fullscreen_unrequest(seat->focused);
+            seat_exit_fullscreen(seat->focused);
         } else {
             fprintf(stdout, "INFO: Entering fullscreen\n");
-            seat_fullscreen_request(seat->focused, get_focused_output());
+            seat_enter_fullscreen(seat->focused, get_focused_output());
         }
         break;
     }
