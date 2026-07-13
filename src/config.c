@@ -213,7 +213,10 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
             xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_EXIT,
             NULL);
     } else if (strcmp(action, "fullscreen") == 0) {
-        xkb_binding_create(seat, mods_local, xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE), ACTION_FULLSCREEN, NULL);
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_FULLSCREEN, NULL);
     } else {
         fprintf(stderr, "ERROR: unknown action.\n");
         return 1;
