@@ -14,6 +14,7 @@ const struct river_output_v1_listener river_output_listener = {
 };
 
 void output_handle_removed(void *data, struct river_output_v1 *obj) {
+    fprintf(stdout, "INFO: Output removed.\n");
     struct Output *output = data;
     output->removed = true;
 }
@@ -22,6 +23,8 @@ void output_maybe_destroy(struct Output *output) {
     if (!output->removed) {
         return;
     }
+
+    fprintf(stdout, "INFO: Output destroyed.\n");
     river_output_v1_destroy(output->obj);
     wl_list_remove(&output->link);
     free(output);
@@ -29,7 +32,8 @@ void output_maybe_destroy(struct Output *output) {
 
 void output_handle_dimensions(void *data, struct river_output_v1 *obj,
                               int32_t width, int32_t height) {
-    fprintf(stdout, "INFO: Output dimensions = %dx%d\n", width, height);
+    fprintf(stdout, "INFO: Output dimensions = %dx%d.\n", width, height);
+
     struct Output *output = data;
     output->width = width;
     output->height = height;
@@ -37,12 +41,12 @@ void output_handle_dimensions(void *data, struct river_output_v1 *obj,
 
 void output_handle_wl_output(void *data, struct river_output_v1 *obj,
                              uint32_t name) {
-    fprintf(stdout, "INFO: New wl_output\n");
+    fprintf(stdout, "INFO: New wl_output.\n");
 }
 
 void output_handle_position(void *data, struct river_output_v1 *obj, int32_t x,
                             int32_t y) {
-    fprintf(stdout, "INFO: Output position = %dx%d\n", x, y);
+    fprintf(stdout, "INFO: Output position = %dx%d.\n", x, y);
     struct Output *output = data;
     output->posx = x;
     output->posy = y;
@@ -52,6 +56,8 @@ struct Output *get_focused_output(void) {
     if (wl_list_empty(&wm.seats)) {
         return NULL;
     }
+
+    fprintf(stdout, "INFO: Getting focused output.\n");
 
     // This just gets the first seat
     struct Seat *seat = wl_container_of(wm.seats.next, seat, link);

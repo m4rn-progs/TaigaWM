@@ -101,11 +101,6 @@ int main(void) {
             wl_list_for_each(seat, &wm.seats, link) { seat->new = true; }
             setup_inotify();
         }
-
-        // use this for debug
-        // struct Output *output = get_focused_output();
-        // fprintf(stdout, "Focused monitor: pos=%dx%d, dim=%dx%d\n",
-        // output->posx, output->posy, output->width, output->height);
     }
     return 0;
 }
