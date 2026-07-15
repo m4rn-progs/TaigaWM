@@ -15,9 +15,7 @@
 #include "wm.h"
 #include "xkb.h"
 
-// A way to pass something to the sig handler
 volatile sig_atomic_t config_changed = 0;
-
 void setup_inotify(void) {
     // Fork and wait for config changed
     // On config change send sig handler and exit
