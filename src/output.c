@@ -57,8 +57,6 @@ struct Output *get_focused_output(void) {
         return NULL;
     }
 
-    fprintf(stdout, "INFO: Getting focused output.\n");
-
     // This just gets the first seat
     struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
 

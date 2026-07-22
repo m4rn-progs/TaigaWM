@@ -1,9 +1,10 @@
--- everything here is all that is supported in the current development state.
+term_cmd = "kitty"
+menu_cmd = "rofi -show drun"
 
 -- mods+othermods key action <optional command>
 Keybinds = {
-    "super return spawn alacritty",
-    "super d spawn rofi -show drun",
+    "super return spawn " .. term_cmd,
+    "super d spawn " .. menu_cmd,
     "super q killactive",
     "super+shift e exit",
     "none f11 fullscreen"
@@ -17,7 +18,7 @@ Pointerbinds = {
 
 -- autostart cmds
 Autostart = {
-    "alacritty",
+    term_cmd,
 }
 
 -- key = value
