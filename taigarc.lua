@@ -1,7 +1,14 @@
 term_cmd = "kitty"
 menu_cmd = "rofi -show drun"
+
+-- edit this to configure your cursor theme
 cursor_name = "breeze_cursors"
 cursor_size = 24
+
+-- edit this to configure your monitors
+-- note, if you have more than 1 output, specify ALL of them.
+output_cmd = "wlr-randr --output DP-1 --mode 1920x1080@60 --scale 1.0"
+wallpaper_cmd = "swaybg -m fill -i /usr/share/boreal-artwork/boreal-default-dark-wallpaper.jpg"
 
 -- mods+othermods key action <optional command>
 Keybinds = {
@@ -20,6 +27,8 @@ Pointerbinds = {
 
 -- autostart cmds
 Autostart = {
+    output_cmd,
+    wallpaper_cmd,
     term_cmd,
 }
 
