@@ -247,6 +247,28 @@ lua_State *lua_open_table(const char *config_path, const char *table_name) {
     return L;
 }
 
+int get_int_from_var_from_table(const char *config_path,
+                                  const char *table_name,
+                                  const char *var_name) {
+    lua_State *L;
+    if ((L = lua_open_table(config_path, table_name)) == NULL) {
+        return 0;
+    }
+
+    lua_getfield(L, -1, var_name);
+    int luatype = lua_type(L, -1);
+
+    if (luatype == LUA_INT_DEFAULT) {
+        int b = lua_tointeger(L, -1);
+
+        lua_close(L);
+        return b;
+    } else {
+        lua_close(L);
+        return 0;
+    }
+}
+
 bool get_bool_from_var_from_table(const char *config_path,
                                   const char *table_name,
                                   const char *var_name) {
@@ -446,7 +468,12 @@ int load_config(void) {
 
     // misc
     bool tearing = get_bool_from_var_from_table(config_path, "Misc", "tearing");
+    char *xcursor_theme = get_string_from_var_from_table(config_path, "Misc", "xcursor_theme");
+    uint32_t xcursor_size = get_int_from_var_from_table(config_path, "Misc", "xcursor_size");
+
     misc_config.tearing = tearing;
+    misc_config.xcursor_theme = xcursor_theme;
+    misc_config.xcursor_size = xcursor_size;
 
     return 0;
 }

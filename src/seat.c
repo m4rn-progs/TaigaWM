@@ -275,6 +275,15 @@ void seat_handle_new(struct Seat *seat) {
     } else {
         fallback_pointerbinds(seat);
     }
+
+    if (misc_config.xcursor_theme != NULL) {
+        if (misc_config.xcursor_size <= 0) {
+            fprintf(stdout, "WARNING: Xcursor size not specified, falling back to 24.\n");
+            misc_config.xcursor_size = 24;
+        }
+        fprintf(stdout, "INFO: Setting Xcursor theme: %s size: %d\n", misc_config.xcursor_theme, misc_config.xcursor_size);
+        river_seat_v1_set_xcursor_theme(seat->obj, misc_config.xcursor_theme, misc_config.xcursor_size);
+    }
 }
 
 void seat_manage(struct Seat *seat) {

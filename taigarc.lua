@@ -1,5 +1,7 @@
 term_cmd = "kitty"
 menu_cmd = "rofi -show drun"
+cursor_name = "breeze_cursors"
+cursor_size = 24
 
 -- mods+othermods key action <optional command>
 Keybinds = {
@@ -29,5 +31,7 @@ Libinput = {
 
 -- key = value
 Misc = {
-    tearing = true,
+    tearing = false,
+    xcursor_theme = cursor_name,
+    xcursor_size = cursor_size,
 }

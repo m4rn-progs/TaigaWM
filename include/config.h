@@ -28,6 +28,8 @@ struct LibinputConfig {
 
 struct MiscConfig {
     bool tearing;
+    char *xcursor_theme;
+    uint32_t xcursor_size;
 };
 
 extern struct KeybindConfig keybind_config;
@@ -45,6 +47,9 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat);
 lua_State *lua_open_table(const char *config_path, const char *table_name);
 bool get_bool_from_var_from_table(const char *config_path,
                                   const char *table_name, const char *var_name);
+int get_int_from_var_from_table(const char *config_path,
+                                  const char *table_name,
+                                  const char *var_name);
 char *get_string_from_var_from_table(const char *config_path,
                                      const char *table_name,
                                      const char *var_name);
