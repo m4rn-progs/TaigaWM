@@ -114,22 +114,31 @@ void seat_maybe_destroy(struct Seat *seat) {
 }
 
 void seat_focus(struct Seat *seat, struct Window *window) {
-    // Focus the top window (if any) when there is no explicit target.
+    // if no window is specified (usually on close)
+    // try to find the first window on the same tag and output
+    // fallback to last focused window
     if (window == NULL && !wl_list_empty(&wm.windows)) {
-        // if a window == NULL aka closed a window, lets try to focus the next window in the tag
-        struct Output *tmp_output = get_focused_output();
-        wl_list_for_each(window, &wm.windows, link) {
-            if (window->tag_id == tmp_output->tag_id && window->output == tmp_output) {
-                break;
+        struct Output *output = get_focused_output();
+        if (output != NULL) {
+            struct Window *tmp_window;
+            wl_list_for_each_reverse(tmp_window, &wm.windows, link) {
+                if (tmp_window->tag_id == output->tag_id && tmp_window->output == output) {
+                    window = tmp_window;
+                    break;
+                }
             }
         }
-        window = wl_container_of(wm.windows.prev, window, link);
+
+        if (window == NULL) {
+            window = wl_container_of(wm.windows.prev, window, link);
+        }
     }
 
     if (seat->focused == window) {
         return;
     }
 
+    // Apply focus
     if (window != NULL) {
         river_seat_v1_focus_window(seat->obj, window->obj);
         river_node_v1_place_top(window->node);
@@ -171,19 +180,26 @@ void seat_pointer_resize(struct Seat *seat, struct Window *window,
 
 void seat_action(struct Seat *seat, enum Action action) {
     struct Output *tmp_output = get_focused_output();
-    struct Window *tmp_window = seat->focused;
+    struct Window *tmp_window;
+
+    if (seat->focused != NULL) {
+        tmp_window = seat->focused;
+    } else {
+        tmp_window = NULL;
+    }
 
     switch (action) {
     case ACTION_NONE:
         break;
     case ACTION_SPAWN_SH:
         if (fork() == 0) {
-            execlp("/bin/sh", "/bin/sh", "-c", seat->pending_cmd, (char *)0);
+            execlp("/bin/sh", "/bin/sh", "-c", seat->pending_cmd, NULL);
+            _exit(0);
         }
         break;
     case ACTION_CLOSE:
-        if (seat->focused != NULL) {
-            river_window_v1_close(seat->focused->obj);
+        if (tmp_window != NULL) {
+            river_window_v1_close(tmp_window->obj);
         }
         break;
     case ACTION_FOCUS_NEXT:
@@ -209,39 +225,54 @@ void seat_action(struct Seat *seat, enum Action action) {
         river_window_manager_v1_exit_session(window_manager_v1);
         break;
     case ACTION_FULLSCREEN:
-        // its called seat_enter_fullscreen cuz we are calling it from seat
-        if (seat->focused->fullscreen) {
-            fprintf(stdout, "INFO: Leaving fullscreen\n");
-            seat_exit_fullscreen(seat->focused);
-        } else {
-            fprintf(stdout, "INFO: Entering fullscreen\n");
-            seat_enter_fullscreen(seat->focused, get_focused_output());
+        if (tmp_window != NULL && tmp_output != NULL) {
+            if (tmp_window->fullscreen) {
+                fprintf(stdout, "INFO: Leaving fullscreen\n");
+                seat_exit_fullscreen(tmp_window);
+            } else {
+                fprintf(stdout, "INFO: Entering fullscreen\n");
+                seat_enter_fullscreen(tmp_window, tmp_output);
+            }
         }
         break;
     case ACTION_MAXIMIZE:
-        if (seat->focused->maximized) {
-            seat_unmaximize(seat->focused);
-        } else {
-            seat_maximize(seat->focused);
+        if (tmp_window != NULL) {
+            if (tmp_window->maximized) {
+                seat_unmaximize(tmp_window);
+            } else {
+                seat_maximize(tmp_window);
+            }
         }
         break;
     case ACTION_TAG_INC:
-        output_inc_tag(tmp_output);
+        if (tmp_output != NULL) {
+            output_inc_tag(tmp_output);
+        }
         break;
     case ACTION_TAG_DEC:
-        output_dec_tag(tmp_output);
+        if (tmp_output != NULL) {
+            output_dec_tag(tmp_output);
+        }
         break;
     case ACTION_WIN_TAG_INC:
-        window_inc_tag(tmp_window);
+        if (tmp_window != NULL) {
+            window_inc_tag(tmp_window);
+        }
         break;
     case ACTION_WIN_TAG_DEC:
-        window_dec_tag(tmp_window);
+        if (tmp_window != NULL) {
+            window_dec_tag(tmp_window);
+        }
         break;
     case ACTION_TAG_SET:
-        output_set_tag(tmp_output, (uint32_t)atoi(seat->pending_cmd));
+        if (tmp_output != NULL) {
+            output_set_tag(tmp_output, (uint32_t)atoi(seat->pending_cmd));
+        }
         break;
     case ACTION_WIN_TAG_SET:
-        window_set_tag(tmp_window, (uint32_t)atoi(seat->pending_cmd));
+        if (tmp_window != NULL) {
+            window_set_tag(tmp_window, (uint32_t)atoi(seat->pending_cmd));
+        }
         break;
     case ACTION_FOCUS_MON_NEXT:
         focus_mon_next();

@@ -3,7 +3,6 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/inotify.h>
 #include <unistd.h>
 #include <wayland-client-core.h>
@@ -15,21 +14,40 @@
 #include "window.h"
 #include "wm.h"
 #include "xkb.h"
+#include "layer_shell.h"
 
 static volatile sig_atomic_t config_changed = 0;
 static void setup_inotify(void) {
     // Fork and wait for config changed
     // On config change send sig handler and exit
-    if (fork() == 0) {
-        int fd = inotify_init();
+
+    // if the watcher pid changes kill the old one
+    static pid_t watcher_pid;
+    if (watcher_pid > 0) {
+        kill(watcher_pid, SIGKILL);
+        watcher_pid = 0;
+    }
+
+    const pid_t pid = fork();
+    if (pid == 0) {
+        const int fd = inotify_init();
+
+        // exit if fd is bad
+        if (fd < 0) _exit(0);
+
         char buf[1024];
         inotify_add_watch(fd, config_path, IN_MODIFY);
 
         while (read(fd, buf, sizeof(buf)) > 0) {
             kill(getppid(), SIGUSR1);
         }
-        exit(0);
+
+        // close fd and exit
+        close(fd);
+        _exit(0);
     }
+
+    if (pid > 0) watcher_pid = pid;
 }
 
 // We do this so the main loop can check if the config was changed, in order to
@@ -64,7 +82,7 @@ static int compositor_main(void) {
     }
 
     // Check that the compositor is river compatible / is river
-    if (window_manager_v1 == NULL || xkb_bindings_v1 == NULL) {
+    if (window_manager_v1 == NULL || xkb_bindings_v1 == NULL || layer_shell == NULL) {
         fprintf(stderr, "ERROR: compositor is not river compatible.\n");
         return 1;
     }
@@ -124,11 +142,21 @@ int main(int argc, char **argv) {
         char exe_path[PATH_MAX];
         size_t len = 0;
 
+        // try to read our name
         len = readlink("/proc/self/exe", exe_path, sizeof(exe_path) - 1);
+        // if we fail, abort
+        if (len <= 0) {
+            fprintf(stderr, "ERROR: failed to read /proc/self/exe.\n");
+            return 1;
+        }
         exe_path[len] = '\0';
 
         setenv("TAIGA_WRAPPED", "1", 1);
         char *const args[] = {"river", "-c", exe_path, NULL};
         execvp("river", args);
+
+        // should only exec if execvp fails
+        perror("execvp");
+        return 1;
     }
 }

@@ -27,6 +27,7 @@ void xkb_binding_destroy(struct XkbBinding *binding) {
     river_xkb_binding_v1_destroy(binding->obj);
     free(binding->cmd);
     wl_list_remove(&binding->link);
+    free(binding);
 }
 
 void xkb_binding_create(struct Seat *seat, uint32_t mods, xkb_keysym_t keysym,

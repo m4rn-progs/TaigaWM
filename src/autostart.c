@@ -8,6 +8,7 @@ void autostart(char **autostart_list, size_t autostart_list_sz) {
         if (fork() == 0) {
             fprintf(stdout, "INFO: executing: %s\n", autostart_list[i]);
             execl("/bin/sh", "/bin/sh", "-c", autostart_list[i], NULL);
+            _exit(127);
         }
         free(autostart_list[i]);
     }
