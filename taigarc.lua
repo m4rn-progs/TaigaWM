@@ -1,3 +1,4 @@
+-- toplevel variables, not needed but makes the config cleaner
 term_cmd = "kitty"
 menu_cmd = "rofi -show drun"
 cursor_name = "breeze_cursors"
@@ -58,10 +59,12 @@ Autostart = {
     term_cmd,
 }
 
+-- key = value
 Xkb = {
     layout = "us",
     variant = ""
 }
+
 -- key = value
 Libinput = {
     tap_to_click = true,
@@ -74,6 +77,7 @@ Misc = {
     xcursor_theme = cursor_name,
     xcursor_size = cursor_size,
     border_size = 5,
+
     -- colors are defined in HEX including alpha
     focused_border_color_hex = 0xFFFFFFFF,
     unfocused_border_color_hex = 0x000000FF
