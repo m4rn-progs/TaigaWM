@@ -116,6 +116,13 @@ void seat_maybe_destroy(struct Seat *seat) {
 void seat_focus(struct Seat *seat, struct Window *window) {
     // Focus the top window (if any) when there is no explicit target.
     if (window == NULL && !wl_list_empty(&wm.windows)) {
+        // if a window == NULL aka closed a window, lets try to focus the next window in the tag
+        struct Output *tmp_output = get_focused_output();
+        wl_list_for_each(window, &wm.windows, link) {
+            if (window->tag_id == tmp_output->tag_id && window->output == tmp_output) {
+                break;
+            }
+        }
         window = wl_container_of(wm.windows.prev, window, link);
     }
 
