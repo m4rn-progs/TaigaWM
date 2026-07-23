@@ -43,7 +43,6 @@ Keybinds = {
     "super+shift 8 win_tag 7",
     "super+shift 9 win_tag 8",
     "super+shift 0 win_tag 9",
-
 }
 
 -- mods+othermods mouse_button action

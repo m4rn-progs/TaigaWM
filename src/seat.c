@@ -225,10 +225,10 @@ void seat_action(struct Seat *seat, enum Action action) {
         window_dec_tag(tmp_window);
         break;
     case ACTION_TAG_SET:
-        output_set_tag(tmp_output, (uint32_t) atoi(seat->pending_cmd));
+        output_set_tag(tmp_output, (uint32_t)atoi(seat->pending_cmd));
         break;
     case ACTION_WIN_TAG_SET:
-        window_set_tag(tmp_window, (uint32_t) atoi(seat->pending_cmd));
+        window_set_tag(tmp_window, (uint32_t)atoi(seat->pending_cmd));
         break;
     }
 }
@@ -311,9 +311,7 @@ void seat_handle_new(struct Seat *seat) {
     }
 
     struct Window *window;
-    wl_list_for_each(window, &wm.windows, link) {
-        set_borders(window);
-    }
+    wl_list_for_each(window, &wm.windows, link) { set_borders(window); }
 }
 
 void seat_manage(struct Seat *seat) {
@@ -338,7 +336,8 @@ void seat_manage(struct Seat *seat) {
             int32_t final_x = seat->op_start_x + seat->op_dx;
             int32_t final_y = seat->op_start_y + seat->op_dy;
 
-            struct Output *new_output = get_output_at_position(final_x, final_y);
+            struct Output *new_output =
+                get_output_at_position(final_x, final_y);
             if (new_output != NULL && new_output != seat->op_window->output) {
                 seat->op_window->output = new_output;
                 seat->op_window->tag_id = new_output->tag_id;
@@ -383,22 +382,22 @@ void seat_manage(struct Seat *seat) {
 void seat_render(struct Seat *seat) {
     // Move and resize stuff, river did this for us.
     switch (seat->op) {
-        case SEAT_OP_NONE:
-            break;
-        case SEAT_OP_MOVE:
-            window_set_position(seat->op_window, seat->op_start_x + seat->op_dx,
-                                seat->op_start_y + seat->op_dy);
-            break;
-        case SEAT_OP_RESIZE:;
-            int32_t x = seat->op_start_x;
-            int32_t y = seat->op_start_y;
-            if ((seat->op_edges & RIVER_WINDOW_V1_EDGES_LEFT) != 0) {
-                x += seat->op_start_width - seat->op_window->width;
-            }
-            if ((seat->op_edges & RIVER_WINDOW_V1_EDGES_TOP) != 0) {
-                y += seat->op_start_height - seat->op_window->height;
-            }
-            window_set_position(seat->op_window, x, y);
-            break;
+    case SEAT_OP_NONE:
+        break;
+    case SEAT_OP_MOVE:
+        window_set_position(seat->op_window, seat->op_start_x + seat->op_dx,
+                            seat->op_start_y + seat->op_dy);
+        break;
+    case SEAT_OP_RESIZE:;
+        int32_t x = seat->op_start_x;
+        int32_t y = seat->op_start_y;
+        if ((seat->op_edges & RIVER_WINDOW_V1_EDGES_LEFT) != 0) {
+            x += seat->op_start_width - seat->op_window->width;
+        }
+        if ((seat->op_edges & RIVER_WINDOW_V1_EDGES_TOP) != 0) {
+            y += seat->op_start_height - seat->op_window->height;
+        }
+        window_set_position(seat->op_window, x, y);
+        break;
     }
 }

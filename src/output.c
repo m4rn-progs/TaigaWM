@@ -82,7 +82,7 @@ struct Output *get_output_at_position(int x, int y) {
         if (x >= output->posx && x < output->posx + output->width &&
             y >= output->posy && y < output->posy + output->height) {
             return output;
-            }
+        }
     }
     return NULL;
 }

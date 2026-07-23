@@ -219,12 +219,10 @@ void set_borders(struct Window *window) {
     }
 }
 
-void output_inc_tag(struct Output *output) {
-    output->tag_id++;
-}
+void output_inc_tag(struct Output *output) { output->tag_id++; }
 
 void output_dec_tag(struct Output *output) {
-    if (output->tag_id <= 0 ) {
+    if (output->tag_id <= 0) {
         fprintf(stdout, "INFO: output tag at 0\n");
         return;
     }
@@ -232,12 +230,10 @@ void output_dec_tag(struct Output *output) {
     output->tag_id--;
 }
 
-void window_inc_tag(struct Window *window) {
-    window->tag_id++;
-}
+void window_inc_tag(struct Window *window) { window->tag_id++; }
 
 void window_dec_tag(struct Window *window) {
-    if (window->tag_id <= 0 ) {
+    if (window->tag_id <= 0) {
         fprintf(stdout, "INFO: win at 0\n");
         return;
     }
