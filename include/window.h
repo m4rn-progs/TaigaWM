@@ -79,6 +79,7 @@ void window_handle_identifier(void *data, struct river_window_v1 *obj,
                               const char *identifier);
 void window_maybe_destroy(struct Window *window);
 void window_set_position(struct Window *window, int32_t x, int32_t y);
+void set_borders(struct Window *window);
 void window_manage(struct Window *window);
 
 #endif
