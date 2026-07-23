@@ -30,9 +30,16 @@ meson setup build
 ninja -C build
 ```
 
+### Installing
+```bash
+sudo meson install -C build
+```
+
 ### Running
 ```bash
-river -c build/taiga
+./build/taiga
+OR
+taiga
 ```
 
 ## Configuration
