@@ -259,6 +259,16 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
             seat, mods_local,
             xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
             ACTION_WIN_TAG_SET, strdup(final_cmd_buf));
+    } else if (strcmp(action, "focus_mon_next") == 0) {
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_FOCUS_MON_NEXT, NULL);
+    } else if (strcmp(action, "focus_mon_prev") == 0) {
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_FOCUS_MON_PREV, NULL);
     } else {
         fprintf(stderr, "ERROR: unknown action.\n");
         return 1;

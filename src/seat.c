@@ -230,6 +230,12 @@ void seat_action(struct Seat *seat, enum Action action) {
     case ACTION_WIN_TAG_SET:
         window_set_tag(tmp_window, (uint32_t)atoi(seat->pending_cmd));
         break;
+    case ACTION_FOCUS_MON_NEXT:
+        focus_mon_next();
+        break;
+    case ACTION_FOCUS_MON_PREV:
+        focus_mon_prev();
+        break;
     }
 }
 

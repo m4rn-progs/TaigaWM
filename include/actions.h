@@ -16,6 +16,8 @@ enum Action {
     ACTION_WIN_TAG_DEC,
     ACTION_TAG_SET,
     ACTION_WIN_TAG_SET,
+    ACTION_FOCUS_MON_NEXT,
+    ACTION_FOCUS_MON_PREV,
 };
 
 #endif

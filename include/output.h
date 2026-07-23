@@ -28,4 +28,6 @@ void output_handle_dimensions(void *data, struct river_output_v1 *obj,
 void output_maybe_destroy(struct Output *output);
 struct Output *get_focused_output(void);
 struct Output *get_output_at_position(int x, int y);
+void focus_mon_next(void);
+void focus_mon_prev(void);
 #endif

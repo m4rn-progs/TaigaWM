@@ -86,3 +86,29 @@ struct Output *get_output_at_position(int x, int y) {
     }
     return NULL;
 }
+
+void focus_mon_next(void) {
+    struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
+    struct Output *tmp_output;
+    struct Output *focused_output = get_focused_output();
+    wl_list_for_each(tmp_output, &wm.outputs, link) {
+        if (tmp_output != focused_output) {
+            river_seat_v1_pointer_warp(
+                seat->obj, tmp_output->posx + tmp_output->width / 2,
+                tmp_output->posy + tmp_output->height / 2);
+        }
+    }
+}
+
+void focus_mon_prev(void) {
+    struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
+    struct Output *tmp_output;
+    struct Output *focused_output = get_focused_output();
+    wl_list_for_each_reverse(tmp_output, &wm.outputs, link) {
+        if (tmp_output != focused_output) {
+            river_seat_v1_pointer_warp(
+                seat->obj, tmp_output->posx + tmp_output->width / 2,
+                tmp_output->posy + tmp_output->height / 2);
+        }
+    }
+}

@@ -23,6 +23,9 @@ Keybinds = {
     "super n tag_dec",
     "super+shift n win_tag_dec",
 
+    "super b focus_mon_next",
+    "super+shift b focus_mon_prev",
+
     "super 1 tag 0",
     "super 2 tag 1",
     "super 3 tag 2",
