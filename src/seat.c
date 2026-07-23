@@ -288,6 +288,11 @@ void seat_handle_new(struct Seat *seat) {
         river_seat_v1_set_xcursor_theme(seat->obj, misc_config.xcursor_theme,
                                         misc_config.xcursor_size);
     }
+
+    struct Window *window;
+    wl_list_for_each(window, &wm.windows, link) {
+        set_borders(window);
+    }
 }
 
 void seat_manage(struct Seat *seat) {
