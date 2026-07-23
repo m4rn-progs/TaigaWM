@@ -18,10 +18,10 @@ Keybinds = {
     "super+shift e exit",
     "none f11 fullscreen",
 
-    "super m tag_inc",
-    "super+shift m win_tag_inc",
-    "super n tag_dec",
-    "super+shift n win_tag_dec",
+    "super period tag_inc",
+    "super+shift period win_tag_inc",
+    "super comma tag_dec",
+    "super+shift comma win_tag_dec",
 
     "super b focus_mon_next",
     "super+shift b focus_mon_prev",

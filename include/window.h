@@ -84,6 +84,7 @@ void window_maybe_destroy(struct Window *window);
 void window_set_position(struct Window *window, int32_t x, int32_t y);
 void set_borders(struct Window *window);
 
+void tag_focus_first_window(struct Output *output);
 void output_inc_tag(struct Output *output);
 void output_dec_tag(struct Output *output);
 void window_inc_tag(struct Window *window);

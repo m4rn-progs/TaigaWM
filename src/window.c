@@ -219,15 +219,30 @@ void set_borders(struct Window *window) {
     }
 }
 
-void output_inc_tag(struct Output *output) { output->tag_id++; }
+void tag_focus_first_window(struct Output *output) {
+    struct Window *tmp_window;
+    struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
+    seat->focused = NULL;
+    wl_list_for_each(tmp_window, &wm.windows, link) {
+        if (tmp_window->tag_id == output->tag_id) {
+            seat_focus(seat, tmp_window);
+            break;
+        }
+    }
+}
+
+void output_inc_tag(struct Output *output) {
+    output->tag_id++;
+    tag_focus_first_window(output);
+}
 
 void output_dec_tag(struct Output *output) {
     if (output->tag_id <= 0) {
         fprintf(stdout, "INFO: output tag at 0\n");
         return;
     }
-
     output->tag_id--;
+    tag_focus_first_window(output);
 }
 
 void window_inc_tag(struct Window *window) { window->tag_id++; }
@@ -243,6 +258,7 @@ void window_dec_tag(struct Window *window) {
 
 void output_set_tag(struct Output *output, uint32_t tag) {
     output->tag_id = tag;
+    tag_focus_first_window(output);
 }
 
 void window_set_tag(struct Window *window, uint32_t tag) {
