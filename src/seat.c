@@ -122,7 +122,8 @@ void seat_focus(struct Seat *seat, struct Window *window) {
         if (output != NULL) {
             struct Window *tmp_window;
             wl_list_for_each_reverse(tmp_window, &wm.windows, link) {
-                if (tmp_window->tag_id == output->tag_id && tmp_window->output == output) {
+                if (tmp_window->tag_id == output->tag_id &&
+                    tmp_window->output == output) {
                     window = tmp_window;
                     break;
                 }

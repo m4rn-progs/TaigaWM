@@ -11,10 +11,10 @@
 
 #include "autostart.h"
 #include "config.h"
+#include "layer_shell.h"
 #include "window.h"
 #include "wm.h"
 #include "xkb.h"
-#include "layer_shell.h"
 
 static volatile sig_atomic_t config_changed = 0;
 static void setup_inotify(void) {
@@ -33,7 +33,8 @@ static void setup_inotify(void) {
         const int fd = inotify_init();
 
         // exit if fd is bad
-        if (fd < 0) _exit(0);
+        if (fd < 0)
+            _exit(0);
 
         char buf[1024];
         inotify_add_watch(fd, config_path, IN_MODIFY);
@@ -47,7 +48,8 @@ static void setup_inotify(void) {
         _exit(0);
     }
 
-    if (pid > 0) watcher_pid = pid;
+    if (pid > 0)
+        watcher_pid = pid;
 }
 
 // We do this so the main loop can check if the config was changed, in order to
@@ -82,7 +84,8 @@ static int compositor_main(void) {
     }
 
     // Check that the compositor is river compatible / is river
-    if (window_manager_v1 == NULL || xkb_bindings_v1 == NULL || layer_shell == NULL) {
+    if (window_manager_v1 == NULL || xkb_bindings_v1 == NULL ||
+        layer_shell == NULL) {
         fprintf(stderr, "ERROR: compositor is not river compatible.\n");
         return 1;
     }
