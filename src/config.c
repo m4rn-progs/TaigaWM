@@ -544,7 +544,8 @@ int load_config(void) {
         get_int_from_var_from_table(config_path, "Misc", "xcursor_size");
     uint32_t border_size =
         get_int_from_var_from_table(config_path, "Misc", "border_size");
-    bool client_side_decorations = get_bool_from_var_from_table(config_path, "Misc", "client_side_decorations");
+    bool client_side_decorations = get_bool_from_var_from_table(
+        config_path, "Misc", "client_side_decorations");
     uint32_t focused_border_color_hex = get_int_from_var_from_table(
         config_path, "Misc", "focused_border_color_hex");
     uint32_t unfocused_border_color_hex = get_int_from_var_from_table(

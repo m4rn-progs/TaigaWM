@@ -4,8 +4,8 @@
 
 #include "output.h"
 #include "seat.h"
-#include "wm.h"
 #include "window.h"
+#include "wm.h"
 
 const struct river_output_v1_listener river_output_listener = {
     .removed = output_handle_removed,
@@ -93,7 +93,8 @@ void focus_first_window_on_output(struct Output *output) {
     struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
 
     wl_list_for_each(tmp_window, &wm.windows, link) {
-        if (tmp_window->output == output && tmp_window->tag_id == output->tag_id) {
+        if (tmp_window->output == output &&
+            tmp_window->tag_id == output->tag_id) {
             seat_focus(seat, tmp_window);
             break;
         }
