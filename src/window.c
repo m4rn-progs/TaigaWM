@@ -242,20 +242,10 @@ void window_dec_tag(struct Window *window) {
 }
 
 void output_set_tag(struct Output *output, uint32_t tag) {
-    if (tag < 0) {
-        fprintf(stderr, "ERROR: Tags cannot be <0.\n");
-        return;
-    }
-
     output->tag_id = tag;
 }
 
 void window_set_tag(struct Window *window, uint32_t tag) {
-    if (tag < 0) {
-        fprintf(stderr, "ERROR: Tags cannot be <0.\n");
-        return;
-    }
-
     window->tag_id = tag;
 }
 
