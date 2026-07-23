@@ -1,6 +1,6 @@
 #include <errno.h>
 #include <signal.h>
-#include <stdbool.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/inotify.h>
@@ -8,6 +8,7 @@
 #include <wayland-client-core.h>
 #include <wayland-client-protocol.h>
 #include <wayland-util.h>
+#include <limits.h>
 
 #include "autostart.h"
 #include "config.h"
@@ -15,8 +16,8 @@
 #include "wm.h"
 #include "xkb.h"
 
-volatile sig_atomic_t config_changed = 0;
-void setup_inotify(void) {
+static volatile sig_atomic_t config_changed = 0;
+static void setup_inotify(void) {
     // Fork and wait for config changed
     // On config change send sig handler and exit
     if (fork() == 0) {
@@ -33,12 +34,9 @@ void setup_inotify(void) {
 
 // We do this so the main loop can check if the config was changed, in order to
 // setup inotify again
-void handle_config_change(int sig) { config_changed = 1; }
+static void handle_config_change(int sig) { config_changed = 1; }
 
-int main(void) {
-    // Load the config as the first thing we do
-    load_config();
-
+static int compositor_main(void) {
     // Sig magic
     struct sigaction sa = {0};
     sa.sa_handler = handle_config_change;
@@ -54,6 +52,7 @@ int main(void) {
 
     // Remove WAYLAND_DEBUG from our children
     unsetenv("WAYLAND_DEBUG");
+    unsetenv("TAIGA_WRAPPED");
     signal(SIGCHLD, SIG_IGN);
 
     // Registry setup
@@ -100,5 +99,39 @@ int main(void) {
             setup_inotify();
         }
     }
-    return 0;
+}
+
+// main is now a wrapper function
+int main(int argc, char **argv) {
+    // Load the config as the first thing we do
+    load_config();
+
+    // set the xkb env vars for the keyboard layout and whatnot
+    if (xkb_config.layout != NULL) {
+        fprintf(stdout, "INFO: Loading layout: %s\n", xkb_config.layout);
+        setenv("XKB_DEFAULT_LAYOUT", xkb_config.layout, 1);
+    } if (xkb_config.variant != NULL) {
+        fprintf(stdout, "INFO: Loading variant: %s\n", xkb_config.variant);
+        setenv("XKB_DEFAULT_VARIANT", xkb_config.variant, 1);
+    }
+
+    // if the env var TAIGA_WRAPPED is set, we are running inside river
+    if (getenv("TAIGA_WRAPPED") != NULL) {
+        compositor_main();
+    } else {
+        // if we arent running inside river, do that and set taiga wrapped
+        char exe_path[PATH_MAX];
+        size_t len = 0;
+
+        len = readlink("/proc/self/exe", exe_path, sizeof(exe_path) - 1);
+        exe_path[len] = '\0';
+
+        setenv("TAIGA_WRAPPED", "1", 1);
+        char *const args[] = {
+            "river",
+            "-c", exe_path,
+            NULL
+        };
+        execvp("river", args);
+    }
 }

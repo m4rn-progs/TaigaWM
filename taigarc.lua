@@ -30,6 +30,10 @@ Autostart = {
     term_cmd,
 }
 
+Xkb = {
+    layout = "us",
+    variant = ""
+}
 -- key = value
 Libinput = {
     tap_to_click = true,

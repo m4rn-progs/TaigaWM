@@ -16,6 +16,7 @@
 struct KeybindConfig keybind_config = {0};
 struct PointerConfig pointer_config = {0};
 struct AutostartConfig autostart_config = {0};
+struct XkbConfig xkb_config = {0};
 struct LibinputConfig libinput_config = {0};
 struct MiscConfig misc_config = {0};
 const char *config_path = NULL;
@@ -454,6 +455,7 @@ int load_config(void) {
     autostart_config.autostarts = autostart;
     autostart_config.autostarts_len = autostart_len;
 
+    // libinput
     char *accel_profile = get_string_from_var_from_table(
         config_path, "Libinput", "accel_profile");
     bool tap_to_click =
@@ -464,6 +466,13 @@ int load_config(void) {
     }
     libinput_config.accel_profile = accel_profile;
     libinput_config.tap_to_click = tap_to_click;
+
+    // xkb
+    char *layout = get_string_from_var_from_table(config_path, "Xkb", "layout");
+    char *variant = get_string_from_var_from_table(config_path, "Xkb", "variant");
+
+    xkb_config.layout = layout;
+    xkb_config.variant = variant;
 
     // misc
     bool tearing = get_bool_from_var_from_table(config_path, "Misc", "tearing");

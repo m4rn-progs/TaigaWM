@@ -26,6 +26,11 @@ struct LibinputConfig {
     bool tap_to_click;
 };
 
+struct XkbConfig {
+    char *layout;
+    char *variant;
+};
+
 struct MiscConfig {
     bool tearing;
     char *xcursor_theme;
@@ -38,6 +43,7 @@ struct MiscConfig {
 extern struct KeybindConfig keybind_config;
 extern struct PointerConfig pointer_config;
 extern struct AutostartConfig autostart_config;
+extern struct XkbConfig xkb_config;
 extern struct LibinputConfig libinput_config;
 extern struct MiscConfig misc_config;
 extern const char *config_path;
