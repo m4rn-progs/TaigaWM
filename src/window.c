@@ -97,6 +97,9 @@ void window_handle_fullscreen_requested(void *data, struct river_window_v1 *obj,
                                         struct river_output_v1 *river_output) {
     // Meta
     struct Window *window = data;
+    if (window->maximized) {
+        window_handle_unmaximize_requested(window, window->obj);
+    }
     window->fullscreen = true;
     window->oldx = window->x;
     window->oldy = window->y;
@@ -130,6 +133,9 @@ void window_handle_exit_fullscreen_requested(void *data,
 void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {
     // Meta
     struct Window *window = data;
+    if (window->fullscreen) {
+        return;
+    }
     window->maximized = true;
     window->oldx = window->x;
     window->oldy = window->y;
@@ -214,9 +220,14 @@ void window_set_position(struct Window *window, int32_t x, int32_t y) {
 void set_borders(struct Window *window) {
     uint32_t fr, fg, fb, fa;
     uint32_t ufr, ufg, ufb, ufa;
-    HEX_TO_RGBA(misc_config.focused_border_color_hex, fr, fg, fb, fa);
-    HEX_TO_RGBA(misc_config.unfocused_border_color_hex, ufr, ufg, ufb, ufa);
 
+    if (window->fullscreen || window->maximized) {
+       HEX_TO_RGBA(0x00000000, fr, fg, fb, fa);
+    } else {
+        HEX_TO_RGBA(misc_config.focused_border_color_hex, fr, fg, fb, fa);
+    }
+
+    HEX_TO_RGBA(misc_config.unfocused_border_color_hex, ufr, ufg, ufb, ufa);
     struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
     if (seat->focused == window) {
         river_window_v1_set_borders(
