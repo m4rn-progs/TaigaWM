@@ -181,9 +181,7 @@ void seat_action(struct Seat *seat, enum Action action) {
         break;
     case ACTION_FOCUS_NEXT:
         if (!wl_list_empty(&wm.windows)) {
-            // Focus the bottom window
-            struct Window *window =
-                wl_container_of(wm.windows.next, window, link);
+            struct Window *window = wl_container_of(wm.windows.next, window, link);
             seat_focus(seat, window);
         }
         break;

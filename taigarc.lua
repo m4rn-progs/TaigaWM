@@ -14,8 +14,9 @@ wallpaper_cmd = "swaybg -m fill -i /usr/share/boreal-artwork/boreal-default-dark
 Keybinds = {
     "super return spawn " .. term_cmd,
     "super d spawn " .. menu_cmd,
-    "super q killactive",
+    "super q kill_active",
     "super+shift e exit",
+    "alt tab focus_next",
     "none f11 fullscreen",
 
     "super period tag_inc",

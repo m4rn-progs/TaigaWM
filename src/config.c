@@ -204,11 +204,16 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
             seat, mods_local,
             xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
             ACTION_SPAWN_SH, strdup(final_cmd_buf));
-    } else if (strcmp(action, "killactive") == 0) {
+    } else if (strcmp(action, "kill_active") == 0) {
         xkb_binding_create(
             seat, mods_local,
             xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
             ACTION_CLOSE, NULL);
+    } else if (strcmp(action, "focus_next") == 0) {
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_FOCUS_NEXT, NULL);
     } else if (strcmp(action, "exit") == 0) {
         xkb_binding_create(
             seat, mods_local,
