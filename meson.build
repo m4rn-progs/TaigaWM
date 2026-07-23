@@ -21,9 +21,27 @@ wayland_client = dependency('wayland-client')
 xkbcommon = dependency('xkbcommon')
 libinput = dependency('libinput')
 
-lua5 = dependency('lua5.5', method: 'pkg-config', required: false)
-lua4 = dependency('lua5.4', method: 'pkg-config', required: false)
-lua = dependency('lua', method: 'pkg-config', required: false)
+
+
+lua_dep = disabler()
+lua_names = [
+  'lua54', 'lua5.4', 'lua-5.4',
+  'lua55', 'lua5.5', 'lua-5.5',
+  'lua'
+]
+
+foreach name : lua_names
+  dep = dependency(name, required: false)
+  if dep.found()
+    lua_dep = dep
+    break
+  endif
+endforeach
+
+if not lua_dep.found()
+  error('Lua not found. Tried: ' + ' '.join(lua_names))
+endif
+message('Using Lua: @0@'.format(lua_dep.name()))
 
 wl_mod = import('wayland')
 generated = wl_mod.scan_xml(
@@ -54,7 +72,7 @@ exe = executable(
     wayland_client,
     xkbcommon,
     libinput,
-    lua,
+    lua_dep,
   ],
   include_directories: inc,
   install: true,
