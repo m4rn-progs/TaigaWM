@@ -222,7 +222,7 @@ void set_borders(struct Window *window) {
     uint32_t ufr, ufg, ufb, ufa;
 
     if (window->fullscreen || window->maximized) {
-       HEX_TO_RGBA(0x00000000, fr, fg, fb, fa);
+        HEX_TO_RGBA(0x00000000, fr, fg, fb, fa);
     } else {
         HEX_TO_RGBA(misc_config.focused_border_color_hex, fr, fg, fb, fa);
     }
