@@ -218,6 +218,7 @@ void set_borders(struct Window *window) {
             window->obj, 15, (int)misc_config.border_size, ufr, ufg, ufb, ufa);
     }
 }
+
 void window_manage(struct Window *window) {
     if (window->new) {
         window->new = false;
