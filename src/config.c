@@ -469,7 +469,8 @@ int load_config(void) {
 
     // xkb
     char *layout = get_string_from_var_from_table(config_path, "Xkb", "layout");
-    char *variant = get_string_from_var_from_table(config_path, "Xkb", "variant");
+    char *variant =
+        get_string_from_var_from_table(config_path, "Xkb", "variant");
 
     xkb_config.layout = layout;
     xkb_config.variant = variant;

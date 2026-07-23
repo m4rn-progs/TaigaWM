@@ -1,14 +1,14 @@
 #include <errno.h>
+#include <limits.h>
 #include <signal.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/inotify.h>
 #include <unistd.h>
 #include <wayland-client-core.h>
 #include <wayland-client-protocol.h>
 #include <wayland-util.h>
-#include <limits.h>
 
 #include "autostart.h"
 #include "config.h"
@@ -110,7 +110,8 @@ int main(int argc, char **argv) {
     if (xkb_config.layout != NULL) {
         fprintf(stdout, "INFO: Loading layout: %s\n", xkb_config.layout);
         setenv("XKB_DEFAULT_LAYOUT", xkb_config.layout, 1);
-    } if (xkb_config.variant != NULL) {
+    }
+    if (xkb_config.variant != NULL) {
         fprintf(stdout, "INFO: Loading variant: %s\n", xkb_config.variant);
         setenv("XKB_DEFAULT_VARIANT", xkb_config.variant, 1);
     }
@@ -127,11 +128,7 @@ int main(int argc, char **argv) {
         exe_path[len] = '\0';
 
         setenv("TAIGA_WRAPPED", "1", 1);
-        char *const args[] = {
-            "river",
-            "-c", exe_path,
-            NULL
-        };
+        char *const args[] = {"river", "-c", exe_path, NULL};
         execvp("river", args);
     }
 }
