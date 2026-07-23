@@ -5,6 +5,7 @@
 #include "output.h"
 #include "seat.h"
 #include "wm.h"
+#include "window.h"
 
 const struct river_output_v1_listener river_output_listener = {
     .removed = output_handle_removed,
@@ -87,6 +88,18 @@ struct Output *get_output_at_position(int x, int y) {
     return NULL;
 }
 
+void focus_first_window_on_output(struct Output *output) {
+    struct Window *tmp_window;
+    struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
+
+    wl_list_for_each(tmp_window, &wm.windows, link) {
+        if (tmp_window->output == output && tmp_window->tag_id == output->tag_id) {
+            seat_focus(seat, tmp_window);
+            break;
+        }
+    }
+}
+
 void focus_mon_next(void) {
     struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
     struct Output *tmp_output;
@@ -96,6 +109,8 @@ void focus_mon_next(void) {
             river_seat_v1_pointer_warp(
                 seat->obj, tmp_output->posx + tmp_output->width / 2,
                 tmp_output->posy + tmp_output->height / 2);
+            focus_first_window_on_output(tmp_output);
+            break;
         }
     }
 }
@@ -109,6 +124,8 @@ void focus_mon_prev(void) {
             river_seat_v1_pointer_warp(
                 seat->obj, tmp_output->posx + tmp_output->width / 2,
                 tmp_output->posy + tmp_output->height / 2);
+            focus_first_window_on_output(tmp_output);
+            break;
         }
     }
 }
