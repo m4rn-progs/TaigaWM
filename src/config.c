@@ -198,6 +198,7 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
             fprintf(stderr, "ERROR: missing command.\n");
             return 4;
         }
+
         // look mom the buffer got copied to heap
         xkb_binding_create(
             seat, mods_local,
@@ -218,6 +219,46 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
             seat, mods_local,
             xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
             ACTION_FULLSCREEN, NULL);
+    } else if (strcmp(action, "tag_inc") == 0) {
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_TAG_INC, NULL);
+    } else if (strcmp(action, "tag_dec") == 0) {
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_TAG_DEC, NULL);
+    } else if (strcmp(action, "win_tag_inc") == 0) {
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_WIN_TAG_INC, NULL);
+    } else if (strcmp(action, "win_tag_dec") == 0) {
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_WIN_TAG_DEC, NULL);
+    } else if (strcmp(action, "tag") == 0) {
+        if (final_cmd_len == 0) {
+            fprintf(stderr, "ERROR: Missing tag id.\n");
+            return 4;
+        }
+
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_TAG_SET, strdup(final_cmd_buf));
+    } else if (strcmp(action, "win_tag") == 0) {
+        if (final_cmd_len == 0) {
+            fprintf(stderr, "ERROR: Missing tag id.\n");
+            return 4;
+        }
+
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_WIN_TAG_SET, strdup(final_cmd_buf));
     } else {
         fprintf(stderr, "ERROR: unknown action.\n");
         return 1;

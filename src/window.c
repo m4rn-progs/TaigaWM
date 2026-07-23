@@ -219,6 +219,50 @@ void set_borders(struct Window *window) {
     }
 }
 
+void output_inc_tag(struct Output *output) {
+    output->tag_id++;
+}
+
+void output_dec_tag(struct Output *output) {
+    if (output->tag_id <= 0 ) {
+        fprintf(stdout, "INFO: output tag at 0\n");
+        return;
+    }
+
+    output->tag_id--;
+}
+
+void window_inc_tag(struct Window *window) {
+    window->tag_id++;
+}
+
+void window_dec_tag(struct Window *window) {
+    if (window->tag_id <= 0 ) {
+        fprintf(stdout, "INFO: win at 0\n");
+        return;
+    }
+
+    window->tag_id--;
+}
+
+void output_set_tag(struct Output *output, uint32_t tag) {
+    if (tag < 0) {
+        fprintf(stderr, "ERROR: Tags cannot be <0.\n");
+        return;
+    }
+
+    output->tag_id = tag;
+}
+
+void window_set_tag(struct Window *window, uint32_t tag) {
+    if (tag < 0) {
+        fprintf(stderr, "ERROR: Tags cannot be <0.\n");
+        return;
+    }
+
+    window->tag_id = tag;
+}
+
 void window_manage(struct Window *window) {
     if (window->new) {
         window->new = false;
@@ -227,6 +271,8 @@ void window_manage(struct Window *window) {
                             output->posy + output->height / 5);
         river_window_v1_propose_dimensions(window->obj, 0, 0);
         river_window_v1_use_ssd(window->obj);
+        window->output = output;
+        window->tag_id = output->tag_id;
     }
     set_borders(window);
 
@@ -244,5 +290,12 @@ void window_manage(struct Window *window) {
         seat_pointer_resize(window->pointer_resize_requested, window,
                             window->pointer_resize_requested_edges);
         window->pointer_resize_requested = NULL;
+    }
+
+    // tag magic
+    if (window->tag_id != window->output->tag_id) {
+        river_window_v1_hide(window->obj);
+    } else {
+        river_window_v1_show(window->obj);
     }
 }

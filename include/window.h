@@ -12,6 +12,7 @@
 struct Window {
     struct river_window_v1 *obj;
     struct river_node_v1 *node;
+    struct Output *output;
 
     bool new;
     bool closed;
@@ -29,6 +30,8 @@ struct Window {
     struct Seat *pointer_move_requested;
     struct Seat *pointer_resize_requested;
     uint32_t pointer_resize_requested_edges;
+
+    uint32_t tag_id;
 
     struct wl_list link; // WindowManager.windows
 };
@@ -80,6 +83,14 @@ void window_handle_identifier(void *data, struct river_window_v1 *obj,
 void window_maybe_destroy(struct Window *window);
 void window_set_position(struct Window *window, int32_t x, int32_t y);
 void set_borders(struct Window *window);
+
+void output_inc_tag(struct Output *output);
+void output_dec_tag(struct Output *output);
+void window_inc_tag(struct Window *window);
+void window_dec_tag(struct Window *window);
+void output_set_tag(struct Output *output, uint32_t tag);
+void window_set_tag(struct Window *window, uint32_t tag);
+
 void window_manage(struct Window *window);
 
 #endif

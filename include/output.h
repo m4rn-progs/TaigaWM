@@ -12,6 +12,7 @@ struct Output {
     int32_t height;
     int32_t posx;
     int32_t posy;
+    uint32_t tag_id;
 
     struct wl_list link; // WindowManager.outputs
 };
@@ -26,4 +27,5 @@ void output_handle_dimensions(void *data, struct river_output_v1 *obj,
                               int32_t width, int32_t height);
 void output_maybe_destroy(struct Output *output);
 struct Output *get_focused_output(void);
+struct Output *get_output_at_position(int x, int y);
 #endif

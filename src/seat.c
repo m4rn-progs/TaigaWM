@@ -163,6 +163,9 @@ void seat_pointer_resize(struct Seat *seat, struct Window *window,
 }
 
 void seat_action(struct Seat *seat, enum Action action) {
+    struct Output *tmp_output = get_focused_output();
+    struct Window *tmp_window = seat->focused;
+
     switch (action) {
     case ACTION_NONE:
         break;
@@ -208,6 +211,24 @@ void seat_action(struct Seat *seat, enum Action action) {
             fprintf(stdout, "INFO: Entering fullscreen\n");
             seat_enter_fullscreen(seat->focused, get_focused_output());
         }
+        break;
+    case ACTION_TAG_INC:
+        output_inc_tag(tmp_output);
+        break;
+    case ACTION_TAG_DEC:
+        output_dec_tag(tmp_output);
+        break;
+    case ACTION_WIN_TAG_INC:
+        window_inc_tag(tmp_window);
+        break;
+    case ACTION_WIN_TAG_DEC:
+        window_dec_tag(tmp_window);
+        break;
+    case ACTION_TAG_SET:
+        output_set_tag(tmp_output, (uint32_t) atoi(seat->pending_cmd));
+        break;
+    case ACTION_WIN_TAG_SET:
+        window_set_tag(tmp_window, (uint32_t) atoi(seat->pending_cmd));
         break;
     }
 }
@@ -314,6 +335,15 @@ void seat_manage(struct Seat *seat) {
         break;
     case SEAT_OP_MOVE:
         if (seat->op_release) {
+            int32_t final_x = seat->op_start_x + seat->op_dx;
+            int32_t final_y = seat->op_start_y + seat->op_dy;
+
+            struct Output *new_output = get_output_at_position(final_x, final_y);
+            if (new_output != NULL && new_output != seat->op_window->output) {
+                seat->op_window->output = new_output;
+                seat->op_window->tag_id = new_output->tag_id;
+            }
+
             river_seat_v1_op_end(seat->obj);
             seat->op = SEAT_OP_NONE;
             seat->op_window = NULL;
@@ -353,22 +383,22 @@ void seat_manage(struct Seat *seat) {
 void seat_render(struct Seat *seat) {
     // Move and resize stuff, river did this for us.
     switch (seat->op) {
-    case SEAT_OP_NONE:
-        break;
-    case SEAT_OP_MOVE:
-        window_set_position(seat->op_window, seat->op_start_x + seat->op_dx,
-                            seat->op_start_y + seat->op_dy);
-        break;
-    case SEAT_OP_RESIZE:;
-        int32_t x = seat->op_start_x;
-        int32_t y = seat->op_start_y;
-        if ((seat->op_edges & RIVER_WINDOW_V1_EDGES_LEFT) != 0) {
-            x += seat->op_start_width - seat->op_window->width;
-        }
-        if ((seat->op_edges & RIVER_WINDOW_V1_EDGES_TOP) != 0) {
-            y += seat->op_start_height - seat->op_window->height;
-        }
-        window_set_position(seat->op_window, x, y);
-        break;
+        case SEAT_OP_NONE:
+            break;
+        case SEAT_OP_MOVE:
+            window_set_position(seat->op_window, seat->op_start_x + seat->op_dx,
+                                seat->op_start_y + seat->op_dy);
+            break;
+        case SEAT_OP_RESIZE:;
+            int32_t x = seat->op_start_x;
+            int32_t y = seat->op_start_y;
+            if ((seat->op_edges & RIVER_WINDOW_V1_EDGES_LEFT) != 0) {
+                x += seat->op_start_width - seat->op_window->width;
+            }
+            if ((seat->op_edges & RIVER_WINDOW_V1_EDGES_TOP) != 0) {
+                y += seat->op_start_height - seat->op_window->height;
+            }
+            window_set_position(seat->op_window, x, y);
+            break;
     }
 }

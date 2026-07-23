@@ -75,3 +75,14 @@ struct Output *get_focused_output(void) {
 
     return NULL;
 }
+
+struct Output *get_output_at_position(int x, int y) {
+    struct Output *output;
+    wl_list_for_each(output, &wm.outputs, link) {
+        if (x >= output->posx && x < output->posx + output->width &&
+            y >= output->posy && y < output->posy + output->height) {
+            return output;
+            }
+    }
+    return NULL;
+}
