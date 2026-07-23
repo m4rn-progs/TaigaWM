@@ -85,6 +85,14 @@ void seat_exit_fullscreen(struct Window *window) {
     window_handle_exit_fullscreen_requested(window, window->obj);
 }
 
+void seat_maximize(struct Window *window) {
+    window_handle_maximize_requested(window, window->obj);
+}
+
+void seat_unmaximize(struct Window *window) {
+    window_handle_unmaximize_requested(window, window->obj);
+}
+
 void window_handle_fullscreen_requested(void *data, struct river_window_v1 *obj,
                                         struct river_output_v1 *river_output) {
     // Meta
@@ -144,8 +152,8 @@ void window_handle_unmaximize_requested(void *data,
     window->maximized = false;
 
     // Inform unmax and let the window choose it's WxH
-    river_window_v1_inform_unmaximized(obj);
-    river_window_v1_propose_dimensions(obj, 0, 0);
+    river_window_v1_inform_unmaximized(window->obj);
+    river_window_v1_propose_dimensions(window->obj, 0, 0);
 
     // Set window 0x0 to cusror pos
     window_set_position(window, seat->cur_ptr_posx, seat->cur_ptr_posy);
@@ -272,7 +280,7 @@ void window_manage(struct Window *window) {
         window_set_position(window, output->posx + output->width / 3,
                             output->posy + output->height / 5);
         river_window_v1_propose_dimensions(window->obj, 0, 0);
-        river_window_v1_use_ssd(window->obj);
+        river_window_v1_use_csd(window->obj);
         window->output = output;
         window->tag_id = output->tag_id;
     }

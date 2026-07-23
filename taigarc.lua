@@ -18,6 +18,7 @@ Keybinds = {
     "super+shift e exit",
     "alt tab focus_next",
     "none f11 fullscreen",
+    "none f10 maximize",
 
     "super period tag_inc",
     "super+shift period win_tag_inc",

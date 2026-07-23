@@ -210,6 +210,13 @@ void seat_action(struct Seat *seat, enum Action action) {
             seat_enter_fullscreen(seat->focused, get_focused_output());
         }
         break;
+    case ACTION_MAXIMIZE:
+        if (seat->focused->maximized) {
+            seat_unmaximize(seat->focused);
+        } else {
+            seat_maximize(seat->focused);
+        }
+        break;
     case ACTION_TAG_INC:
         output_inc_tag(tmp_output);
         break;

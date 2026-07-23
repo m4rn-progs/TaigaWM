@@ -224,6 +224,11 @@ int parse_and_add_keybind(const char *keybind_str, struct Seat *seat) {
             seat, mods_local,
             xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
             ACTION_FULLSCREEN, NULL);
+    } else if (strcmp(action, "maximize") == 0) {
+        xkb_binding_create(
+            seat, mods_local,
+            xkb_keysym_from_name(key, XKB_KEYSYM_CASE_INSENSITIVE),
+            ACTION_MAXIMIZE, NULL);
     } else if (strcmp(action, "tag_inc") == 0) {
         xkb_binding_create(
             seat, mods_local,
