@@ -36,6 +36,7 @@ struct MiscConfig {
     char *xcursor_theme;
     uint32_t xcursor_size;
     uint32_t border_size;
+    bool client_side_decorations;
     uint32_t focused_border_color_hex;
     uint32_t unfocused_border_color_hex;
 };

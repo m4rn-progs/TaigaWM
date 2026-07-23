@@ -81,6 +81,7 @@ Misc = {
     xcursor_theme = cursor_name,
     xcursor_size = cursor_size,
     border_size = 5,
+    client_side_decorations = false,
 
     -- colors are defined in HEX including alpha
     focused_border_color_hex = 0xFFFFFFFF,

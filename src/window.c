@@ -280,7 +280,13 @@ void window_manage(struct Window *window) {
         window_set_position(window, output->posx + output->width / 3,
                             output->posy + output->height / 5);
         river_window_v1_propose_dimensions(window->obj, 0, 0);
-        river_window_v1_use_csd(window->obj);
+        if (misc_config.client_side_decorations) {
+            fprintf(stdout, "INFO: Enabling CSD.\n");
+            river_window_v1_use_csd(window->obj);
+        } else {
+            fprintf(stdout, "INFO: Enabling SSD.\n");
+            river_window_v1_use_ssd(window->obj);
+        }
         window->output = output;
         window->tag_id = output->tag_id;
     }
