@@ -2,11 +2,30 @@
 #include <stdlib.h>
 #include <wayland-util.h>
 
+#include "config.h"
 #include "output.h"
-#include "pointer.h"
 #include "seat.h"
 #include "window.h"
 #include "wm.h"
+
+// fucking bitwise magic
+// split the hex into 4 parts, then multiply by 0x01010101u to make it a 32bit
+// value
+#define HEX_TO_RGBA(packed, R, G, B, A)                                        \
+    do {                                                                       \
+        uint32_t _p = (packed);                                                \
+        uint32_t r8 = (_p >> 24) & 0xFF;                                       \
+        uint32_t g8 = (_p >> 16) & 0xFF;                                       \
+        uint32_t b8 = (_p >> 8) & 0xFF;                                        \
+        uint32_t a8 = (_p >> 0) & 0xFF;                                        \
+        uint32_t r_pm8 = (r8 * a8 + 127) / 255;                                \
+        uint32_t g_pm8 = (g8 * a8 + 127) / 255;                                \
+        uint32_t b_pm8 = (b8 * a8 + 127) / 255;                                \
+        (R) = r_pm8 * 0x01010101u;                                             \
+        (G) = g_pm8 * 0x01010101u;                                             \
+        (B) = b_pm8 * 0x01010101u;                                             \
+        (A) = a8 * 0x01010101u;                                                \
+    } while (0)
 
 struct river_window_manager_v1 *window_manager_v1;
 const struct river_window_v1_listener river_window_listener = {
@@ -184,6 +203,21 @@ void window_set_position(struct Window *window, int32_t x, int32_t y) {
     window->y = y;
 }
 
+void set_borders(struct Window *window) {
+    uint32_t fr, fg, fb, fa;
+    uint32_t ufr, ufg, ufb, ufa;
+    HEX_TO_RGBA(misc_config.focused_border_color_hex, fr, fg, fb, fa);
+    HEX_TO_RGBA(misc_config.unfocused_border_color_hex, ufr, ufg, ufb, ufa);
+
+    struct Seat *seat = wl_container_of(wm.seats.next, seat, link);
+    if (seat->focused == window) {
+        river_window_v1_set_borders(
+            window->obj, 15, (int)misc_config.border_size, fr, fg, fb, fa);
+    } else {
+        river_window_v1_set_borders(
+            window->obj, 15, (int)misc_config.border_size, ufr, ufg, ufb, ufa);
+    }
+}
 void window_manage(struct Window *window) {
     if (window->new) {
         window->new = false;
@@ -191,7 +225,10 @@ void window_manage(struct Window *window) {
         window_set_position(window, output->posx + output->width / 3,
                             output->posy + output->height / 5);
         river_window_v1_propose_dimensions(window->obj, 0, 0);
+        river_window_v1_use_ssd(window->obj);
     }
+    set_borders(window);
+
     if (window->pointer_move_requested != NULL) {
         if (window->maximized) {
             window_handle_unmaximize_requested(window, window->obj);

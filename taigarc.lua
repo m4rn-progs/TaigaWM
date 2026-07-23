@@ -1,7 +1,5 @@
 term_cmd = "kitty"
 menu_cmd = "rofi -show drun"
-
--- edit this to configure your cursor theme
 cursor_name = "breeze_cursors"
 cursor_size = 24
 
@@ -43,4 +41,8 @@ Misc = {
     tearing = false,
     xcursor_theme = cursor_name,
     xcursor_size = cursor_size,
+    border_size = 5,
+    -- colors are defined in HEX including alpha
+    focused_border_color_hex = 0xFFFFFFFF,
+    unfocused_border_color_hex = 0x000000FF
 }

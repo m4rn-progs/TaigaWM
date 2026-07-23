@@ -30,6 +30,9 @@ struct MiscConfig {
     bool tearing;
     char *xcursor_theme;
     uint32_t xcursor_size;
+    uint32_t border_size;
+    uint32_t focused_border_color_hex;
+    uint32_t unfocused_border_color_hex;
 };
 
 extern struct KeybindConfig keybind_config;

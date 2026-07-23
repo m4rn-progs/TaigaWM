@@ -471,10 +471,19 @@ int load_config(void) {
         get_string_from_var_from_table(config_path, "Misc", "xcursor_theme");
     uint32_t xcursor_size =
         get_int_from_var_from_table(config_path, "Misc", "xcursor_size");
+    uint32_t border_size =
+        get_int_from_var_from_table(config_path, "Misc", "border_size");
+    uint32_t focused_border_color_hex = get_int_from_var_from_table(
+        config_path, "Misc", "focused_border_color_hex");
+    uint32_t unfocused_border_color_hex = get_int_from_var_from_table(
+        config_path, "Misc", "unfocused_border_color_hex");
 
     misc_config.tearing = tearing;
     misc_config.xcursor_theme = xcursor_theme;
     misc_config.xcursor_size = xcursor_size;
+    misc_config.border_size = border_size;
+    misc_config.focused_border_color_hex = focused_border_color_hex;
+    misc_config.unfocused_border_color_hex = unfocused_border_color_hex;
 
     return 0;
 }
