@@ -40,15 +40,24 @@ const struct wl_registry_listener registry_listener = {
 };
 
 void wm_handle_unavailable(void *data, struct river_window_manager_v1 *obj) {
-    fprintf(stderr, "ERROR: another window manager is already running\n");
+    (void)data;
+    (void)obj;
+
+    fprintf(stderr, "ERROR: Another window manager is already running\n");
     exit(1);
 }
 
 void wm_handle_finished(void *data, struct river_window_manager_v1 *obj) {
+    (void)data;
+    (void)obj;
+
     exit(0);
 }
 
 void wm_handle_manage_start(void *data, struct river_window_manager_v1 *obj) {
+    (void)data;
+    (void)obj;
+
     // Destroy closed windows and removed outputs/seats
     struct Output *output, *output_tmp;
     wl_list_for_each_safe(output, output_tmp, &wm.outputs, link) {
@@ -70,6 +79,9 @@ void wm_handle_manage_start(void *data, struct river_window_manager_v1 *obj) {
 }
 
 void wm_handle_render_start(void *data, struct river_window_manager_v1 *obj) {
+    (void)data;
+    (void)obj;
+
     struct Seat *seat;
     wl_list_for_each(seat, &wm.seats, link) { seat_render(seat); }
 
@@ -78,6 +90,9 @@ void wm_handle_render_start(void *data, struct river_window_manager_v1 *obj) {
 
 void wm_handle_window(void *data, struct river_window_manager_v1 *obj,
                       struct river_window_v1 *river_window) {
+    (void)data;
+    (void)obj;
+
     struct Window *window = calloc(1, sizeof(struct Window));
     window->obj = river_window;
     window->node = river_window_v1_get_node(window->obj);
@@ -90,6 +105,9 @@ void wm_handle_window(void *data, struct river_window_manager_v1 *obj,
 
 void wm_handle_output(void *data, struct river_window_manager_v1 *obj,
                       struct river_output_v1 *river_output) {
+    (void)data;
+    (void)obj;
+
     struct Output *output = calloc(1, sizeof(struct Output));
     output->obj = river_output;
     output->layer_shell_output =
@@ -119,6 +137,9 @@ void wm_handle_output(void *data, struct river_window_manager_v1 *obj,
 
 void wm_handle_seat(void *data, struct river_window_manager_v1 *obj,
                     struct river_seat_v1 *river_seat) {
+    (void)data;
+    (void)obj;
+
     struct Seat *seat = calloc(1, sizeof(struct Seat));
     seat->obj = river_seat;
     seat->new = true;

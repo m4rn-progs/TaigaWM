@@ -105,12 +105,17 @@ const struct river_libinput_device_v1_listener river_libinput_device_listener =
 void river_libinput_config_handle_libinput_device(
     void *data, struct river_libinput_config_v1 *config,
     struct river_libinput_device_v1 *device_id) {
+    (void)config;
+
     river_libinput_device_v1_add_listener(
         device_id, &river_libinput_device_listener, data);
 }
 
 void river_libinput_device_handle_accel_profiles_support(
     void *data, struct river_libinput_device_v1 *device, uint32_t profiles) {
+    (void)data;
+    (void)profiles;
+
     if (strcmp(input_config.accel_profile, "flat") == 0) {
         fprintf(stdout, "INFO: accel profile set to flat.\n");
         river_libinput_device_v1_set_accel_profile(
@@ -135,6 +140,8 @@ void river_libinput_device_handle_accel_profiles_support(
 }
 void river_libinput_device_handle_tap_support(
     void *data, struct river_libinput_device_v1 *device, int32_t finger_count) {
+    (void)data;
+
     fprintf(stderr, "finger_count: %d", finger_count);
     if (input_config.tap_to_click) {
         fprintf(stdout, "INFO: tap_to_click enabled.\n");

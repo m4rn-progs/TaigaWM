@@ -21,7 +21,9 @@ const struct river_input_device_v1_listener river_input_device_listener = {
 
 void river_input_device_handle_removed(void *data,
                                        struct river_input_device_v1 *device) {
-    fprintf(stdout, "INFO: Input device removed\n");
+    (void)device;
+
+    fprintf(stdout, "INFO: Input device removed.\n");
     struct RiverInputDevice *rdevice = data;
 
     river_input_device_v1_destroy(rdevice->device);
@@ -32,7 +34,9 @@ void river_input_device_handle_removed(void *data,
 void river_input_device_handle_type(void *data,
                                     struct river_input_device_v1 *device,
                                     uint32_t type) {
-    fprintf(stdout, "INFO: Input device type: %u\n", type);
+    (void)device;
+
+    fprintf(stdout, "INFO: Input device type: %u.\n", type);
 
     struct RiverInputDevice *rdevice = data;
     rdevice->type = type;
@@ -41,29 +45,40 @@ void river_input_device_handle_type(void *data,
 void river_input_device_handle_name(void *data,
                                     struct river_input_device_v1 *device,
                                     const char *name) {
-    fprintf(stdout, "INFO: Input device name: %s\n", name);
+    (void)device;
+
+    fprintf(stdout, "INFO: Input device name: %s.\n", name);
+
     struct RiverInputDevice *rdevice = data;
     rdevice->name = strdup(name);
 }
 
 void river_input_device_handle_done(void *data,
                                     struct river_input_device_v1 *device) {
-    fprintf(stdout, "INFO: Input device done\n");
+    (void)data;
+    (void)device;
+
+    fprintf(stdout, "INFO: Input device done.\n");
 }
 
 void river_input_manager_handle_finished(
-    void *data, struct river_input_manager_v1 *river_input_manager) {
+    void *data, struct river_input_manager_v1 *input_manager) {
+    (void)data;
+    (void)input_manager;
+
     fprintf(stdout, "INFO: Input manager finished\n");
 }
 
 void river_input_manager_handle_input_device(
-    void *data, struct river_input_manager_v1 *river_input_manager,
+    void *data, struct river_input_manager_v1 *input_manager,
     struct river_input_device_v1 *input_device) {
-    fprintf(stdout, "INFO: New input device\n");
+    (void)input_manager;
+
+    fprintf(stdout, "INFO: New input device.\n");
 
     fprintf(stdout, "INFO: Configuring input device.\n");
     if (input_config.repeat_rate > 0 && input_config.repeat_delay > 0) {
-        fprintf(stdout, "INFO: Repeat Rate: %u - Repeat delay: %u\n",
+        fprintf(stdout, "INFO: Repeat Rate: %u - Repeat delay: %u.\n",
                 input_config.repeat_rate, input_config.repeat_delay);
         river_input_device_v1_set_repeat_info(
             input_device, input_config.repeat_rate, input_config.repeat_delay);

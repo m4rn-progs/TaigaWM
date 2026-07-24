@@ -16,35 +16,47 @@
 #include <river-layer-shell-v1-client-protocol.h>
 
 void seat_handle_removed(void *data, struct river_seat_v1 *obj) {
+    (void)obj;
+
     struct Seat *seat = data;
     seat->removed = true;
 }
 
 void seat_handle_pointer_enter(void *data, struct river_seat_v1 *obj,
                                struct river_window_v1 *river_window) {
+    (void)obj;
+
     struct Seat *seat = data;
     seat->hovered = river_window_v1_get_user_data(river_window);
 }
 
 void seat_handle_pointer_leave(void *data, struct river_seat_v1 *obj) {
+    (void)obj;
+
     struct Seat *seat = data;
     seat->hovered = NULL;
 }
 
 void seat_handle_window_interaction(void *data, struct river_seat_v1 *obj,
                                     struct river_window_v1 *river_window) {
+    (void)obj;
+
     struct Seat *seat = data;
     seat->interacted = river_window_v1_get_user_data(river_window);
 }
 
 void seat_handle_op_delta(void *data, struct river_seat_v1 *obj, int32_t dx,
                           int32_t dy) {
+    (void)obj;
+
     struct Seat *seat = data;
     seat->op_dx = dx;
     seat->op_dy = dy;
 }
 
 void seat_handle_op_release(void *data, struct river_seat_v1 *obj) {
+    (void)obj;
+
     struct Seat *seat = data;
     seat->op_release = true;
 }
@@ -57,6 +69,8 @@ void handle_focused_output_change(struct Seat *seat) {
 
 void seat_handle_pointer_position(void *data, struct river_seat_v1 *obj,
                                   int32_t x, int32_t y) {
+    (void)obj;
+
     struct Seat *seat = data;
     seat->cur_ptr_posx = x;
     seat->cur_ptr_posy = y;
@@ -195,7 +209,7 @@ void seat_action(struct Seat *seat, enum Action action) {
     case ACTION_SPAWN_SH:
         if (fork() == 0) {
             execlp("/bin/sh", "/bin/sh", "-c", seat->pending_cmd, NULL);
-            _exit(0);
+            _exit(127);
         }
         break;
     case ACTION_CLOSE:
@@ -284,7 +298,7 @@ void seat_action(struct Seat *seat, enum Action action) {
     }
 }
 
-void fallback_pointerbinds(struct Seat *seat) {
+static void fallback_pointerbinds(struct Seat *seat) {
     // Set the fallback pointer binds
 
     fprintf(stderr, "WARNING: falling back to sane default pointer binds.\n");
@@ -293,7 +307,7 @@ void fallback_pointerbinds(struct Seat *seat) {
     pointer_binding_create(seat, super, BTN_RIGHT, ACTION_RESIZE);
 }
 
-void fallback_keybinds(struct Seat *seat) {
+static void fallback_keybinds(struct Seat *seat) {
     // Set the fallback key binds
 
     fprintf(stderr, "WARNING: falling back to sane default keybinds.\n");

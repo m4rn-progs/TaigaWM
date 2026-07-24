@@ -15,6 +15,8 @@ const struct river_output_v1_listener river_output_listener = {
 };
 
 void output_handle_removed(void *data, struct river_output_v1 *obj) {
+    (void)obj;
+
     fprintf(stdout, "INFO: Output removed.\n");
     struct Output *output = data;
     output->removed = true;
@@ -33,6 +35,8 @@ void output_maybe_destroy(struct Output *output) {
 
 void output_handle_dimensions(void *data, struct river_output_v1 *obj,
                               int32_t width, int32_t height) {
+    (void)obj;
+
     fprintf(stdout, "INFO: Output dimensions = %dx%d.\n", width, height);
 
     struct Output *output = data;
@@ -42,11 +46,17 @@ void output_handle_dimensions(void *data, struct river_output_v1 *obj,
 
 void output_handle_wl_output(void *data, struct river_output_v1 *obj,
                              uint32_t name) {
+    (void)data;
+    (void)obj;
+    (void)name;
+
     fprintf(stdout, "INFO: New wl_output.\n");
 }
 
 void output_handle_position(void *data, struct river_output_v1 *obj, int32_t x,
                             int32_t y) {
+    (void)obj;
+
     fprintf(stdout, "INFO: Output position = %dx%d.\n", x, y);
     struct Output *output = data;
     output->posx = x;

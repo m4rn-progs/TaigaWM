@@ -23,6 +23,9 @@ const struct river_layer_shell_output_v1_listener layer_shell_output_listener =
 
 void layer_shell_handle_focus_none(void *data,
                                    struct river_layer_shell_seat_v1 *seat) {
+    (void)data;
+    (void)seat;
+
     struct Seat *s, *s_tmp;
     wl_list_for_each_safe(s, s_tmp, &wm.seats, link) { s->focused = NULL; }
 }
@@ -30,6 +33,7 @@ void layer_shell_handle_focus_none(void *data,
 void layer_shell_handle_non_exclusive_area(
     void *data, struct river_layer_shell_output_v1 *output, int x, int y,
     int width, int height) {
+    (void)output;
 
     struct Output *tmp_output = data;
 

@@ -90,7 +90,7 @@ static int compositor_main(void) {
         return 1;
     }
 
-    // Steup the wm struct, inotify, then setup the wm listener
+    // Setup the wm struct, inotify, then setup the wm listener
     wm_init();
     setup_inotify();
     river_window_manager_v1_add_listener(window_manager_v1, &wm_listener, NULL);

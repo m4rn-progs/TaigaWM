@@ -28,7 +28,7 @@ void river_input_device_handle_done(void *data,
                                     struct river_input_device_v1 *device);
 
 void river_input_manager_handle_finished(
-    void *data, struct river_input_manager_v1 *river_input_manager);
+    void *data, struct river_input_manager_v1 *input_manager);
 void river_input_manager_handle_input_device(
     void *data, struct river_input_manager_v1 *river_input_manager_v1,
     struct river_input_device_v1 *input_device);

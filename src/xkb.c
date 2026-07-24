@@ -10,6 +10,8 @@
 struct river_xkb_bindings_v1 *xkb_bindings_v1;
 
 void xkb_binding_handle_pressed(void *data, struct river_xkb_binding_v1 *obj) {
+    (void)obj;
+
     struct XkbBinding *binding = data;
     binding->seat->pending_action = binding->action;
     binding->seat->pending_cmd = binding->cmd;

@@ -6,6 +6,8 @@
 
 void pointer_binding_handle_pressed(void *data,
                                     struct river_pointer_binding_v1 *obj) {
+    (void)obj;
+
     struct PointerBinding *binding = data;
     binding->seat->pending_action = binding->action;
 }
