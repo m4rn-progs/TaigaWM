@@ -54,6 +54,11 @@ generated = wl_mod.scan_xml(
 
 inc = include_directories('include')
 
+install_data(
+  'TaigaWM.desktop',
+  install_dir: '/usr/share/wayland-sessions',
+)
+
 exe = executable(
   'taiga',
   'src/main.c',

@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=TaigaWM
+Comment=A simple river windowmanager
+Exec=taiga
+Type=Application
