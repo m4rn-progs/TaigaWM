@@ -93,7 +93,8 @@ void wm_handle_output(void *data, struct river_window_manager_v1 *obj,
     output->layer_shell_output =
         river_layer_shell_v1_get_output(layer_shell, river_output);
 
-    // attach listener to output, pass output itself to it as the data so we can modify it
+    // attach listener to output, pass output itself to it as the data so we can
+    // modify it
     river_layer_shell_output_v1_add_listener(
         output->layer_shell_output, &layer_shell_output_listener, output);
 

@@ -164,8 +164,7 @@ void window_handle_unmaximize_requested(void *data,
     river_window_v1_propose_dimensions(window->obj, 0, 0);
 
     // Set window 0x0 to cusror pos
-    window_set_position(window, seat->cur_ptr_posx,
-                        seat->cur_ptr_posy);
+    window_set_position(window, seat->cur_ptr_posx, seat->cur_ptr_posy);
 }
 
 // Ignored events
