@@ -517,12 +517,14 @@ int load_config(void) {
     autostart_config.autostarts_len = autostart_len;
 
     // libinput
-    char *accel_profile = get_string_from_var_from_table(
-        config_path, "Input", "accel_profile");
+    char *accel_profile =
+        get_string_from_var_from_table(config_path, "Input", "accel_profile");
     bool tap_to_click =
         get_bool_from_var_from_table(config_path, "Input", "tap_to_click");
-    int repeat_rate = get_int_from_var_from_table(config_path, "Input", "repeat_rate");
-    int repeat_delay = get_int_from_var_from_table(config_path, "Input", "repeat_delay");
+    int repeat_rate =
+        get_int_from_var_from_table(config_path, "Input", "repeat_rate");
+    int repeat_delay =
+        get_int_from_var_from_table(config_path, "Input", "repeat_delay");
 
     // free the string if it exists
     if (input_config.accel_profile) {
@@ -540,7 +542,8 @@ int load_config(void) {
 
     if (xkb_config.layout) {
         free(xkb_config.layout);
-    } if (xkb_config.variant) {
+    }
+    if (xkb_config.variant) {
         free(xkb_config.variant);
     }
     xkb_config.layout = layout;
