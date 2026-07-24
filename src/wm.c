@@ -92,7 +92,11 @@ void wm_handle_output(void *data, struct river_window_manager_v1 *obj,
     output->obj = river_output;
     output->layer_shell_output =
         river_layer_shell_v1_get_output(layer_shell, river_output);
-    output->tag_id = 0;
+
+    // attach listener to output, pass output itself to it as the data so we can modify it
+    river_layer_shell_output_v1_add_listener(
+        output->layer_shell_output, &layer_shell_output_listener, output);
+
     if (!wm.layer_shell_has_default_output) {
         river_layer_shell_output_v1_set_default(output->layer_shell_output);
         wm.layer_shell_has_default_output = true;

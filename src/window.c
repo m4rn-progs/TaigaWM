@@ -145,9 +145,11 @@ void window_handle_maximize_requested(void *data, struct river_window_v1 *obj) {
 
     // Get the focused output and maximize it on that output
     struct Output *output = get_focused_output();
-    river_window_v1_propose_dimensions(window->obj, output->width,
-                                       output->height);
-    window_set_position(window, output->posx, output->posy);
+
+    // use non exclusive area so we dont cover bars
+    river_window_v1_propose_dimensions(window->obj, output->newidth,
+                                       output->neheight);
+    window_set_position(window, output->neposx, output->neposy);
 }
 
 void window_handle_unmaximize_requested(void *data,
@@ -162,7 +164,8 @@ void window_handle_unmaximize_requested(void *data,
     river_window_v1_propose_dimensions(window->obj, 0, 0);
 
     // Set window 0x0 to cusror pos
-    window_set_position(window, seat->cur_ptr_posx, seat->cur_ptr_posy);
+    window_set_position(window, seat->cur_ptr_posx,
+                        seat->cur_ptr_posy);
 }
 
 // Ignored events

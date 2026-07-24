@@ -6,13 +6,19 @@
 
 struct Output {
     struct river_output_v1 *obj;
-    struct river_layer_shell_output_v1 *layer_shell_output;
     bool removed;
     int32_t width;
     int32_t height;
     int32_t posx;
     int32_t posy;
     uint32_t tag_id;
+
+    // layer shell
+    struct river_layer_shell_output_v1 *layer_shell_output;
+    int32_t neposx;
+    int32_t neposy;
+    int32_t newidth;
+    int32_t neheight;
 
     struct wl_list link; // WindowManager.outputs
 };
