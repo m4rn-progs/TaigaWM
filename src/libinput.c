@@ -111,17 +111,17 @@ void river_libinput_config_handle_libinput_device(
 
 void river_libinput_device_handle_accel_profiles_support(
     void *data, struct river_libinput_device_v1 *device, uint32_t profiles) {
-    if (strcmp(libinput_config.accel_profile, "flat") == 0) {
+    if (strcmp(input_config.accel_profile, "flat") == 0) {
         fprintf(stdout, "INFO: accel profile set to flat.\n");
         river_libinput_device_v1_set_accel_profile(
             device, RIVER_LIBINPUT_DEVICE_V1_ACCEL_PROFILES_FLAT);
 
-    } else if (strcmp(libinput_config.accel_profile, "adaptive") == 0) {
+    } else if (strcmp(input_config.accel_profile, "adaptive") == 0) {
         fprintf(stdout, "INFO: accel profile set to adaptive.\n");
         river_libinput_device_v1_set_accel_profile(
             device, RIVER_LIBINPUT_DEVICE_V1_ACCEL_PROFILES_ADAPTIVE);
 
-    } else if (strcmp(libinput_config.accel_profile, "none") == 0) {
+    } else if (strcmp(input_config.accel_profile, "none") == 0) {
         fprintf(stdout, "INFO: accel profile set to none.\n");
         river_libinput_device_v1_set_accel_profile(
             device, RIVER_LIBINPUT_DEVICE_V1_ACCEL_PROFILES_NONE);
@@ -136,7 +136,7 @@ void river_libinput_device_handle_accel_profiles_support(
 void river_libinput_device_handle_tap_support(
     void *data, struct river_libinput_device_v1 *device, int32_t finger_count) {
     fprintf(stderr, "finger_count: %d", finger_count);
-    if (libinput_config.tap_to_click) {
+    if (input_config.tap_to_click) {
         fprintf(stdout, "INFO: tap_to_click enabled.\n");
         river_libinput_device_v1_set_tap(device, 1);
     } else {

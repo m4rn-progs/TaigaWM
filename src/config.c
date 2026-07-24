@@ -17,7 +17,7 @@ struct KeybindConfig keybind_config = {0};
 struct PointerConfig pointer_config = {0};
 struct AutostartConfig autostart_config = {0};
 struct XkbConfig xkb_config = {0};
-struct LibinputConfig libinput_config = {0};
+struct InputConfig input_config = {0};
 struct MiscConfig misc_config = {0};
 const char *config_path = NULL;
 
@@ -518,21 +518,31 @@ int load_config(void) {
 
     // libinput
     char *accel_profile = get_string_from_var_from_table(
-        config_path, "Libinput", "accel_profile");
+        config_path, "Input", "accel_profile");
     bool tap_to_click =
-        get_bool_from_var_from_table(config_path, "Libinput", "tap_to_click");
+        get_bool_from_var_from_table(config_path, "Input", "tap_to_click");
+    int repeat_rate = get_int_from_var_from_table(config_path, "Input", "repeat_rate");
+    int repeat_delay = get_int_from_var_from_table(config_path, "Input", "repeat_delay");
 
-    if (libinput_config.accel_profile) {
-        free(libinput_config.accel_profile);
+    // free the string if it exists
+    if (input_config.accel_profile) {
+        free(input_config.accel_profile);
     }
-    libinput_config.accel_profile = accel_profile;
-    libinput_config.tap_to_click = tap_to_click;
+    input_config.accel_profile = accel_profile;
+    input_config.tap_to_click = tap_to_click;
+    input_config.repeat_rate = repeat_rate;
+    input_config.repeat_delay = repeat_delay;
 
     // xkb
     char *layout = get_string_from_var_from_table(config_path, "Xkb", "layout");
     char *variant =
         get_string_from_var_from_table(config_path, "Xkb", "variant");
 
+    if (xkb_config.layout) {
+        free(xkb_config.layout);
+    } if (xkb_config.variant) {
+        free(xkb_config.variant);
+    }
     xkb_config.layout = layout;
     xkb_config.variant = variant;
 
@@ -551,6 +561,9 @@ int load_config(void) {
     uint32_t unfocused_border_color_hex = get_int_from_var_from_table(
         config_path, "Misc", "unfocused_border_color_hex");
 
+    if (misc_config.xcursor_theme) {
+        free(misc_config.xcursor_theme);
+    }
     misc_config.tearing = tearing;
     misc_config.xcursor_theme = xcursor_theme;
     misc_config.xcursor_size = xcursor_size;

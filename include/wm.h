@@ -10,6 +10,7 @@ struct WindowManager {
     struct wl_list outputs; // Output
     struct wl_list windows; // Window
     struct wl_list seats;   // Seat
+    struct wl_list input_devices;
     bool layer_shell_has_default_output;
 };
 

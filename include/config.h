@@ -21,9 +21,11 @@ struct AutostartConfig {
     size_t autostarts_len;
 };
 
-struct LibinputConfig {
+struct InputConfig {
     char *accel_profile;
     bool tap_to_click;
+    int repeat_rate;
+    int repeat_delay;
 };
 
 struct XkbConfig {
@@ -45,7 +47,7 @@ extern struct KeybindConfig keybind_config;
 extern struct PointerConfig pointer_config;
 extern struct AutostartConfig autostart_config;
 extern struct XkbConfig xkb_config;
-extern struct LibinputConfig libinput_config;
+extern struct InputConfig input_config;
 extern struct MiscConfig misc_config;
 extern const char *config_path;
 

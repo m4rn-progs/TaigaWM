@@ -2,6 +2,7 @@
 #include <river-layer-shell-v1-client-protocol.h>
 #include <river-libinput-config-v1-client-protocol.h>
 #include <river-window-management-v1-client-protocol.h>
+#include <river-input-management-v1-client-protocol.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,6 +18,7 @@
 #include "window.h"
 #include "wm.h"
 #include "xkb.h"
+#include "input.h"
 
 struct WindowManager wm;
 
@@ -141,6 +143,7 @@ void wm_init(void) {
     wl_list_init(&wm.outputs);
     wl_list_init(&wm.windows);
     wl_list_init(&wm.seats);
+    wl_list_init(&wm.input_devices);
 }
 
 void handle_global(void *data, struct wl_registry *registry, uint32_t name,
@@ -162,6 +165,11 @@ void handle_global(void *data, struct wl_registry *registry, uint32_t name,
             registry, name, &river_libinput_config_v1_interface, 1);
         river_libinput_config_v1_add_listener(
             river_libinput_config, &river_libinput_config_listener, NULL);
+    } else if (strcmp(interface, river_input_manager_v1_interface.name) == 0) {
+        river_input_manager = wl_registry_bind(registry, name, &river_input_manager_v1_interface, 1);
+
+        struct RiverInputDevice *rdevice = calloc(1, sizeof(struct RiverInputDevice));
+        river_input_manager_v1_add_listener(river_input_manager, &river_input_manager_listener, rdevice);
     }
 }
 

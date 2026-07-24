@@ -67,6 +67,7 @@ exe = executable(
   'src/config.c',
   'src/libinput.c',
   'src/autostart.c',
+  'src/input.c',
   generated,
   dependencies: [
     wayland_client,
