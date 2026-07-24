@@ -28,8 +28,8 @@ Keybinds = {
     -- <modifier>+<other modifier> <key> <action> <command>
     -- example 'super return spawn foot'
     -- example 'super+shift e spawn wlogout'
-    "super return spawn " .. term_cmd,
-    "super d spawn " .. menu_cmd,
+    "super return spawn " .. term_cmd, -- note: This is a lua string concat, make sure you leave a trailing space
+    "super d spawn " .. menu_cmd, -- note This is a lua string concat, make sure you leave a trailing space
 
     -- general actions
     -- <modifier>+<other modifier> <key> <action>
