@@ -7,7 +7,6 @@ struct RiverInputDevice {
     struct river_input_device_v1 *device;
     char *name;
     uint32_t type;
-    bool removed;
 
     struct wl_list link;
 };
